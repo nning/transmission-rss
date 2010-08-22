@@ -1,6 +1,6 @@
 $:.unshift( File.dirname( __FILE__ ) )
 
-module Transmissiond_rss
+module TransmissionRSS
 	VERSION = '0.0.6'
 end
 

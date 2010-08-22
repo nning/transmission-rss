@@ -5,8 +5,8 @@ require( 'timeout' )
 # TODO
 #  * Why the hell do timeouts in getSessionID and addTorrent not work?!
 
-# Class for communication with transmissiond utilizing the RPC web interface.
-class Transmissiond_rss::Server
+# Class for communication with transmission utilizing the RPC web interface.
+class TransmissionRSS::Server
 	def initialize( host, port )
 		@host = host
 		@port = port

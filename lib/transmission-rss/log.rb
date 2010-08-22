@@ -1,6 +1,6 @@
 require( 'singleton' )
 
-class Transmissiond_rss::Log
+class TransmissionRSS::Log
 	include Singleton
 
 	attr_accessor :target, :verbose

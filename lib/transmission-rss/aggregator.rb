@@ -4,7 +4,7 @@ require( 'open-uri' )
 require( 'rss' )
 
 # Class for aggregating torrent files through RSS feeds.
-class Transmissiond_rss::Aggregator
+class TransmissionRSS::Aggregator
 	attr_accessor :feeds
 
 	def initialize( feeds = [] )

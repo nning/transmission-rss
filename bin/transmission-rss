@@ -3,16 +3,25 @@
 require( 'getoptlong' )
 
 $:.unshift( File.join( File.dirname( __FILE__ ), '../lib' ) )
-require( 'transmissiond-rss' )
+require( 'transmission-rss' )
 
-include Transmissiond_rss
+include TransmissionRSS
+
+# Default config file path.
+configFile = '/etc/transmission-rss.conf'
+
+# Do not fork by default.
+dofork = false
+
+# Default not verbose.
+verbose = false
 
 # Shows a summary of the command line options.
 def usageMessage
 	$stderr << "#{File.basename( $0 )} [options]
-Adds torrents from rss feeds to transmissiond web frontend.
+Adds torrents from rss feeds to transmission web frontend.
 
-  -c <file>   Custom config file path. Default: /etc/transmissiond-rss.conf
+  -c <file>   Custom config file path. Default: #{configFile}
   -f          Fork into background after startup.
   -h          This help.
   -v          Verbose mode.
@@ -28,15 +37,6 @@ options = GetoptLong.new(
 	[ '-h', GetoptLong::NO_ARGUMENT ],
 	[ '-v', GetoptLong::NO_ARGUMENT ]
 )
-
-# Default config file path.
-configFile = '/etc/transmissiond-rss.conf'
-
-# Do not fork by default.
-dofork = false
-
-# Default not verbose.
-verbose = false
 
 # Parse given options.
 options.each do |option, argument|
@@ -54,7 +54,7 @@ end
 
 # Seems to be necessary when called from gem installation.
 # Otherwise Config is somehow mixed up with RbConfig.
-config = Transmissiond_rss::Config.instance
+config = TransmissionRSS::Config.instance
 
 # Default configuration.
 config.load( {
@@ -87,10 +87,10 @@ end
 # Initialize feed aggregator.
 aggregator = Aggregator.new
 
-# Initialize communication to transmissiond.
+# Initialize communication to transmission.
 server = Server.new( config.server.host, config.server.port )
 
-# Add feeds from config file to Aggregator class.
+# Add feeds from config file to +Aggregator+ class.
 aggregator.feeds.concat( config.feeds )
 
 # Callback for a new item on one of the feeds.

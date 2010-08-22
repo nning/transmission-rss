@@ -2,7 +2,7 @@ require( 'singleton' )
 require( 'yaml' )
 
 # Class handles configuration parameters.
-class Transmissiond_rss::Config < Hash
+class TransmissionRSS::Config < Hash
 	# This is a singleton class.
 	include Singleton
 
