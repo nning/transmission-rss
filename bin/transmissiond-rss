@@ -1,0 +1,115 @@
+#!/usr/bin/env ruby
+
+require( 'getoptlong' )
+
+$:.unshift( File.join( File.dirname( __FILE__ ), '../lib' ) )
+require( 'transmissiond-rss' )
+
+include Transmissiond_rss
+
+# Shows a summary of the command line options.
+def usageMessage
+	$stderr << "#{File.basename( $0 )} [options]
+Adds torrents from rss feeds to transmissiond web frontend.
+
+  -c <file>   Custom config file path. Default: /etc/transmissiond-rss.conf
+  -f          Fork into background after startup.
+  -h          This help.
+  -v          Verbose mode.
+
+"
+	exit( 1 )
+end
+
+# Define command-line options.
+options = GetoptLong.new(
+	[ '-c', GetoptLong::REQUIRED_ARGUMENT ],
+	[ '-f', GetoptLong::NO_ARGUMENT ],
+	[ '-h', GetoptLong::NO_ARGUMENT ],
+	[ '-v', GetoptLong::NO_ARGUMENT ]
+)
+
+# Default config file path.
+configFile = '/etc/transmissiond-rss.conf'
+
+# Do not fork by default.
+dofork = false
+
+# Default not verbose.
+verbose = false
+
+# Parse given options.
+options.each do |option, argument|
+	case( option )
+		when '-c'
+			configFile = argument
+		when '-f'
+			dofork = true
+		when '-h'
+			usageMessage
+		when '-v'
+			verbose = true
+	end
+end
+
+# Seems to be necessary when called from gem installation.
+# Otherwise Config is somehow mixed up with RbConfig.
+config = Transmissiond_rss::Config.instance
+
+# Default configuration.
+config.load( {
+	'feeds' => [],
+	'rss_check_interval' => 600,
+	'paused' => false,
+	'server' => {
+		'host' => 'localhost',
+		'port' => 9091
+	},
+	'log_target' => $stderr
+} )
+
+# Initialize a log instance, configure it and run the consumer in a subthread.
+log = Log.instance
+log.verbose = verbose
+log.target = config.log_target
+tLog = Thread.start do log.run end
+
+# Load config file (default or given by argument).
+config.load( configFile )
+log.add( config )
+
+# Connect reload of config file to SIGHUP.
+trap( 'HUP' ) do
+	config.load( configFile )
+	log.add( 'got hup', config )
+end
+
+# Initialize feed aggregator.
+aggregator = Aggregator.new
+
+# Initialize communication to transmissiond.
+server = Server.new( config.server.host, config.server.port )
+
+# Add feeds from config file to Aggregator class.
+aggregator.feeds.concat( config.feeds )
+
+# Callback for a new item on one of the feeds.
+aggregator.on_new_item do |torrentFile|
+	Thread.start do
+		server.addTorrent( torrentFile, config.paused )
+	end
+end
+
+# Start the aggregation process.
+begin
+	if( dofork )
+		pid = fork do
+			aggregator.run( config.rss_check_interval )
+		end
+
+		puts( 'forked ' + pid.to_s )
+	else
+		aggregator.run( config.rss_check_interval )
+	end
+rescue Interrupt
+end

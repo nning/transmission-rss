@@ -1,0 +1,56 @@
+= transmissiond-rss
+
+transmissiond-rss is basically a workaround for transmissiond's lack of the
+ability to monitor RSS feeds and automatically add enclosed torrent links.
+
+As it's done with Poems, I devote this very artful and romantic piece of code to
+the single most delightful human being: Ann.
+
+== Installation
+
+=== Latest stable version from rubygems.org
+
+ gem install transmissiond-rss
+
+=== From source
+
+ gem build transmissiond-rss.gemspec
+ sudo gem install transmissiond-rss-*.gem
+
+== Configuration
+
+A yaml formatted config file is expected at +/etc/transmissiond-rss.conf+.
+
+=== Minimal example
+
+It should at least contain a list of feeds:
+
+ feeds:
+   - http://example.com/feed1
+   - http://example.com/feed2
+
+=== All available options
+
+The following configuration file example contains every existing option
+(although +rss_check_interval+, +paused+ and +server+ are default values
+and coult be omitted). The default +log_target+ is STDERR.
+
+ feeds:
+   - http://example.com/feed1
+   - http://example.com/feed2
+
+ rss_check_interval: 600
+
+ paused: false
+
+ server:
+   host: localhost
+   port: 9091
+
+ log_target: /var/log/transmissiond-rss.log
+
+== TODO
+
+* Timeout and error handling for aggregation and transmissiond communication
+* Drop privileges
+* Option to stop seeding after full download
