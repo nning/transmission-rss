@@ -88,7 +88,7 @@ end
 aggregator = Aggregator.new
 
 # Initialize communication to transmission.
-server = Server.new( config.server.host, config.server.port )
+client = Client.new( config.server.host, config.server.port )
 
 # Add feeds from config file to +Aggregator+ class.
 aggregator.feeds.concat( config.feeds )
@@ -96,7 +96,7 @@ aggregator.feeds.concat( config.feeds )
 # Callback for a new item on one of the feeds.
 aggregator.on_new_item do |torrentFile|
 	Thread.start do
-		server.addTorrent( torrentFile, config.paused )
+		client.addTorrent( torrentFile, config.paused )
 	end
 end
 
