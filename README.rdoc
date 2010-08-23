@@ -3,6 +3,10 @@
 transmission-rss is basically a workaround for transmission's lack of the
 ability to monitor RSS feeds and automatically add enclosed torrent links.
 
+It works with transmission-daemon and transmission-gtk (if the web frontend is
+enabled in the settings dialog). Sites like seriesly.com and ezrss.it are suited
+well as feed sources.
+
 As it's done with poems, I devote this very artful and romantic piece of code to
 the single most delightful human being: Ann.
 
