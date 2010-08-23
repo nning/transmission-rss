@@ -56,17 +56,17 @@ class TransmissionRSS::Aggregator
 				end
 
 				items.each do |item|
-					item.links.each do |link|
+					link = item.link
+
+					if( link.class != String )
 						link = link.href
+					end
 
-						if( not seen?( link ) )
-							on_new_item( link )
-							@log.add( 'on_new_item event ' + link )
+					if( not seen?( link ) )
+						on_new_item( link )
+						@log.add( 'on_new_item event ' + link )
 
-							add_seen( link )
-#						else
-#							@log.add( 'already seen ' + link )
-						end
+						add_seen( link )
 					end
 				end
 			end

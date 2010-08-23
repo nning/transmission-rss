@@ -38,7 +38,7 @@ class TransmissionRSS::Log
 				@target.puts( line )
 			end
 
-			sleep( 0.5 )
+			sleep( 0.1 )
 		end
 	end
 end

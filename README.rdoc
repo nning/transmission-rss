@@ -51,6 +51,7 @@ and coult be omitted). The default +log_target+ is STDERR.
 
 == TODO
 
-* Timeout and error handling for aggregation and transmission communication
+* Timeout and error handling in +Aggregator+ and +Client+
 * Drop privileges
 * Option to stop seeding after full download
+* Cache Session ID in +Aggregator+
