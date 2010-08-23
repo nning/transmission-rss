@@ -12,12 +12,12 @@ class TransmissionRSS::Client
 		@port = port
 
 		@log = Log.instance
+
+		@sessionid = getSessionID
 	end
 
 	# Get transmission session id by simple GET.
 	def getSessionID
-		@log.add( 'getSessionID called' )
-
 		get = Net::HTTP::Get.new(
 			'/transmission/rpc'
 		)
@@ -49,13 +49,11 @@ class TransmissionRSS::Client
 
 	# POST json packed torrent add command.
 	def addTorrent( torrentFile, paused = false )
-		@log.add( 'addTorrent called' )
-
 		post = Net::HTTP::Post.new(
 			'/transmission/rpc',
 			initheader = {
 				'Content-Type' => 'application/json',
-				'X-Transmission-Session-Id' => getSessionID
+				'X-Transmission-Session-Id' => @sessionid
 			}
 		)
 

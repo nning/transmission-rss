@@ -54,4 +54,3 @@ and coult be omitted). The default +log_target+ is STDERR.
 * Timeout and error handling in +Aggregator+ and +Client+
 * Drop privileges
 * Option to stop seeding after full download
-* Cache Session ID in +Aggregator+
