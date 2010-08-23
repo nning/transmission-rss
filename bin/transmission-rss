@@ -17,7 +17,7 @@ dofork = false
 verbose = false
 
 # Shows a summary of the command line options.
-def usageMessage
+def usageMessage( configFile )
 	$stderr << "#{File.basename( $0 )} [options]
 Adds torrents from rss feeds to transmission web frontend.
 
@@ -46,7 +46,7 @@ options.each do |option, argument|
 		when '-f'
 			dofork = true
 		when '-h'
-			usageMessage
+			usageMessage( configFile )
 		when '-v'
 			verbose = true
 	end
