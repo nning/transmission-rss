@@ -26,7 +26,7 @@ class TransmissionRSS::ConfigEditor
 	end
 
 	def initialize_listbox
-		@listbox = MyListBox.new
+		@listbox = ListBox.new
 		@listbox.header = 'Feeds'
 
 		@listbox.add( @config.feeds )
@@ -35,9 +35,9 @@ class TransmissionRSS::ConfigEditor
 
 		@window1.show_all
 
-#		@listbox.signal_connect( 'button_release_event' ) do |widget, event|
-#			@entry1.text = @listbox.button_release( widget, event )
-#		end
+		@listbox.signal_connect( 'button_release_event' ) do |widget, event|
+			@entry1.text = @listbox.button_release( widget, event )
+		end
 
 #		@listbox.signal_connect( 'key-release-event' ) do |widget, event|
 #			selection = @listbox.key_release( widget, event )
@@ -53,6 +53,7 @@ class TransmissionRSS::ConfigEditor
 	end
 
 	def on_button_remove_feed( widget )
+		@listbox.remove( @entry1.text )
 	end
 
 	def on_menu_quit( widget )
