@@ -4,6 +4,6 @@ module TransmissionRSS
 	VERSION = '0.0.9'
 end
 
-Dir.glob( $:.first + '/**/*.rb' ).each do |file|
+Dir.glob( $:.first + '/transmission-rss/*.rb' ).each do |file|
 	require( file )
 end
