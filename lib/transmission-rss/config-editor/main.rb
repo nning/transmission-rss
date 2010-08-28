@@ -23,21 +23,21 @@ class TransmissionRSS::ConfigEditor
 		@entry1.activates_default = true
 
 		initialize_listbox
-
-		@listbox.fill( config.feeds )
 	end
 
 	def initialize_listbox
-		@listbox = ListBox.new
+		@listbox = MyListBox.new
 		@listbox.header = 'Feeds'
+
+		@listbox.add( @config.feeds )
 
 		@vbox2.pack_start( @listbox )
 
 		@window1.show_all
 
-		@listbox.signal_connect( 'button_release_event' ) do |widget, event|
-			@entry1.text = @listbox.button_release( widget, event )
-		end
+#		@listbox.signal_connect( 'button_release_event' ) do |widget, event|
+#			@entry1.text = @listbox.button_release( widget, event )
+#		end
 
 #		@listbox.signal_connect( 'key-release-event' ) do |widget, event|
 #			selection = @listbox.key_release( widget, event )
@@ -46,8 +46,10 @@ class TransmissionRSS::ConfigEditor
 	end
 
 	def on_button_add_feed( widget )
-		@listbox.append( @entry1.text )
-		@entry1.text = ''
+		if( not @entry1.text.empty? )
+			@listbox.add( @entry1.text )
+			@entry1.text = ''
+		end
 	end
 
 	def on_button_remove_feed( widget )
