@@ -66,8 +66,8 @@ config = TransmissionRSS::Config.instance
 # Default configuration.
 config.load( {
 	'feeds' => [],
-	'rss_check_interval' => 600,
-	'paused' => false,
+	'update_interval' => 600,
+	'start_paused' => false,
 	'server' => {
 		'host' => 'localhost',
 		'port' => 9091

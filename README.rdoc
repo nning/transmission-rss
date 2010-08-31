@@ -43,9 +43,9 @@ and coult be omitted). The default +log_target+ is STDERR.
    - http://example.com/feed1
    - http://example.com/feed2
 
- rss_check_interval: 600
+ update_interval: 600
 
- paused: false
+ start_paused: false
 
  server:
    host: localhost
