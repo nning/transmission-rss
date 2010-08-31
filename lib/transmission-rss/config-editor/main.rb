@@ -22,8 +22,9 @@ class TransmissionRSS::ConfigEditor
 
 		@entry_feed_url.activates_default = true
 
-		initialize_config
 		initialize_listbox
+
+		initialize_config
 	end
 
 	def initialize_config
@@ -33,37 +34,32 @@ class TransmissionRSS::ConfigEditor
 		@entry_update_interval.text = @config.update_interval.to_s
 
 		@checkbutton_add_paused.active = @config.start_paused
+
+		@listbox.add( @config.feeds )
 	end
 
 	def initialize_listbox
 		@listbox = ListBox.new
 		@listbox.header = 'Feeds'
 
-		@listbox.add( @config.feeds )
-
 		@vbox2.pack_start( @listbox )
 
 		@window1.show_all
 
 		@listbox.signal_connect( 'button_release_event' ) do |widget, event|
-			@entry1.text = @listbox.button_release( widget, event )
+			@entry_feed_url.text = @listbox.button_release( widget, event )
 		end
-
-#		@listbox.signal_connect( 'key-release-event' ) do |widget, event|
-#			selection = @listbox.key_release( widget, event )
-#			puts "#{selection}" if selection.class == String
-#		end
 	end
 
 	def on_button_add_feed( widget )
-		if( not @entry1.text.empty? )
-			@listbox.add( @entry1.text )
-			@entry1.text = ''
+		if( not @entry_feed_url.text.empty? )
+			@listbox.add( @entry_feed_url.text )
+			@entry_feed_url.text = ''
 		end
 	end
 
 	def on_button_remove_feed( widget )
-		@listbox.remove( @entry1.text )
+		@listbox.remove( @entry_feed_url.text )
 	end
 
 	def on_button_save( widget )
@@ -74,7 +70,18 @@ class TransmissionRSS::ConfigEditor
 
 		@config.start_paused = @checkbutton_add_paused.active?
 
+		@config.feeds = @listbox.items
+
 		p @config
+	end
+
+	def on_combobox_logtype_changed( widget )
+		if( @combobox_logtype.active_iter[0] == 'File' )
+			@entry_log_filepath.editable = true
+		else
+			@entry_log_filepath.text = ''
+			@entry_log_filepath.editable = false
+		end
 	end
 
 	def on_menu_quit( widget )
