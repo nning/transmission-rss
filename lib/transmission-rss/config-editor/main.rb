@@ -2,7 +2,8 @@ class TransmissionRSS::ConfigEditor
 	TITLE = 'transmission-rss config editor'
 	NAME = 'config-editor'
 
-	def initialize( config )
+	def initialize( configFile, config )
+		@configFile = configFile
 		@config = config
 
 		path = File.join( File.dirname( __FILE__ ), 'main.glade' )
@@ -107,7 +108,9 @@ class TransmissionRSS::ConfigEditor
 			@config.log_target = @entry_log_filepath.text
 		end
 
-		puts( @config.to_yaml )
+		File.open( @configFile, 'w' ) do |f|
+			f.write( @config.to_yaml )
+		end
 	end
 
 	def on_menu_quit( widget )

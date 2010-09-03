@@ -91,7 +91,7 @@ if( editConfig )
 
 	Gtk.init
 
-	ConfigEditor.new( config )
+	ConfigEditor.new( configFile, config )
 	Gtk.main
 
 	exit( 0 )
