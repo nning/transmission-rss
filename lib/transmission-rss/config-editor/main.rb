@@ -42,6 +42,7 @@ class TransmissionRSS::ConfigEditor
 
 		@checkbutton_add_paused.active = @config.start_paused
 
+		@listbox.clear
 		@listbox.add( @config.feeds )
 
 		# If log target is STDERR.
@@ -106,6 +107,29 @@ class TransmissionRSS::ConfigEditor
 		end
 	end
 
+	# Is called when the File-Open menu is selected.
+	def on_menu_open( widget )
+		dialog = Gtk::FileChooserDialog.new(
+			'Open',
+			@window1,
+			Gtk::FileChooser::ACTION_OPEN,
+			nil,
+			[Gtk::Stock::CANCEL, Gtk::Dialog::RESPONSE_CANCEL],
+			[Gtk::Stock::OPEN, Gtk::Dialog::RESPONSE_ACCEPT]
+		)
+
+		if( dialog.run == Gtk::Dialog::RESPONSE_ACCEPT )
+			@configFile = dialog.filename
+
+			@config.clear
+			@config.load( @configFile )
+
+			initialize_config
+		end
+
+		dialog.destroy
+	end
+
 	# Is called when the File-Save menu is selected.
 	def on_menu_save( widget )
 		@config.server.host = @entry_server_host.text
@@ -132,7 +156,7 @@ class TransmissionRSS::ConfigEditor
 	# Is called when the File-SaveAs menu is selected.
 	def on_menu_save_as( widget )
 		dialog = Gtk::FileChooserDialog.new(
-			"Save As..",
+			'Save As..',
 			@window1,
 			Gtk::FileChooser::ACTION_SAVE,
 			nil,
@@ -142,11 +166,10 @@ class TransmissionRSS::ConfigEditor
 
 		if( dialog.run == Gtk::Dialog::RESPONSE_ACCEPT )
 			@configFile = dialog.filename
+			save!
 		end
 
 		dialog.destroy
-
-		save!
 	end
 
 	# Is called when the File-Quit menu is selected.
