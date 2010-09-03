@@ -3,6 +3,17 @@ class TransmissionRSS::ConfigEditor
 	TITLE = 'transmission-rss config editor'
 	NAME = 'config-editor'
 
+	DEFAULT_CONFIG = {
+		'feeds' => [],
+		'update_interval' => 600,
+		'start_paused' => false,
+		'server' => {
+			'host' => 'localhost',
+			'port' => 9091
+		},
+		'log_target' => $stderr
+	}
+
 	# Loads glade file and initializes dynamic GUI elements.
 	def initialize( configFile, config )
 		@configFile = configFile
@@ -107,6 +118,28 @@ class TransmissionRSS::ConfigEditor
 		end
 	end
 
+	# Is called when the File-New menu is selected.
+	def on_menu_new( widget )
+		dialog = Gtk::MessageDialog.new(
+			@window1, 
+			Gtk::Dialog::DESTROY_WITH_PARENT,
+			Gtk::MessageDialog::WARNING,
+			Gtk::MessageDialog::BUTTONS_YES_NO,
+			"Unsaved configuration will be lost!\nProceed?"
+		)
+
+		if( dialog.run == Gtk::Dialog::RESPONSE_YES )
+			@configFile = nil
+
+			@config.clear
+			@config.load( DEFAULT_CONFIG )
+
+			initialize_config
+		end
+
+		dialog.destroy
+	end
+
 	# Is called when the File-Open menu is selected.
 	def on_menu_open( widget )
 		dialog = Gtk::FileChooserDialog.new(
@@ -122,6 +155,7 @@ class TransmissionRSS::ConfigEditor
 			@configFile = dialog.filename
 
 			@config.clear
+			@config.load( DEFAULT_CONFIG )
 			@config.load( @configFile )
 
 			initialize_config
@@ -132,25 +166,11 @@ class TransmissionRSS::ConfigEditor
 
 	# Is called when the File-Save menu is selected.
 	def on_menu_save( widget )
-		@config.server.host = @entry_server_host.text
-		@config.server.port = @entry_server_port.text.to_i
-
-		@config.update_interval = @entry_update_interval.text.to_i
-
-		@config.start_paused = @checkbutton_add_paused.active?
-
-		@config.feeds = @listbox.items
-
-		# If STDERR is selected.
-		if( @combobox_logtype.active == 0 )
-			# Delete log_target from config hash, so $stderr is chosen on load.
-			@config.delete( 'log_target' )
+		if( not @configFile.nil? )
+			save!
 		else
-			# Set log_target to entry text.
-			@config.log_target = @entry_log_filepath.text
+			on_menu_save_as( nil )
 		end
-
-		save!
 	end
 
 	# Is called when the File-SaveAs menu is selected.
@@ -177,21 +197,43 @@ class TransmissionRSS::ConfigEditor
 		Gtk.main_quit
 	end
 
-	# Open the config file and write a YAML version of the Hash.
+	# Convert GUI config to +Config+, open the config file and write a YAML
+	# version of the Hash.
 	def save!
-		File.open( @configFile, 'w' ) do |f|
-			f.write( @config.to_yaml )
-		end
-	rescue Errno::EACCES
-		dialog = Gtk::MessageDialog.new(
-			@window1, 
-			Gtk::Dialog::DESTROY_WITH_PARENT,
-			Gtk::MessageDialog::ERROR,
-			Gtk::MessageDialog::BUTTONS_CLOSE,
-			"Permission denied:\n" + @configFile
-		)
+		@config.server.host = @entry_server_host.text
+		@config.server.port = @entry_server_port.text.to_i
 
-		dialog.run
-		dialog.destroy	
+		@config.update_interval = @entry_update_interval.text.to_i
+
+		@config.start_paused = @checkbutton_add_paused.active?
+
+		@config.feeds = @listbox.items
+
+		# If STDERR is selected.
+		if( @combobox_logtype.active == 0 )
+			# Delete log_target from config hash, so $stderr is chosen on load.
+			@config.delete( 'log_target' )
+		else
+			# Set log_target to entry text.
+			@config.log_target = @entry_log_filepath.text
+		end
+
+		# Try writing to file; dialog on permission error.
+		begin
+			File.open( @configFile, 'w' ) do |f|
+				f.write( @config.to_yaml )
+			end
+		rescue Errno::EACCES
+			dialog = Gtk::MessageDialog.new(
+				@window1, 
+				Gtk::Dialog::DESTROY_WITH_PARENT,
+				Gtk::MessageDialog::ERROR,
+				Gtk::MessageDialog::BUTTONS_CLOSE,
+				"Permission denied:\n" + @configFile
+			)
+
+			dialog.run
+			dialog.destroy
+		end
 	end
 end
