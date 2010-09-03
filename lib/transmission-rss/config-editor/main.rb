@@ -90,18 +90,6 @@ class TransmissionRSS::ConfigEditor
 		end
 	end
 
-	def on_menu_about( widget )
-		Gnome::About.new(
-			TITLE,
-			VERSION,
-			'Copyright 2010 (c) henning mueller',
-			'Config editor for transmission-rss.',
-			['henning mueller'],
-			['henning mueller'],
-			nil
-		).show
-	end
-
 	def on_menu_save( widget )
 		@config.server.host = @entry_server_host.text
 		@config.server.port = @entry_server_port.text.to_i

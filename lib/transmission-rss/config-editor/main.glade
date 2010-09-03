@@ -120,27 +120,6 @@
                 </child>
               </widget>
             </child>
-            <child>
-              <widget class="GtkMenuItem" id="menuitem4">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">_Hilfe</property>
-                <property name="use_underline">True</property>
-                <child>
-                  <widget class="GtkMenu" id="menu3">
-                    <property name="visible">True</property>
-                    <child>
-                      <widget class="GtkImageMenuItem" id="imagemenuitem10">
-                        <property name="label">gtk-about</property>
-                        <property name="visible">True</property>
-                        <property name="use_underline">True</property>
-                        <property name="use_stock">True</property>
-                        <signal name="activate" handler="on_menu_about"/>
-                      </widget>
-                    </child>
-                  </widget>
-                </child>
-              </widget>
-            </child>
           </widget>
           <packing>
             <property name="expand">False</property>
