@@ -129,7 +129,25 @@ class TransmissionRSS::ConfigEditor
 		save!
 	end
 
-	# Is Called when the File-Quit menu is selected.
+	# Is called when the File-SaveAs menu is selected.
+	def on_menu_save_as( widget )
+		dialog = Gtk::FileChooserDialog.new(
+			"Save As..",
+			@window1,
+			Gtk::FileChooser::ACTION_OPEN,
+			nil,
+			[Gtk::Stock::CANCEL, Gtk::Dialog::RESPONSE_CANCEL],
+			[Gtk::Stock::OPEN, Gtk::Dialog::RESPONSE_ACCEPT]
+		)
+
+		if( dialog.run == Gtk::Dialog::RESPONSE_ACCEPT )
+			p dialog.filename
+		end
+
+		dialog.destroy
+	end
+
+	# Is called when the File-Quit menu is selected.
 	def on_menu_quit( widget )
 		Gtk.main_quit
 	end
