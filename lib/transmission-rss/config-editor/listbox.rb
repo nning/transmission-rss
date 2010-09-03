@@ -83,9 +83,11 @@ class TransmissionRSS::ListBox < Gtk::ScrolledWindow
 
 		iter = @list_store.iter_first
 
-		begin
-			array << iter.get_value( 0 )
-		end while( iter.next! )
+		if( not iter.nil? )
+			begin
+				array << iter.get_value( 0 )
+			end while( iter.next! )
+		end
 
 		array
 	end

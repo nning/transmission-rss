@@ -115,7 +115,7 @@ aggregator.feeds.concat( config.feeds )
 # Callback for a new item on one of the feeds.
 aggregator.on_new_item do |torrentFile|
 	Thread.start do
-		client.addTorrent( torrentFile, config.paused )
+		client.addTorrent( torrentFile, config.start_paused )
 	end
 end
 
@@ -123,12 +123,12 @@ end
 begin
 	if( dofork )
 		pid = fork do
-			aggregator.run( config.rss_check_interval )
+			aggregator.run( config.update_interval )
 		end
 
 		puts( 'forked ' + pid.to_s )
 	else
-		aggregator.run( config.rss_check_interval )
+		aggregator.run( config.update_interval )
 	end
 rescue Interrupt
 end
