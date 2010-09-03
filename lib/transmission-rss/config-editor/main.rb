@@ -134,17 +134,19 @@ class TransmissionRSS::ConfigEditor
 		dialog = Gtk::FileChooserDialog.new(
 			"Save As..",
 			@window1,
-			Gtk::FileChooser::ACTION_OPEN,
+			Gtk::FileChooser::ACTION_SAVE,
 			nil,
 			[Gtk::Stock::CANCEL, Gtk::Dialog::RESPONSE_CANCEL],
-			[Gtk::Stock::OPEN, Gtk::Dialog::RESPONSE_ACCEPT]
+			[Gtk::Stock::SAVE, Gtk::Dialog::RESPONSE_ACCEPT]
 		)
 
 		if( dialog.run == Gtk::Dialog::RESPONSE_ACCEPT )
-			p dialog.filename
+			@configFile = dialog.filename
 		end
 
 		dialog.destroy
+
+		save!
 	end
 
 	# Is called when the File-Quit menu is selected.
