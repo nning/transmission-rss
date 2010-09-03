@@ -1,33 +1,39 @@
+# Represents the config editor window.
 class TransmissionRSS::ConfigEditor
 	TITLE = 'transmission-rss config editor'
 	NAME = 'config-editor'
 
+	# Loads glade file and initializes dynamic GUI elements.
 	def initialize( configFile, config )
 		@configFile = configFile
 		@config = config
 
 		path = File.join( File.dirname( __FILE__ ), 'main.glade' )
 
+		# Load glade file and connect to handler method. Dubious.
 		@glade = GladeXML.new( path ) do |handler|
 			method( handler )
 		end
 
+		# Connect every widget to an instance variable.
 		@glade.widget_names.each do |name|
 			name.gsub!( /-/, '_' )
 			instance_variable_set( "@#{name}".intern, @glade[name] )
 		end
 
+		# Quit program, when it is closed by the WM.
 		@window1.signal_connect( 'destroy' ) do
 			Gtk.main_quit
 		end
 
-		@entry_feed_url.activates_default = true
-
+		# Initialize the ListBox widget.
 		initialize_listbox
 
+		# Reflect the current config on the GUI.
 		initialize_config
 	end
 
+	# Reflects the current config on the GUI.
 	def initialize_config
 		@entry_server_host.text = @config.server.host
 		@entry_server_port.text = @config.server.port.to_s
@@ -36,24 +42,28 @@ class TransmissionRSS::ConfigEditor
 
 		@checkbutton_add_paused.active = @config.start_paused
 
+		@listbox.add( @config.feeds )
+
 		# If log target is STDERR.
 		if( @config.log_target.class == IO )
+			# Deactivate log path entry.
 			@label10.sensitive = false
 			@entry_log_filepath.sensitive = false
 
 			@combobox_logtype.active = 0
 		else
+			# Activate log path entry.
 			@label10.sensitive = true
 			@entry_log_filepath.sensitive = true
 
-			@combobox_logtype.active = 1
-
+			# Set entry text accordingly.
 			@entry_log_filepath.text = @config.log_target
-		end
 
-		@listbox.add( @config.feeds )
+			@combobox_logtype.active = 1
+		end
 	end
 
+	# Initializes the ListBox widget.
 	def initialize_listbox
 		@listbox = ListBox.new
 		@listbox.header = 'Feeds'
@@ -67,6 +77,7 @@ class TransmissionRSS::ConfigEditor
 		end
 	end
 
+	# Add a feed to the ListBox if the Add-feed-button is pressed.
 	def on_button_add_feed( widget )
 		if( not @entry_feed_url.text.empty? )
 			@listbox.add( @entry_feed_url.text )
@@ -74,23 +85,28 @@ class TransmissionRSS::ConfigEditor
 		end
 	end
 
+	# Remove a feed from the ListBox if the Remove-feed-button is pressed.
 	def on_button_remove_feed( widget )
 		@listbox.remove( @entry_feed_url.text )
 	end
 
+	# Is called when a value in the log type ComboBox is selected.
 	def on_combobox_logtype_changed( widget )
 		# If STDERR is selected.
 		if( @combobox_logtype.active == 0 )
+			# Deactivate the log file path entry.
 			@label10.sensitive = false
 			@entry_log_filepath.sensitive = false
 
 			@entry_log_filepath.text = ''
 		else
+			# Activate the log file path entry.
 			@label10.sensitive = true
 			@entry_log_filepath.sensitive = true
 		end
 	end
 
+	# Is called when the File-Save menu is selected.
 	def on_menu_save( widget )
 		@config.server.host = @entry_server_host.text
 		@config.server.port = @entry_server_port.text.to_i
@@ -103,16 +119,20 @@ class TransmissionRSS::ConfigEditor
 
 		# If STDERR is selected.
 		if( @combobox_logtype.active == 0 )
+			# Delete log_target from config hash, so $stderr is chosen on load.
 			@config.delete( 'log_target' )
 		else
+			# Set log_target to entry text.
 			@config.log_target = @entry_log_filepath.text
 		end
 
+		# Open the config file and write a YAML version of the Hash.
 		File.open( @configFile, 'w' ) do |f|
 			f.write( @config.to_yaml )
 		end
 	end
 
+	# Is Called when the File-Quit menu is selected.
 	def on_menu_quit( widget )
 		Gtk.main_quit
 	end
