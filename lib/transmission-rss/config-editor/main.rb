@@ -126,14 +126,29 @@ class TransmissionRSS::ConfigEditor
 			@config.log_target = @entry_log_filepath.text
 		end
 
-		# Open the config file and write a YAML version of the Hash.
-		File.open( @configFile, 'w' ) do |f|
-			f.write( @config.to_yaml )
-		end
+		save!
 	end
 
 	# Is Called when the File-Quit menu is selected.
 	def on_menu_quit( widget )
 		Gtk.main_quit
+	end
+
+	# Open the config file and write a YAML version of the Hash.
+	def save!
+		File.open( @configFile, 'w' ) do |f|
+			f.write( @config.to_yaml )
+		end
+	rescue Errno::EACCES
+		dialog = Gtk::MessageDialog.new(
+			@window1, 
+			Gtk::Dialog::DESTROY_WITH_PARENT,
+			Gtk::MessageDialog::ERROR,
+			Gtk::MessageDialog::BUTTONS_CLOSE,
+			"Permission denied:\n" + @configFile
+		)
+
+		dialog.run
+		dialog.destroy	
 	end
 end
