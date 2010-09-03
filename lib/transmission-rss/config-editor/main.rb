@@ -234,6 +234,8 @@ class TransmissionRSS::ConfigEditor
 
 			dialog.run
 			dialog.destroy
+
+			on_menu_save_as( nil )
 		end
 	end
 end
