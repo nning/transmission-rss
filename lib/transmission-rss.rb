@@ -1,7 +1,7 @@
 $:.unshift( File.dirname( __FILE__ ) )
 
 module TransmissionRSS
-	VERSION = '0.0.9'
+	VERSION = '0.1.0'
 end
 
 dir = 'transmission-rss'
