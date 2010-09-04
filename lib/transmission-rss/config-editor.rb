@@ -2,6 +2,16 @@ $:.unshift( File.dirname( __FILE__ ) )
 
 require( 'libglade2' )
 
-%w( main listbox ).each do |file|
-	require( $:.first + '/config-editor/' + file + '.rb' )
+dir = 'config-editor'
+
+blacklist = %w(
+	listbox-original
+)
+
+blacklist.map! do |name|
+	$:.first + '/' + dir + '/' + name + '.rb'
+end
+
+( Dir.glob( $:.first + '/' + dir + '/*.rb' ) - blacklist ).each do |lib|
+	require( lib )
 end
