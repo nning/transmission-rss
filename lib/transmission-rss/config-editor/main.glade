@@ -175,7 +175,8 @@
             <child>
               <widget class="GtkLabel" id="label1">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Server</property>
+                <property name="label" translatable="yes">_Server</property>
+                <property name="use_underline">True</property>
               </widget>
               <packing>
                 <property name="tab_fill">False</property>
@@ -261,7 +262,8 @@
             <child>
               <widget class="GtkLabel" id="label2">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Feeds</property>
+                <property name="label" translatable="yes">_Feeds</property>
+                <property name="use_underline">True</property>
               </widget>
               <packing>
                 <property name="position">1</property>
@@ -384,7 +386,8 @@ File</property>
             <child>
               <widget class="GtkLabel" id="label3">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Options</property>
+                <property name="label" translatable="yes">_Options</property>
+                <property name="use_underline">True</property>
               </widget>
               <packing>
                 <property name="position">2</property>
