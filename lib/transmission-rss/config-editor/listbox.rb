@@ -34,8 +34,7 @@ class TransmissionRSS::ListBox < Gtk::ScrolledWindow
 	end
 
 	def add( *args )
-		args.each do |arg|
-			arg = arg.first if( arg.class == Array ) # TODO ?!
+		args.flatten.each do |arg|
 			iter = @list_store.append
 			iter.set_value( 0, arg.to_s )
 		end

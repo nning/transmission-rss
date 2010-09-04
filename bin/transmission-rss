@@ -82,7 +82,11 @@ log.target = config.log_target
 tLog = Thread.start do log.run end
 
 # Load config file (default or given by argument).
-config.load( configFile )
+begin
+	config.load( configFile )
+rescue Errno::ENOENT
+	log.add( configFile + ' not found' )
+end
 log.add( config )
 
 # Start GUI if config edit option is given.
