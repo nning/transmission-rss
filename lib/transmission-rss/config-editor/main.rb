@@ -118,6 +118,19 @@ class TransmissionRSS::ConfigEditor
 		end
 	end
 
+	# Is called when the Help-About menu is selected.
+	def on_menu_about( widget )
+		Gnome::About.new(
+			TITLE,
+			VERSION,
+			'Copyright (C) 2010 henning mueller',
+			'Easy transmission-rss config editing. Devoted to Ann.',
+			['henning mueller'],
+			['henning mueller'],
+			nil
+		).show
+	end
+
 	# Is called when the File-New menu is selected.
 	def on_menu_new( widget )
 		dialog = Gtk::MessageDialog.new(
