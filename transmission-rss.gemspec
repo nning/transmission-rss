@@ -1,3 +1,5 @@
+$:.unshift( File.dirname( __FILE__ ) )
+
 require 'lib/transmission-rss'
 
 Gem::Specification.new do |s|
