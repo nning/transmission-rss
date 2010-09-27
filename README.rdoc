@@ -36,8 +36,9 @@ It should at least contain a list of feeds:
 === All available options
 
 The following configuration file example contains every existing option
-(although +rss_check_interval+, +paused+ and +server+ are default values
-and coult be omitted). The default +log_target+ is STDERR.
+(although +rss_check_interval+, +paused+ and +server+ are default values and
+could be omitted). The default +log_target+ is STDERR. +privileges+ is not
+defined by default, so the script runs as current user/group.
 
  feeds:
    - http://example.com/feed1
@@ -45,7 +46,7 @@ and coult be omitted). The default +log_target+ is STDERR.
 
  update_interval: 600
 
- start_paused: false
+ add_paused: false
 
  server:
    host: localhost
@@ -53,8 +54,11 @@ and coult be omitted). The default +log_target+ is STDERR.
 
  log_target: /var/log/transmissiond-rss.log
 
+ privileges:
+   user: nobody
+   group: nobody
+
 == TODO
 
 * Timeout and error handling in +Aggregator+ and +Client+
-* Drop privileges
 * Option to stop seeding after full download

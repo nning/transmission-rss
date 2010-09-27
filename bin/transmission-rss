@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require( 'getoptlong' )
+require( 'etc' )
 
 $:.unshift( File.join( File.dirname( __FILE__ ), '../lib' ) )
 require( 'transmission-rss' )
@@ -67,12 +68,13 @@ config = TransmissionRSS::Config.instance
 config.load( {
 	'feeds' => [],
 	'update_interval' => 600,
-	'start_paused' => false,
+	'add_paused' => false,
 	'server' => {
 		'host' => 'localhost',
 		'port' => 9091
 	},
-	'log_target' => $stderr
+	'log_target' => $stderr,
+	'privileges' => {}
 } )
 
 # Initialize a log instance, configure it and run the consumer in a subthread.
@@ -88,6 +90,17 @@ rescue Errno::ENOENT
 	log.add( configFile + ' not found' )
 end
 log.add( config )
+
+# Drop privileges, if section is given in config file.
+if( not config.privileges.empty? )
+	Process::Sys.setgid(
+		Etc.getgrnam( config.privileges.group ).gid
+	)
+
+	Process::Sys.setuid(
+		Etc.getpwnam( config.privileges.user ).uid
+	)
+end
 
 # Start GUI if config edit option is given.
 if( editConfig )
@@ -119,7 +132,7 @@ aggregator.feeds.concat( config.feeds )
 # Callback for a new item on one of the feeds.
 aggregator.on_new_item do |torrentFile|
 	Thread.start do
-		client.addTorrent( torrentFile, config.start_paused )
+		client.addTorrent( torrentFile, config.add_paused )
 	end
 end
 

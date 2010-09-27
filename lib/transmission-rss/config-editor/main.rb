@@ -6,12 +6,13 @@ class TransmissionRSS::ConfigEditor
 	DEFAULT_CONFIG = {
 		'feeds' => [],
 		'update_interval' => 600,
-		'start_paused' => false,
+		'add_paused' => false,
 		'server' => {
 			'host' => 'localhost',
 			'port' => 9091
 		},
-		'log_target' => $stderr
+		'log_target' => $stderr,
+		'privileges' => {}
 	}
 
 	# Loads glade file and initializes dynamic GUI elements.
@@ -51,7 +52,7 @@ class TransmissionRSS::ConfigEditor
 
 		@entry_update_interval.text = @config.update_interval.to_s
 
-		@checkbutton_add_paused.active = @config.start_paused
+		@checkbutton_add_paused.active = @config.add_paused
 
 		@listbox.clear
 		@listbox.add( @config.feeds )
@@ -218,7 +219,7 @@ class TransmissionRSS::ConfigEditor
 
 		@config.update_interval = @entry_update_interval.text.to_i
 
-		@config.start_paused = @checkbutton_add_paused.active?
+		@config.add_paused = @checkbutton_add_paused.active?
 
 		@config.feeds = @listbox.items
 
