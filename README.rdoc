@@ -63,3 +63,4 @@ defined by default, so the script runs as current user/group.
 * Timeout and error handling in +Aggregator+ and +Client+
 * Option to stop seeding after full download
 * Privileges configurable by GUI
+* Log level

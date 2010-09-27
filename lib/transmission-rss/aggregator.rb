@@ -45,7 +45,7 @@ class TransmissionRSS::Aggregator
 
 		while( true )
 			feeds.each do |url|
-				@log.add( 'aggregate ' + url )
+#				@log.add( 'aggregate ' + url )
 
 				begin
 					content = open( url ).readlines.join( "\n" )
