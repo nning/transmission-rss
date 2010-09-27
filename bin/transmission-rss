@@ -100,6 +100,15 @@ if( not config.privileges.empty? )
 	Process::Sys.setuid(
 		Etc.getpwnam( config.privileges.user ).uid
 	)
+
+	log.add(
+		'dropped privileges ' +
+		config.privileges.user +
+		':' +
+		config.privileges.group
+	)
+else
+	log.add( 'no privilege dropping' )
 end
 
 # Start GUI if config edit option is given.
