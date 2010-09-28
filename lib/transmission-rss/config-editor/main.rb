@@ -74,6 +74,33 @@ class TransmissionRSS::ConfigEditor
 
 			@combobox_logtype.active = 1
 		end
+
+		# If privilege section is given in config.
+		if( @config.privileges.empty? )
+			# Deactivate user entry.
+			@label15.sensitive = false
+			@entry_drop_privileges_user.sensitive = false
+
+			# Deactivate group entry.
+			@label16.sensitive = false
+			@entry_drop_privileges_group.sensitive = false
+
+			@checkbutton_drop_privileges.active = false
+		else
+			# Activate user entry.
+			@label15.sensitive = true
+			@entry_drop_privileges_user.sensitive = true
+
+			# Activate group entry.
+			@label16.sensitive = true
+			@entry_drop_privileges_group.sensitive = true
+
+			# Set entry texts accordingly.
+			@entry_drop_privileges_user.text = @config.privileges.user
+			@entry_drop_privileges_group.text = @config.privileges.group
+
+			@checkbutton_drop_privileges.active = true
+		end
 	end
 
 	# Initializes the ListBox widget.
@@ -103,6 +130,32 @@ class TransmissionRSS::ConfigEditor
 		@listbox.remove( @entry_feed_url.text )
 	end
 
+	# Activate or deactivate entry widgets if drop privileges checkbutton is
+	# toggled.
+	def on_checkbutton_drop_privileges_toggled( widget )
+		if( @checkbutton_drop_privileges.active? )
+			# Activate user entry.
+			@label15.sensitive = true
+			@entry_drop_privileges_user.sensitive = true
+
+			# Activate group entry.
+			@label16.sensitive = true
+			@entry_drop_privileges_group.sensitive = true
+		else
+			# Deactivate user entry.
+			@label15.sensitive = false
+			@entry_drop_privileges_user.sensitive = false
+
+			# Deactivate group entry.
+			@label16.sensitive = false
+			@entry_drop_privileges_group.sensitive = false
+
+			# Delete entry texts.
+			@entry_drop_privileges_user.text = ''
+			@entry_drop_privileges_group.text = ''
+		end
+	end
+
 	# Is called when a value in the log type ComboBox is selected.
 	def on_combobox_logtype_changed( widget )
 		# If STDERR is selected.
@@ -111,6 +164,7 @@ class TransmissionRSS::ConfigEditor
 			@label10.sensitive = false
 			@entry_log_filepath.sensitive = false
 
+			# Delete entry text.
 			@entry_log_filepath.text = ''
 		else
 			# Activate the log file path entry.
@@ -230,6 +284,16 @@ class TransmissionRSS::ConfigEditor
 		else
 			# Set log_target to entry text.
 			@config.log_target = @entry_log_filepath.text
+		end
+
+		# If checkbutton drop privileges is activated.
+		if( @checkbutton_drop_privileges.active? )
+			# Set user and group to entry texts.
+			@config.privileges.user = @entry_drop_privileges_user.text
+			@config.privileges.group = @entry_drop_privileges_group.text
+		else
+			# Delete privilege section from config hash.
+			@config.delete( 'privileges' )
 		end
 
 		# Try writing to file; dialog on permission error.
