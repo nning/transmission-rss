@@ -57,11 +57,18 @@ class TransmissionRSS::Aggregator
 
 				items.each do |item|
 					link = item.link
+ 
+ 					# Item contains no link.
+					if( link.nil? )
+						next
+					end
 
+					# Link is not a String directly.
 					if( link.class != String )
 						link = link.href
 					end
 
+					# The link is not in +@seen+ Array.
 					if( not seen?( link ) )
 						on_new_item( link )
 						@log.add( 'on_new_item event ' + link )
