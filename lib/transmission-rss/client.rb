@@ -12,8 +12,6 @@ class TransmissionRSS::Client
 		@port = port
 
 		@log = Log.instance
-
-		@sessionid = getSessionID
 	end
 
 	# Get transmission session id by simple GET.
@@ -53,7 +51,7 @@ class TransmissionRSS::Client
 			'/transmission/rpc',
 			initheader = {
 				'Content-Type' => 'application/json',
-				'X-Transmission-Session-Id' => @sessionid
+				'X-Transmission-Session-Id' => getSessionID
 			}
 		)
 
