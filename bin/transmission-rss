@@ -17,9 +17,6 @@ editConfig = false
 # Do not fork by default.
 dofork = false
 
-# Default not verbose.
-verbose = false
-
 # Shows a summary of the command line options.
 def usageMessage( configFile )
 	$stderr << "#{File.basename( $0 )} [options]
@@ -29,7 +26,6 @@ Adds torrents from rss feeds to transmission web frontend.
   -e          Edit config file with Gtk GUI.
   -f          Fork into background after startup.
   -h          This help.
-  -v          Verbose mode.
 
 "
 	exit( 1 )
@@ -40,8 +36,7 @@ options = GetoptLong.new(
 	[ '-c', GetoptLong::REQUIRED_ARGUMENT ],
 	[ '-e', GetoptLong::NO_ARGUMENT ],
 	[ '-f', GetoptLong::NO_ARGUMENT ],
-	[ '-h', GetoptLong::NO_ARGUMENT ],
-	[ '-v', GetoptLong::NO_ARGUMENT ]
+	[ '-h', GetoptLong::NO_ARGUMENT ]
 )
 
 # Parse given options.
@@ -55,8 +50,6 @@ options.each do |option, argument|
 			dofork = true
 		when '-h'
 			usageMessage( configFile )
-		when '-v'
-			verbose = true
 	end
 end
 
@@ -77,19 +70,22 @@ config.load( {
 	'privileges' => {}
 } )
 
-# Initialize a log instance, configure it and run the consumer in a subthread.
+# Initialize a log instance and configure it.
 log = Log.instance
-log.verbose = verbose
 log.target = config.log_target
-tLog = Thread.start do log.run end
+log.level = Logger::DEBUG
+log.formatter = proc { |severity, datetime, progname, msg|
+  "#{datetime.to_i}(#{severity.downcase}) #{msg}\n"
+}
 
 # Load config file (default or given by argument).
 begin
 	config.load( configFile )
+  log.target = config.log_target
 rescue Errno::ENOENT
-	log.add( configFile + ' not found' )
+	log.error( configFile + ' not found' )
 end
-log.add( config )
+log.debug( config )
 
 # Drop privileges, if section is given in config file.
 if( not config.privileges.empty? )
@@ -101,14 +97,19 @@ if( not config.privileges.empty? )
 		Etc.getpwnam( config.privileges.user ).uid
 	)
 
-	log.add(
+	log.debug(
 		'dropped privileges ' +
 		config.privileges.user +
 		':' +
 		config.privileges.group
 	)
 else
-	log.add( 'no privilege dropping' )
+	log.debug( 'no privilege dropping' )
+end
+
+# Warn if no feeds are given.
+if( config.feeds.empty? )
+  log.warn( 'no feeds given' )
 end
 
 # Start GUI if config edit option is given.
@@ -126,7 +127,7 @@ end
 # Connect reload of config file to SIGHUP.
 trap( 'HUP' ) do
 	config.load( configFile )
-	log.add( 'got hup', config )
+	log.info( 'got hup', config )
 end
 
 # Initialize feed aggregator.
@@ -158,3 +159,5 @@ begin
 	end
 rescue Interrupt
 end
+
+log.close

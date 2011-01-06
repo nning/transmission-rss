@@ -40,7 +40,7 @@ class TransmissionRSS::Client
 
 		id = response.header['x-transmission-session-id']
 
-		@log.add( 'got session id ' + id )
+		@log.debug( 'got session id ' + id )
 
 		id
 	end
@@ -83,6 +83,6 @@ class TransmissionRSS::Client
 
 		result = JSON.parse( response.body ).result
 
-		@log.add( 'addTorrent result: ' + result )
+		@log.debug( 'addTorrent result: ' + result )
 	end
 end

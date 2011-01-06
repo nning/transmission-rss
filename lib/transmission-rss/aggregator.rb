@@ -34,24 +34,25 @@ class TransmissionRSS::Aggregator
 		# Open file, read torrent URLs and add to +@seen+.
 		open( @seenfile ).readlines.each do |line|
 			@seen.push( line.chomp )
-			@log.add( 'from seenfile ' + line.chomp )
 		end
+
+    @log.debug(@seen.size.to_s + ' uris from seenfile')
 	end
 
 	# Get file enclosures from all feeds items and call on_new_item callback
 	# with torrent file URL as argument.
 	def run( interval = 600 )
-		@log.add( 'aggregator start' )
+		@log.debug( 'aggregator start' )
 
 		while( true )
 			feeds.each do |url|
-#				@log.add( 'aggregate ' + url )
+ 				@log.debug( 'aggregate ' + url )
 
 				begin
 					content = open( url ).readlines.join( "\n" )
 					items = RSS::Parser.parse( content, false ).items
 				rescue
-					@log.add( 'retrieval error' )
+					@log.debug( 'retrieval error' )
 					next
 				end
 
@@ -71,7 +72,7 @@ class TransmissionRSS::Aggregator
 					# The link is not in +@seen+ Array.
 					if( not seen?( link ) )
 						on_new_item( link )
-						@log.add( 'on_new_item event ' + link )
+						@log.debug( 'on_new_item event ' + link )
 
 						add_seen( link )
 					end
