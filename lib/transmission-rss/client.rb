@@ -3,7 +3,7 @@ require 'json'
 require 'timeout'
 
 # TODO
-#  * Why the hell do timeouts in getSessionID and addTorrent not work?!
+#  * Why the hell do timeouts in get_session_id and add_torrent not work?!
 
 # Class for communication with transmission utilizing the RPC web interface.
 class TransmissionRSS::Client
@@ -15,7 +15,7 @@ class TransmissionRSS::Client
   end
 
   # Get transmission session id by simple GET.
-  def getSessionID
+  def get_session_id
     get = Net::HTTP::Get.new(
       '/transmission/rpc'
     )
@@ -46,12 +46,12 @@ class TransmissionRSS::Client
   end
 
   # POST json packed torrent add command.
-  def addTorrent(torrentFile, paused = false)
+  def add_torrent(torrent_file, paused = false)
     post = Net::HTTP::Post.new(
       '/transmission/rpc',
       initheader = {
         'Content-Type' => 'application/json',
-        'X-Transmission-Session-Id' => getSessionID
+        'X-Transmission-Session-Id' => get_session_id
       }
     )
 
@@ -59,7 +59,7 @@ class TransmissionRSS::Client
       "method" => "torrent-add",
       "arguments" => {
         "paused" => paused,
-        "filename" => torrentFile
+        "filename" => torrent_file
       }
     }.to_json
 
@@ -83,6 +83,6 @@ class TransmissionRSS::Client
 
     result = JSON.parse(response.body).result
 
-    @log.debug('addTorrent result: ' + result)
+    @log.debug('add_torrent result: ' + result)
   end
 end

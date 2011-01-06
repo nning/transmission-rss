@@ -16,8 +16,8 @@ class TransmissionRSS::ConfigEditor
   }
 
   # Loads glade file and initializes dynamic GUI elements.
-  def initialize(configFile, config)
-    @configFile = configFile
+  def initialize(config_file, config)
+    @configFile = config_file
     @config = config
 
     path = File.join(File.dirname(__FILE__), 'main.glade')

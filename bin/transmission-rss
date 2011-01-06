@@ -140,9 +140,9 @@ client = Client.new(config.server.host, config.server.port)
 aggregator.feeds.concat(config.feeds)
 
 # Callback for a new item on one of the feeds.
-aggregator.on_new_item do |torrentFile|
+aggregator.on_new_item do |torrent_file|
   Thread.start do
-    client.addTorrent(torrentFile, config.add_paused)
+    client.add_torrent(torrent_file, config.add_paused)
   end
 end
 
