@@ -1,56 +1,56 @@
 #!/usr/bin/env ruby
 
-require( 'getoptlong' )
-require( 'etc' )
+require 'getoptlong'
+require 'etc'
 
-$:.unshift( File.join( File.dirname( __FILE__ ), '../lib' ) )
-require( 'transmission-rss' )
+$:.unshift(File.dirname(__FILE__) + '/../lib')
+require 'transmission-rss'
 
 include TransmissionRSS
 
 # Default config file path.
-configFile = '/etc/transmission-rss.conf'
+config_file = '/etc/transmission-rss.conf'
 
 # Do not edit config file in Gtk GUI by default.
-editConfig = false
+edit_config = false
 
 # Do not fork by default.
 dofork = false
 
 # Shows a summary of the command line options.
-def usageMessage( configFile )
-	$stderr << "#{File.basename( $0 )} [options]
+def usage_message( config_file )
+  $stderr << "#{File.basename($0)} [options]
 Adds torrents from rss feeds to transmission web frontend.
 
-  -c <file>   Custom config file path. Default: #{configFile}
+  -c <file>   Custom config file path. Default: #{config_file}
   -e          Edit config file with Gtk GUI.
   -f          Fork into background after startup.
   -h          This help.
 
 "
-	exit( 1 )
+  exit(1)
 end
 
 # Define command-line options.
 options = GetoptLong.new(
-	[ '-c', GetoptLong::REQUIRED_ARGUMENT ],
-	[ '-e', GetoptLong::NO_ARGUMENT ],
-	[ '-f', GetoptLong::NO_ARGUMENT ],
-	[ '-h', GetoptLong::NO_ARGUMENT ]
+  [ '-c', GetoptLong::REQUIRED_ARGUMENT ],
+  [ '-e', GetoptLong::NO_ARGUMENT ],
+  [ '-f', GetoptLong::NO_ARGUMENT ],
+  [ '-h', GetoptLong::NO_ARGUMENT ]
 )
 
 # Parse given options.
 options.each do |option, argument|
-	case( option )
-		when '-c'
-			configFile = argument
-		when '-e'
-			editConfig = true
-		when '-f'
-			dofork = true
-		when '-h'
-			usageMessage( configFile )
-	end
+  case(option)
+    when '-c'
+      config_file = argument
+    when '-e'
+      edit_config = true
+    when '-f'
+      dofork = true
+    when '-h'
+      usage_message(config_file)
+  end
 end
 
 # Seems to be necessary when called from gem installation.
@@ -58,106 +58,107 @@ end
 config = TransmissionRSS::Config.instance
 
 # Default configuration.
-config.load( {
-	'feeds' => [],
-	'update_interval' => 600,
-	'add_paused' => false,
-	'server' => {
-		'host' => 'localhost',
-		'port' => 9091
-	},
-	'log_target' => $stderr,
-	'privileges' => {}
-} )
+config.load({
+  'feeds' => [],
+  'update_interval' => 600,
+  'add_paused' => false,
+  'server' => {
+    'host' => 'localhost',
+    'port' => 9091
+  },
+  'log_target' => $stderr,
+  'privileges' => {}
+})
 
 # Initialize a log instance and configure it.
 log = Log.instance
 log.target = config.log_target
 log.level = Logger::DEBUG
-log.formatter = proc { |severity, datetime, progname, msg|
-  "#{datetime.to_i}(#{severity.downcase}) #{msg}\n"
-}
+log.formatter = proc do |sev, time, prog, msg|
+  "#{time.to_i}(#{sev.downcase}) #{msg}\n"
+end
 
 # Load config file (default or given by argument).
 begin
-	config.load( configFile )
+  config.load(config_file)
   log.target = config.log_target
 rescue Errno::ENOENT
-	log.error( configFile + ' not found' )
+  log.error(config_file + ' not found')
 end
-log.debug( config )
+log.debug(config)
 
 # Drop privileges, if section is given in config file.
-if( not config.privileges.empty? )
-	Process::Sys.setgid(
-		Etc.getgrnam( config.privileges.group ).gid
-	)
+if(not config.privileges.empty?)
+  Process::Sys.setgid(
+    Etc.getgrnam(config.privileges.group).gid
+  )
 
-	Process::Sys.setuid(
-		Etc.getpwnam( config.privileges.user ).uid
-	)
+  Process::Sys.setuid(
+    Etc.getpwnam(config.privileges.user).uid
+  )
 
-	log.debug(
-		'dropped privileges ' +
-		config.privileges.user +
-		':' +
-		config.privileges.group
-	)
+  log.debug(
+    'dropped privileges ' +
+    config.privileges.user +
+    ':' +
+    config.privileges.group
+  )
 else
-	log.debug( 'no privilege dropping' )
+  log.debug('no privilege dropping')
 end
 
 # Warn if no feeds are given.
-if( config.feeds.empty? )
-  log.warn( 'no feeds given' )
+if(config.feeds.empty?)
+  log.warn('no feeds given')
 end
 
 # Start GUI if config edit option is given.
-if( editConfig )
-	require( 'transmission-rss/config-editor' )
+if(edit_config)
+  require 'transmission-rss/config-editor'
 
-	Gtk.init
+  Gtk.init
 
-	ConfigEditor.new( configFile, config )
-	Gtk.main
+  ConfigEditor.new(config_file, config)
+  Gtk.main
 
-	exit( 0 )
+  exit(0)
 end
 
 # Connect reload of config file to SIGHUP.
-trap( 'HUP' ) do
-	config.load( configFile )
-	log.info( 'got hup', config )
+trap('HUP') do
+  config.load(config_file)
+  log.info('got hup', config)
 end
 
 # Initialize feed aggregator.
 aggregator = Aggregator.new
 
 # Initialize communication to transmission.
-client = Client.new( config.server.host, config.server.port )
+client = Client.new(config.server.host, config.server.port)
 
 # Add feeds from config file to +Aggregator+ class.
-aggregator.feeds.concat( config.feeds )
+aggregator.feeds.concat(config.feeds)
 
 # Callback for a new item on one of the feeds.
 aggregator.on_new_item do |torrentFile|
-	Thread.start do
-		client.addTorrent( torrentFile, config.add_paused )
-	end
+  Thread.start do
+    client.addTorrent(torrentFile, config.add_paused)
+  end
 end
 
 # Start the aggregation process.
 begin
-	if( dofork )
-		pid = fork do
-			aggregator.run( config.update_interval )
-		end
+  if(dofork)
+    pid = fork do
+      aggregator.run(config.update_interval)
+    end
 
-		puts( 'forked ' + pid.to_s )
-	else
-		aggregator.run( config.update_interval )
-	end
+    puts('forked ' + pid.to_s)
+  else
+    aggregator.run(config.update_interval)
+  end
 rescue Interrupt
+  log.info('interrupt caught')
 end
 
 log.close
