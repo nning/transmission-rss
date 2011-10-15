@@ -1,6 +1,7 @@
 require 'net/http'
 require 'json'
 require 'timeout'
+require 'base64'
 
 # TODO
 #  * Why the hell do timeouts in get_session_id and add_torrent not work?!
@@ -46,7 +47,25 @@ class TransmissionRSS::Client
   end
 
   # POST json packed torrent add command.
-  def add_torrent(torrent_file, paused = false)
+  def add_torrent(file, type, paused = false)
+    hash = {
+      "method" => "torrent-add",
+      "arguments" => {
+        "paused" => paused
+      }
+    }
+
+    case type
+      when :url
+        hash.arguments.filename = file
+      when :file
+        hash.arguments.metainfo = Base64.encode64(
+          File.readlines(file).join
+        )
+      else
+        raise ArgumentError.new('type has to be :url or :file.')
+    end
+
     post = Net::HTTP::Post.new(
       '/transmission/rpc',
       initheader = {
@@ -55,13 +74,7 @@ class TransmissionRSS::Client
       }
     )
 
-    post.body = {
-      "method" => "torrent-add",
-      "arguments" => {
-        "paused" => paused,
-        "filename" => torrent_file
-      }
-    }.to_json
+    post.body = hash.to_json
 
 #   retries = 3
 #   begin
