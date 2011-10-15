@@ -3,12 +3,19 @@
 transmission-rss is basically a workaround for transmission's lack of the
 ability to monitor RSS feeds and automatically add enclosed torrent links.
 
-It works with transmission-daemon and transmission-gtk (if the web frontend is
-enabled in the settings dialog). Sites like seriesly.com and ezrss.it are suited
-well as feed sources.
+It works with transmission-daemon and transmission-gtk (if the web frontend
+is enabled in the settings dialog). Sites like showrss.karmorra.info and
+ezrss.it are suited well as feed sources.
 
-As it's done with poems, I devote this very artful and romantic piece of code to
-the single most delightful human being: Ann.
+For the GTK configuration editor, the Ruby libglade2 bindings are necessary
+(but not included in the gem dependencies). On Arch Linux, install
+ruby-libglade from AUR.
+
+A tool called transmission-add-file is also included for mass adding of
+torrent files.
+
+As it's done with poems, I devote this very artful and romantic piece of
+code to the single most delightful human being: Ann.
 
 == Installation
 
@@ -18,6 +25,8 @@ the single most delightful human being: Ann.
 
 === From source
 
+ git clone git://git.orgizm.net/transmission-rss.git
+ cd transmission-rss
  gem build transmission-rss.gemspec
  sudo gem install transmission-rss-*.gem
 
@@ -36,9 +45,9 @@ It should at least contain a list of feeds:
 === All available options
 
 The following configuration file example contains every existing option
-(although +rss_check_interval+, +paused+ and +server+ are default values and
-could be omitted). The default +log_target+ is STDERR. +privileges+ is not
-defined by default, so the script runs as current user/group.
+(although +update_interval+, +add_paused+ and +server+ are default values
+and could be omitted). The default +log_target+ is STDERR. +privileges+ is
+not defined by default, so the script runs as current user/group.
 
  feeds:
    - http://example.com/feed1
@@ -60,6 +69,7 @@ defined by default, so the script runs as current user/group.
 
 == TODO
 
-* Timeout and error handling in +Aggregator+ and +Client+
-* Option to stop seeding after full download
-* Configurable log level
+* Better library abilities.
+* Timeout and error handling in +Aggregator+ and +Client+.
+* Option to stop seeding after full download.
+* Configurable log level.

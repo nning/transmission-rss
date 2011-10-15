@@ -12,8 +12,8 @@ config_file = '/etc/transmission-rss.conf'
 
 # Shows a summary of the command line options.
 def usage_message( config_file )
-  $stderr << "#{File.basename($0)} [options]
-Adds torrents from rss feeds to transmission web frontend.
+  $stderr << "#{File.basename($0)} [option].. [file]..
+Adds torrent files to transmission web frontend.
 
   -c <file>   Custom config file path. Default: #{config_file}
   -h          This help.
@@ -33,14 +33,12 @@ options.each do |option, argument|
   case(option)
     when '-c'
       config_file = argument
-    when '-e'
-      edit_config = true
-    when '-f'
-      dofork = true
     when '-h'
       usage_message(config_file)
   end
 end
+
+usage_message(config_file) if ARGV.empty?
 
 # Seems to be necessary when called from gem installation.
 # Otherwise Config is somehow mixed up with RbConfig.
