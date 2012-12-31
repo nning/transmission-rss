@@ -10,6 +10,7 @@ Gem::Specification.new do |s|
     transmission's lack of the ability to monitor RSS feeds and
     automatically add enclosed torrent links. Devoted to Ann."
 
+  s.homepage = 'https://rubygems.org/gems/transmission-rss'
   s.version = TransmissionRSS::VERSION
   s.author = 'henning mueller'
   s.email = 'henning@orgizm.net'
