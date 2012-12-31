@@ -58,7 +58,7 @@ class TransmissionRSS::Aggregator
         end
 
         items.each do |item|
-          link = item.link
+          link = item.enclosure.url rescue item.link
  
           # Item contains no link.
           if(link.nil?)
