@@ -1,7 +1,7 @@
 $:.unshift(File.dirname(__FILE__))
 
 module TransmissionRSS
-	VERSION = '0.1.11'
+	VERSION = '0.1.12'
 end
 
 Dir.glob($:.first + '/**/*.rb').each do |lib|

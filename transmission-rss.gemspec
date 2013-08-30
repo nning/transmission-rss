@@ -14,6 +14,6 @@ Gem::Specification.new do |s|
   s.version = TransmissionRSS::VERSION
   s.author = 'henning mueller'
   s.email = 'henning@orgizm.net'
-  s.files = Dir.glob('{bin,lib}/**/*') << 'README.rdoc'
+  s.files = Dir.glob('{bin,lib}/**/*').push 'README.rdoc', 'transmission-rss.conf.example'
   s.executables = Dir.glob('bin/**').map { |x| x[4..-1] }
 end
