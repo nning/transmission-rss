@@ -1,0 +1,34 @@
+#
+# Indent consistently with spaces!
+# Format documentation on http://www.yaml.org/.
+#
+
+# List of feeds to watch.
+
+feeds:
+  - http://example.com/feed1
+  - http://example.com/feed2
+
+# Feed probing interval in seconds. Default is 600.
+
+#update_interval: 600
+
+# Whether to add torrents paused. Default is false.
+
+#add_paused: false
+
+# The transmission server to connect to. Default is localhost:9091.
+
+#server:
+#  host: localhost
+#  port: 9091
+
+# Where to log. Default is stderr.
+
+#log_target: /var/log/transmissiond-rss.log
+
+# Drop privileges. If omitted, privileges are not dropped.
+
+#privileges:
+#  user: nobody
+#  group: nobody

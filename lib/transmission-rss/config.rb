@@ -1,11 +1,6 @@
 require 'singleton'
 require 'yaml'
 
-# In ruby 1.9.3, Psych is used as YAML engine. Psych maps YAML to a class
-# automatically when deserializing, which it does by calling the "new"
-# method in that process. This fails with Singleton classes.
-YAML::ENGINE.yamler = 'syck'
-
 # Class handles configuration parameters.
 class TransmissionRSS::Config < Hash
   # This is a singleton class.
@@ -23,15 +18,8 @@ class TransmissionRSS::Config < Hash
     end
   end
 
-  # Merge Config Hash with Hash in YAML file.
+  # Merge Config Hash with Hash from YAML file.
   def merge_yaml!(path)
-    self.merge!(load_file(path))
-  end
-
-  # Load YAML file and work around tabs not working for identation.
-  def load_file(path)
-    YAML.load_stream(
-      File.new(path).read.gsub(/\t/, ' ')
-    ).documents.first
+    self.merge!(YAML.load_file(path))
   end
 end
