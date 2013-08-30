@@ -1,19 +1,9 @@
 $:.unshift(File.dirname(__FILE__))
 
 module TransmissionRSS
-	VERSION = '0.1.10'
+	VERSION = '0.1.11'
 end
 
-dir = 'transmission-rss'
-
-blacklist = %w(
-	config-editor
-)
-
-blacklist.map! do |name|
-	$:.first + '/' + dir + '/' + name + '.rb'
-end
-
-(Dir.glob($:.first + '/' + dir + '/*.rb') - blacklist).each do |lib|
+Dir.glob($:.first + '/**/*.rb').each do |lib|
 	require lib
 end
