@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
 
   s.homepage = 'https://rubygems.org/gems/transmission-rss'
   s.version = TransmissionRSS::VERSION
+  s.licenses = ['GPL-3.0']
   s.author = 'henning mueller'
   s.email = 'henning@orgizm.net'
   s.files = Dir.glob('{bin,lib}/**/*').push 'README.rdoc', 'transmission-rss.conf.example'
