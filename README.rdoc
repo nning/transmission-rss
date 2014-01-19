@@ -28,7 +28,7 @@ code to the single most delightful human being: Ann.
  git clone git://git.orgizm.net/transmission-rss.git
  cd transmission-rss
  gem build transmission-rss.gemspec
- sudo gem install transmission-rss-*.gem
+ gem install transmission-rss-*.gem
 
 == Configuration
 
@@ -66,6 +66,10 @@ not defined by default, so the script runs as current user/group.
  privileges:
    user: nobody
    group: nobody
+
+ fork: false
+
+ pid_file: false
 
 == TODO
 

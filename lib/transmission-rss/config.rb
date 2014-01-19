@@ -8,18 +8,18 @@ class TransmissionRSS::Config < Hash
 
   # Merges a Hash or YAML file (containing a Hash) with itself.
   def load(config)
-    if(config.class == Hash)
-      self.merge!(config)
+    if config.class == Hash
+      self.merge! config
       return
     end
 
-    if(not config.nil?)
-      self.merge_yaml!(config)
+    unless config.nil?
+      self.merge_yaml! config
     end
   end
 
   # Merge Config Hash with Hash from YAML file.
   def merge_yaml!(path)
-    self.merge!(YAML.load_file(path))
+    self.merge! YAML.load_file(path)
   end
 end

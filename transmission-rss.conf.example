@@ -32,3 +32,11 @@ feeds:
 #privileges:
 #  user: nobody
 #  group: nobody
+
+# Fork?
+
+#fork: false
+
+# Save PID.
+
+#pid_file: false
