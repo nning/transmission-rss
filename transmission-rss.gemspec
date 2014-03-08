@@ -15,6 +15,6 @@ Gem::Specification.new do |s|
   s.licenses = ['GPL-3.0']
   s.author = 'henning mueller'
   s.email = 'henning@orgizm.net'
-  s.files = Dir.glob('{bin,lib}/**/*').push 'README.rdoc', 'transmission-rss.conf.example'
+  s.files = Dir.glob('{bin,lib}/**/*').push 'README.md', 'transmission-rss.conf.example'
   s.executables = Dir.glob('bin/**').map { |x| x[4..-1] }
 end
