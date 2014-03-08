@@ -131,7 +131,7 @@ aggregator.feeds.concat config.feeds
 
 # Callback for a new item on one of the feeds.
 aggregator.on_new_item do |torrent_file|
-  Thread.start { client.add_torrent torrent_file, :url, config.add_paused }
+  client.add_torrent torrent_file, :url, config.add_paused
 end
 
 # Save PID.

@@ -67,10 +67,14 @@ class TransmissionRSS::Aggregator
 
           # The link is not in +@seen+ Array.
           unless seen? link
-            on_new_item link
             @log.debug 'on_new_item event ' + link
-
-            add_seen link
+            begin
+              on_new_item link
+            rescue Errno::ECONNREFUSED
+#             @log.debug 'not added to seenfile'
+            else
+              add_seen link
+            end
           end
         end
       end
