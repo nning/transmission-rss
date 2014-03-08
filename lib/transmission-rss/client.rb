@@ -8,10 +8,8 @@ require 'base64'
 
 # Class for communication with transmission utilizing the RPC web interface.
 class TransmissionRSS::Client
-  def initialize(host, port)
-    @host = host
-    @port = port
-
+  def initialize(host = 'localhost', port = 9091)
+    @host, @port = host, port
     @log = Log.instance
   end
 
@@ -19,23 +17,7 @@ class TransmissionRSS::Client
   def get_session_id
     get = Net::HTTP::Get.new '/transmission/rpc'
 
-#   retries = 3
-#   begin
-#     Timeout::timeout(5) do
-        response = Net::HTTP.new(@host, @port).start do |http|
-          http.request get
-        end
-#     end
-#   rescue Timeout::Error
-#     puts('timeout error exception') if($verbose)
-#     if(retries > 0)
-#       retries -= 1
-#       puts('getSessionID timeout. retry..') if($verbose)
-#       retry
-#     else
-#       $stderr << "timeout http://#{@host}:#{@port}/transmission/rpc"
-#     end
-#   end
+    response = request get
 
     id = response.header['x-transmission-session-id']
 
@@ -71,11 +53,21 @@ class TransmissionRSS::Client
 
     post.body = hash.to_json
 
+    response = request post
+
+    result = JSON.parse(response.body).result
+
+    @log.debug 'add_torrent result: ' + result
+  end
+
+  private
+
+  def request(data)
 #   retries = 3
 #   begin
 #     Timeout::timeout(5) do
-        response = Net::HTTP.new(@host, @port).start do |http|
-          http.request post
+        Net::HTTP.new(@host, @port).start do |http|
+          http.request data
         end
 #     end
 #   rescue Timeout::Error
@@ -88,9 +80,5 @@ class TransmissionRSS::Client
 #       $stderr << "timeout http://#{@host}:#{@port}/transmission/rpc"
 #     end
 #   end
-
-    result = JSON.parse(response.body).result
-
-    @log.debug 'add_torrent result: ' + result
   end
 end
