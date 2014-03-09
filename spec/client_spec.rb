@@ -12,12 +12,12 @@ describe Client do
   describe 'connection error' do
     it 'should raise exception on refusal' do
       c = Client.new('localhost', 65535)
-      expect { c.get_session_id }.to raise_exception
+      expect { c.get_session_id }.to raise_exception(Errno::ECONNREFUSED)
     end
 
     it 'should raise exception on timeout' do
       c = Client.new('localhost', timeout: 0.00000001)
-      expect { c.get_session_id }.to raise_exception
+      expect { c.get_session_id }.to raise_exception(Timeout::Error)
     end
   end
 end

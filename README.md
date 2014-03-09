@@ -73,6 +73,5 @@ not defined by default, so the script runs as current user/group.
 TODO
 ----
 
-* Better library abilities.
 * Option to stop seeding after full download.
 * Configurable log level.
