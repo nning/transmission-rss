@@ -24,8 +24,9 @@ Adds torrents from rss feeds to transmission web frontend.
 
   -c <file>   Custom config file path. Default: #{config_file}
   -f          Fork into background after startup.
-  -p <file>   Write PID to file.
   -h          This help.
+  -p <file>   Write PID to file.
+  -v          Show program version and exit.
 
 "
   exit(1)
@@ -33,10 +34,11 @@ end
 
 # Define command-line options.
 options = GetoptLong.new \
-  [ '-c', GetoptLong::REQUIRED_ARGUMENT ],
-  [ '-f', GetoptLong::NO_ARGUMENT ],
-  [ '-p', GetoptLong::REQUIRED_ARGUMENT ],
-  [ '-h', GetoptLong::NO_ARGUMENT ]
+  ['-c', GetoptLong::REQUIRED_ARGUMENT],
+  ['-f', GetoptLong::NO_ARGUMENT],
+  ['-h', GetoptLong::NO_ARGUMENT],
+  ['-p', GetoptLong::REQUIRED_ARGUMENT],
+  ['-v', GetoptLong::NO_ARGUMENT]
 
 # Parse given options.
 options.each do |option, argument|
@@ -45,10 +47,13 @@ options.each do |option, argument|
       config_file = argument
     when '-f'
       dofork = true
-    when '-p'
-      pid_file = argument
     when '-h'
       usage_message config_file
+    when '-p'
+      pid_file = argument
+    when '-v'
+      puts TransmissionRSS::VERSION
+      exit
   end
 end
 
