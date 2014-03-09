@@ -1,26 +1,30 @@
 require 'spec_helper'
 
 describe Callback do
-  class TestDummy
-    extend Callback
-    callback :test_callback
+  before do
+    class TestDummy
+      extend Callback
+      callback :test_callback
 
-    attr_accessor :state
+      attr_accessor :state
 
-    def go!
-      test_callback
+      def go!
+        test_callback
+      end
     end
   end
 
   describe '#callback' do
-    dummy = TestDummy.new
-    dummy.test_callback do
-      dummy.state = 1
+    before do
+      @dummy = TestDummy.new
+      @dummy.test_callback do
+        @dummy.state = 1
+      end
+      @dummy.go!
     end
-    dummy.go!
 
     it 'should be called' do
-      expect(dummy.state).to eq(1)
+      expect(@dummy.state).to eq(1)
     end
   end
 end
