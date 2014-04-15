@@ -19,7 +19,7 @@ pid_file = false
 
 # Shows a summary of the command line options.
 def usage_message(config_file)
-  $stderr << "#{File.basename $0} [option]..
+  $stderr << "#{File.basename $0} [options]
 Adds torrents from rss feeds to transmission web frontend.
 
   -c <file>   Custom config file path. Default: #{config_file}

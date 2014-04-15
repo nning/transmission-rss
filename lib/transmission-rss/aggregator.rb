@@ -51,13 +51,14 @@ module TransmissionRSS
 
       while true
         feeds.each do |url|
+          url = URI.encode(url)
           @log.debug 'aggregate ' + url
 
           begin
             content = open(url).readlines.join("\n")
             items = RSS::Parser.parse(content, false).items
-          rescue
-            @log.debug 'retrieval error'
+          rescue Exception => e
+            @log.debug "retrieval error (#{e.message})"
             next
           end
 
