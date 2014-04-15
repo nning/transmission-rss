@@ -1,7 +1,14 @@
+PATH
+  remote: .
+  specs:
+    transmission-rss (0.1.16)
+      open_uri_redirections (~> 0.1, >= 0.1.4)
+
 GEM
   remote: https://rubygems.org/
   specs:
     diff-lcs (1.2.5)
+    open_uri_redirections (0.1.4)
     rake (10.1.1)
     rspec (2.14.1)
       rspec-core (~> 2.14.0)
@@ -18,3 +25,4 @@ PLATFORMS
 DEPENDENCIES
   rake
   rspec
+  transmission-rss!

@@ -1,6 +1,7 @@
 require 'etc'
 require 'fileutils'
 require 'open-uri'
+require 'open_uri_redirections'
 require 'rss'
 
 libdir = File.dirname(__FILE__)
@@ -55,7 +56,7 @@ module TransmissionRSS
           @log.debug 'aggregate ' + url
 
           begin
-            content = open(url).readlines.join("\n")
+            content = open(url, allow_redirections: :safe).read
             items = RSS::Parser.parse(content, false).items
           rescue Exception => e
             @log.debug "retrieval error (#{e.message})"
@@ -77,7 +78,7 @@ module TransmissionRSS
               begin
                 on_new_item link
               rescue Errno::ECONNREFUSED
-#             @log.debug 'not added to seenfile'
+#               @log.debug 'not added to seenfile'
               else
                 add_seen link
               end

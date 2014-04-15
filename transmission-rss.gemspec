@@ -17,4 +17,6 @@ Gem::Specification.new do |s|
   s.email = 'henning@orgizm.net'
   s.files = Dir.glob('{bin,lib}/**/*').push 'README.md', 'transmission-rss.conf.example'
   s.executables = Dir.glob('bin/**').map { |x| x[4..-1] }
+
+  s.add_dependency 'open_uri_redirections', '~> 0.1', '>= 0.1.4'
 end
