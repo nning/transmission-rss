@@ -41,6 +41,14 @@ It should at least contain a list of feeds:
       - http://example.com/feed1
       - http://example.com/feed2
 
+Feed item titles can be filtered by a regular expression:
+
+    feeds:
+      - http://example.com/feed1:
+        regexp: foo
+      - http://example.com/feed2:
+        regexp: (foo|bar)
+
 ### All available options
 
 The following configuration file example contains every existing option
@@ -51,6 +59,10 @@ not defined by default, so the script runs as current user/group.
     feeds:
       - http://example.com/feed1
       - http://example.com/feed2
+      - http://example.com/feed3:
+        regexp: match1
+      - http://example.com/feed4:
+        regexp: (match1|match2)
 
     update_interval: 600
 

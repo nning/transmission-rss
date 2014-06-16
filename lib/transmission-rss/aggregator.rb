@@ -14,19 +14,26 @@ module TransmissionRSS
     extend Callback
     callback :on_new_item # Declare callback for new items.
 
-    attr_accessor :feeds
+    def initialize(feeds = [], seen_file: nil)
+      # Prepare Array of feeds URLs.
+      @feeds = feeds.map { |x| x.is_a?(Hash) ? x.keys.first : x }
 
-    def initialize(feeds = [])
-      @feeds = feeds
+      # Prepare Hash of feed URL => Regexp filter.
+      @filters = feeds.select { |x| x.is_a? Hash }
+      @filters = @filters.map do |x|
+        [x.keys.first, Regexp.new(x['regexp'], Regexp::IGNORECASE)]
+      end
+      @filters = Hash[@filters]
+
+      # Nothing seen, yet.
       @seen = []
 
       # Initialize log instance.
       @log = Log.instance
 
       # Generate path for seen torrents store file.
-      @seenfile = File.join \
-        Etc.getpwuid.dir,
-        '/.config/transmission/seen-torrents.conf'
+      @seenfile = seen_file || File.join(Etc.getpwuid.dir,
+        '/.config/transmission/seen-torrents.conf')
 
       # Make directories in path if they are not existing.
       FileUtils.mkdir_p File.dirname(@seenfile)
@@ -51,7 +58,7 @@ module TransmissionRSS
       @log.debug 'aggregator start'
 
       while true
-        feeds.each do |url|
+        @feeds.each do |url|
           url = URI.encode(url)
           @log.debug 'aggregate ' + url
 
@@ -74,7 +81,19 @@ module TransmissionRSS
 
             # The link is not in +@seen+ Array.
             unless seen? link
+#             @log.debug 'unseen link ' + link
+
+              # Skip if filter defined and not matching.
+              if @filters.include? url
+                unless item.title[@filters[url]]
+#                 @log.debug 'filter does not match ' + item.title
+                  add_seen link
+                  next
+                end
+              end
+
               @log.debug 'on_new_item event ' + link
+
               begin
                 on_new_item link
               rescue Errno::ECONNREFUSED

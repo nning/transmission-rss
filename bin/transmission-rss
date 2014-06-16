@@ -73,7 +73,8 @@ defaults = {
   'log_target' => $stderr,
   'fork' => false,
   'pid_file' => false,
-  'privileges' => {}
+  'privileges' => {},
+  'seen_file' => nil
 }
 config.load defaults
 
@@ -126,13 +127,10 @@ trap 'HUP' do
 end
 
 # Initialize feed aggregator.
-aggregator = Aggregator.new
+aggregator = Aggregator.new(config.feeds, seen_file: config.seen_file)
 
 # Initialize communication to transmission.
 client = Client.new config.server.host, config.server.port
-
-# Add feeds from config file to +Aggregator+ class.
-aggregator.feeds.concat config.feeds
 
 # Callback for a new item on one of the feeds.
 aggregator.on_new_item do |torrent_file|
