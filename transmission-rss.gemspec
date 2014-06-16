@@ -1,4 +1,4 @@
-$:.unshift(File.dirname(__FILE__))
+require_relative 'lib/transmission-rss/version'
 
 Gem::Specification.new do |s|
   s.name = 'transmission-rss'
@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
     automatically add enclosed torrent links. Devoted to Ann."
 
   s.homepage = 'https://rubygems.org/gems/transmission-rss'
-  s.version = '0.1.17'
+  s.version = TransmissionRSS::VERSION
   s.licenses = ['GPL-3.0']
   s.author = 'henning mueller'
   s.email = 'henning@orgizm.net'
