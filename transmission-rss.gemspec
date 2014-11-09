@@ -1,4 +1,5 @@
-require_relative 'lib/transmission-rss/version'
+$: << File.dirname(__FILE__)
+require 'lib/transmission-rss/version'
 
 Gem::Specification.new do |s|
   s.name = 'transmission-rss'

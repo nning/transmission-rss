@@ -27,6 +27,12 @@ feeds:
 #  host: localhost
 #  port: 9091
 
+# Uncomment if transmission server requires login.
+
+#login:
+#  username: transmission
+#  password: transmission
+
 # Where to log. Default is stderr.
 
 #log_target: /var/log/transmissiond-rss.log

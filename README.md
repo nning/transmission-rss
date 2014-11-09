@@ -54,9 +54,11 @@ Feed item titles can be filtered by a regular expression:
 ### All available options
 
 The following configuration file example contains every existing option
-(although `update_interval`, `add_paused` and `server` are default values
-and could be omitted). The default `log_target` is STDERR. `privileges` is
-not defined by default, so the script runs as current user/group.
+(although `update_interval`, `add_paused`, `server`, `fork`, and `pid_file` are
+default values and could be omitted). The default `log_target` is STDERR.
+`privileges` is not defined by default, so the script runs as current
+user/group. `login` is also not defined by default. It has to be defined, if
+transmission is configured for HTTP basic authentication.
 
     feeds:
       - http://example.com/feed1
@@ -73,6 +75,10 @@ not defined by default, so the script runs as current user/group.
     server:
       host: localhost
       port: 9091
+
+	login:
+	  username: transmission
+	  password: transmission
 
     log_target: /var/log/transmissiond-rss.log
 

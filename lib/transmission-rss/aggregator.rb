@@ -12,7 +12,7 @@ module TransmissionRSS
   # Class for aggregating torrent files through RSS feeds.
   class Aggregator
     extend Callback
-    callback :on_new_item # Declare callback for new items.
+    callback(:on_new_item) # Declare callback for new items.
 
     def initialize(feeds = [], seen_file: nil)
       # Prepare Array of feeds URLs.
@@ -36,37 +36,37 @@ module TransmissionRSS
         '/.config/transmission/seen-torrents.conf')
 
       # Make directories in path if they are not existing.
-      FileUtils.mkdir_p File.dirname(@seenfile)
+      FileUtils.mkdir_p(File.dirname(@seenfile))
 
       # Touch seen torrents store file.
-      unless File.exists? @seenfile
-        FileUtils.touch @seenfile
+      unless File.exists?(@seenfile)
+        FileUtils.touch(@seenfile)
       end
 
       # Open file, read torrent URLs and add to +@seen+.
       open(@seenfile).readlines.each do |line|
-        @seen.push line.chomp
+        @seen.push(line.chomp)
       end
 
       # Log number of +@seen+ URIs.
-      @log.debug @seen.size.to_s + ' uris from seenfile'
+      @log.debug(@seen.size.to_s + ' uris from seenfile')
     end
 
     # Get file enclosures from all feeds items and call on_new_item callback
     # with torrent file URL as argument.
     def run(interval = 600)
-      @log.debug 'aggregator start'
+      @log.debug('aggregator start')
 
       while true
         @feeds.each do |url|
           url = URI.encode(url)
-          @log.debug 'aggregate ' + url
+          @log.debug('aggregate ' + url)
 
           begin
             content = open(url, allow_redirections: :safe).read
             items = RSS::Parser.parse(content, false).items
           rescue Exception => e
-            @log.debug "retrieval error (#{e.message})"
+            @log.debug("retrieval error (#{e.message})")
             next
           end
 
@@ -80,47 +80,44 @@ module TransmissionRSS
             link = link.href if link.class != String
 
             # The link is not in +@seen+ Array.
-            unless seen? link
-#             @log.debug 'unseen link ' + link
-
+            unless seen?(link)
               # Skip if filter defined and not matching.
-              if @filters.include? url
+              if @filters.include?(url)
                 unless item.title[@filters[url]]
-#                 @log.debug 'filter does not match ' + item.title
-                  add_seen link
+                  add_seen(link)
                   next
                 end
               end
 
-              @log.debug 'on_new_item event ' + link
+              @log.debug('on_new_item event ' + link)
 
               begin
-                on_new_item link
-              rescue Errno::ECONNREFUSED
-#               @log.debug 'not added to seenfile'
+                on_new_item(link)
+              rescue Errno::ECONNREFUSED, Client::Unauthorized
+                # Do not add to seen file.
               else
-                add_seen link
+                add_seen(link)
               end
             end
           end
         end
 
-        sleep interval
+        sleep(interval)
       end
     end
 
     # To add a link into the list of seen links.
     def add_seen(link)
-      @seen.push link
+      @seen.push(link)
 
       File.open(@seenfile, 'w') do |file|
-        file.write @seen.join("\n")
+        file.write(@seen.join("\n"))
       end
     end
 
     # To test if a link is in the list of seen links.
     def seen?(link)
-      @seen.include? link
+      @seen.include?(link)
     end
   end
 end
