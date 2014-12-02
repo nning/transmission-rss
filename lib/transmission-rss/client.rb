@@ -10,8 +10,9 @@ module TransmissionRSS
     class Unauthorized < StandardError
     end
 
-    def initialize(host = 'localhost', port = 9091, login = nil, timeout: 5)
-      @host, @port, @login, @timeout = host, port, login, timeout
+    def initialize(host = 'localhost', port = 9091, login = nil, options = {})
+      @host, @port, @login = host, port, login
+      @timeout = options[:timeout] || 5
       @log = TransmissionRSS::Log.instance
     end
 
@@ -83,16 +84,16 @@ module TransmissionRSS
     end
 
     def request(data)
-      Timeout::timeout(@timeout) do
+      Timeout.timeout(@timeout) do
         Net::HTTP.new(@host, @port).start do |http|
-          http.request data
+          http.request(data)
         end
       end
     rescue Errno::ECONNREFUSED
-      @log.debug 'connection refused'
+      @log.debug('connection refused')
       raise
     rescue Timeout::Error
-      @log.debug 'connection timeout'
+      @log.debug('connection timeout')
       raise
     end
   end

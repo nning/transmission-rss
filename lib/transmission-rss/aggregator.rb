@@ -14,7 +14,9 @@ module TransmissionRSS
     extend Callback
     callback(:on_new_item) # Declare callback for new items.
 
-    def initialize(feeds = [], seen_file: nil)
+    def initialize(feeds = [], options = {})
+      seen_file = options[:seen_file]
+
       # Prepare Array of feeds URLs.
       @feeds = feeds.map { |x| x.is_a?(Hash) ? x.keys.first : x }
 

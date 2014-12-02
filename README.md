@@ -14,7 +14,7 @@ torrent files.
 As it's done with poems, I devote this very artful and romantic piece of
 code to the single most delightful human being: Ann.
 
-The minimum supported Ruby version is 2.0.0.
+The minimum supported Ruby version is 1.9.3.
 
 Installation
 ------------
