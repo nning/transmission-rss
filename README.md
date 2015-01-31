@@ -40,16 +40,22 @@ A yaml formatted config file is expected at `/etc/transmission-rss.conf`.
 It should at least contain a list of feeds:
 
     feeds:
-      - http://example.com/feed1
-      - http://example.com/feed2
+      - url: http://example.com/feed1
+      - url: http://example.com/feed2
 
 Feed item titles can be filtered by a regular expression:
 
     feeds:
-      - http://example.com/feed1:
+      - url: http://example.com/feed1:
         regexp: foo
-      - http://example.com/feed2:
+      - url: http://example.com/feed2:
         regexp: (foo|bar)
+
+Feeds can also be configured to download files to specific directory:
+
+    feeds:
+      - url: http://example.com/feed1:
+        download_dir: /home/user/Downloads
 
 ### All available options
 
@@ -60,15 +66,15 @@ default values and could be omitted). The default `log_target` is STDERR.
 user/group. `login` is also not defined by default. It has to be defined, if
 transmission is configured for HTTP basic authentication.
 
-	feeds:
-	  - url: http://example.com/feed1
-	  - url: http://example.com/feed2
-	  - url: http://example.com/feed3
-	    regexp: match1
-	  - url: http://example.com/feed4
-	    regexp: (match1|match2)
-	  - url: http://example.com/feed4
-	    download_dir: /home/user/Downloads
+    feeds:
+      - url: http://example.com/feed1
+      - url: http://example.com/feed2
+      - url: http://example.com/feed3
+        regexp: match1
+      - url: http://example.com/feed4
+        regexp: (match1|match2)
+      - url: http://example.com/feed4
+        download_dir: /home/user/Downloads
 
     update_interval: 600
 
