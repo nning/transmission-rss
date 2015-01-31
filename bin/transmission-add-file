@@ -78,7 +78,7 @@ log.debug(config)
 client = Client.new(config.server.host, config.server.port)
 
 ARGV.each do |torrent_file|
-  client.add_torrent(torrent_file, :file, config.add_paused)
+  client.add_torrent(torrent_file, :file, paused: config.add_paused)
 end
 
 log.close

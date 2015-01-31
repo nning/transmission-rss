@@ -60,13 +60,15 @@ default values and could be omitted). The default `log_target` is STDERR.
 user/group. `login` is also not defined by default. It has to be defined, if
 transmission is configured for HTTP basic authentication.
 
-    feeds:
-      - http://example.com/feed1
-      - http://example.com/feed2
-      - http://example.com/feed3:
-        regexp: match1
-      - http://example.com/feed4:
-        regexp: (match1|match2)
+	feeds:
+	  - url: http://example.com/feed1
+	  - url: http://example.com/feed2
+	  - url: http://example.com/feed3
+	    regexp: match1
+	  - url: http://example.com/feed4
+	    regexp: (match1|match2)
+	  - url: http://example.com/feed4
+	    download_dir: /home/user/Downloads
 
     update_interval: 600
 
