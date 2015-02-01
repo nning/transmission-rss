@@ -89,9 +89,3 @@ transmission is configured for HTTP basic authentication.
     fork: false
 
     pid_file: false
-
-TODO
-----
-
-* Option to stop seeding after full download.
-* Configurable log level.
