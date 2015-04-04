@@ -25,7 +25,7 @@ Installation
 
 ### From source
 
-    git clone git://git.orgizm.net/transmission-rss.git
+    git clone https://github.com/nning/transmission-rss
     cd transmission-rss
     gem build transmission-rss.gemspec
     gem install transmission-rss-*.gem
