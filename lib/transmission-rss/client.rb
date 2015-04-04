@@ -84,7 +84,10 @@ module TransmissionRSS
     end
 
     def request(data)
+      c ||= 0
+
       Timeout.timeout(@timeout) do
+        @log.debug("request #@host:#@port")
         Net::HTTP.new(@host, @port).start do |http|
           http.request(data)
         end
@@ -93,7 +96,13 @@ module TransmissionRSS
       @log.debug('connection refused')
       raise
     rescue Timeout::Error
-      @log.debug('connection timeout')
+      s  = 'connection timeout'
+      s += " (retry #{c})" if c > 0
+      @log.debug(s)
+
+      c += 1
+      retry unless c > 2
+
       raise
     end
   end

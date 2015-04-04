@@ -95,7 +95,7 @@ module TransmissionRSS
 
               begin
                 on_new_item(link)
-              rescue Errno::ECONNREFUSED, Client::Unauthorized
+              rescue Client::Unauthorized, Errno::ECONNREFUSED, Timeout::Error
                 # Do not add to seen file.
               else
                 add_seen(link)
