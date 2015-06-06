@@ -9,7 +9,8 @@ require 'transmission-rss'
 include TransmissionRSS
 
 # Default config file path.
-config_file = '/etc/transmission-rss.conf'
+config_file   = '/etc/transmission-rss.conf'
+custom_config = false
 
 # Do not fork by default.
 dofork = false
@@ -44,7 +45,8 @@ options = GetoptLong.new \
 options.each do |option, argument|
   case option
     when '-c'
-      config_file = argument
+      config_file   = argument
+      custom_config = true
     when '-f'
       dofork = true
     when '-h'
@@ -77,7 +79,7 @@ defaults = {
   'privileges' => {},
   'seen_file' => nil
 }
-config.load defaults
+config.load(defaults)
 
 # Initialize a log instance and configure it.
 log = Log.instance
@@ -92,9 +94,22 @@ begin
   config.load(config_file)
   log.target = config.log_target
 rescue Errno::ENOENT
-  log.error config_file + ' not found'
+  log.error(config_file + ' not found')
 end
-log.debug config
+
+# Check for user configuration and load if existing.
+unless custom_config
+  prefix = ENV['XDG_CONFIG_HOME'] || File.join(ENV['HOME'], '.config')
+  path   = File.join(prefix, 'transmission-rss', 'config.yml')
+
+  if File.exists? path
+    log.debug('loading user config ' + path)
+    config.load(path)
+  end
+end
+
+# Print current config.
+log.debug(config)
 
 # Fork value from command line.
 config.fork = dofork if dofork
@@ -116,15 +131,15 @@ unless config.privileges.empty?
     ':' +
     config.privileges.group
 else
-  log.debug 'no privilege dropping'
+  log.debug('no privilege dropping')
 end
 
 # Warn if no feeds are given.
-log.warn 'no feeds given' if config.feeds.empty?
+log.warn('no feeds given') if config.feeds.empty?
 
 # Connect reload of config file to SIGHUP.
 trap 'HUP' do
-  config.load config_file rescue nil
+  config.load(config_file) rescue nil
 end
 
 # Initialize feed aggregator.
@@ -140,7 +155,7 @@ end
 
 # Save PID.
 if config.pid_file
-  log.debug 'wrote pid to ' + config.pid_file
+  log.debug('wrote pid to ' + config.pid_file)
   File.write(config.pid_file, Process.pid)
 end
 
@@ -148,13 +163,13 @@ end
 begin
   if config.fork
     pid = fork { aggregator.run(config.update_interval) }
-    log.debug 'forked ' + pid.to_s
+    log.debug('forked ' + pid.to_s)
   else
-    log.debug 'pid ' + Process.pid.to_s
+    log.debug('pid ' + Process.pid.to_s)
     aggregator.run(config.update_interval)
   end
 rescue Interrupt
-  log.info 'interrupt caught'
+  log.info('interrupt caught')
 end
 
 log.close
