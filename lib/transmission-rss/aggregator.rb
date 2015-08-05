@@ -66,9 +66,19 @@ module TransmissionRSS
 
           begin
             content = open(url, allow_redirections: :safe).read
+          rescue Exception => e
+            @log.debug("retrieval error (#{e.class}: #{e.message})")
+            next
+          end
+
+          # gzip HTTP Content-Encoding is not automatically decompressed in
+          # Ruby 1.9.3.
+          content = decompress(content) if RUBY_VERSION == '1.9.3'
+
+          begin
             items = RSS::Parser.parse(content, false).items
           rescue Exception => e
-            @log.debug("retrieval error (#{e.message})")
+            @log.debug("parse error (#{e.class}: #{e.message})")
             next
           end
 
@@ -120,6 +130,14 @@ module TransmissionRSS
     # To test if a link is in the list of seen links.
     def seen?(link)
       @seen.include?(link)
+    end
+
+    private
+
+    def decompress(string)
+      Zlib::GzipReader.new(StringIO.new(string)).read
+    rescue Zlib::GzipFile::Error, Zlib::Error
+      # Ignore if not gzipped
     end
   end
 end
