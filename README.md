@@ -33,7 +33,10 @@ Installation
 Configuration
 -------------
 
-A yaml formatted config file is expected at `/etc/transmission-rss.conf`.
+A yaml formatted config file is expected at `/etc/transmission-rss.conf`. Users
+can override some options for their transmission-rss instances by providing a
+config at `~/.config/transmission-rss/config.yml` (or in `$XDG_CONFIG_HOME`
+instead of `~/.config`).
 
 ### Minimal example
 
@@ -89,3 +92,26 @@ transmission is configured for HTTP basic authentication.
     fork: false
 
     pid_file: false
+
+Daemonized Startup
+------------------
+
+The following content can be saved into
+`/etc/systemd/system/transmission-rss.service` to create a systemd unit.
+Remember checking the path in `ExecStart`.
+
+    [Unit]
+    Description=Transmission RSS daemon.
+    After=network.target transmission-daemon.service
+    
+    [Service]
+    Type=forking
+    ExecStart=/usr/local/bin/transmission-rss -f
+    ExecReload=/bin/kill -s HUP $MAINPID
+    
+    [Install]
+    WantedBy=multi-user.target
+
+The unit files are reloaded by `systemctl daemon-reload`. You can then start
+transmission-rss by running `systemctl start transmission-rss`. Starting on
+boot, can be enabled `systemctl enable transmission-rss`.
