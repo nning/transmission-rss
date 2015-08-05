@@ -97,12 +97,13 @@ rescue Errno::ENOENT
   log.error(config_file + ' not found')
 end
 
-# Check for user configuration and load if existing.
-unless custom_config
-  prefix = ENV['XDG_CONFIG_HOME'] || File.join(ENV['HOME'], '.config')
+# Unless a custom config is given as an argument from command line or HOME is
+# unset, check for user configuration and load if existing.
+if !(custom_config || ENV['HOME'].nil?)
+  prefix = ENV['XDG_CONFIG_HOME'] || File.expand_path('~/.config')
   path   = File.join(prefix, 'transmission-rss', 'config.yml')
 
-  if File.exists? path
+  if File.exists?(path)
     log.debug('loading user config ' + path)
     config.load(path)
   end
