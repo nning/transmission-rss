@@ -137,7 +137,7 @@ module TransmissionRSS
     def decompress(string)
       Zlib::GzipReader.new(StringIO.new(string)).read
     rescue Zlib::GzipFile::Error, Zlib::Error
-      # Ignore if not gzipped
+      string
     end
   end
 end
