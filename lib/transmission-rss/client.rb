@@ -17,11 +17,12 @@ module TransmissionRSS
     end
 
     # POST json packed torrent add command.
-    def add_torrent(file, type, paused = false)
+    def add_torrent(file, type, options = {})
       hash = {
         'method' => 'torrent-add',
         'arguments' => {
-          'paused' => paused
+          'paused' => options[:paused],
+          'download-dir' => options[:download_dir]
         }
       }
 
