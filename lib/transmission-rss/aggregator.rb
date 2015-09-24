@@ -66,8 +66,8 @@ module TransmissionRSS
           # gzip HTTP Content-Encoding is not automatically decompressed in
           # Ruby 1.9.3.
           content = decompress(content) if RUBY_VERSION == '1.9.3'
-
-          items = RSS::Parser.parse(content, false).items
+          begin
+            items = RSS::Parser.parse(content, false).items
           rescue Exception => e
             @log.debug("parse error (#{e.class}: #{e.message})")
             next
@@ -93,13 +93,8 @@ module TransmissionRSS
               @log.debug('on_new_item event ' + link)
 
               begin
-<<<<<<< HEAD
-                on_new_item(link)
-              rescue Client::Unauthorized, Errno::ECONNREFUSED, Timeout::Error
-=======
                 on_new_item(link, feed)
-              rescue Errno::ECONNREFUSED, Client::Unauthorized
->>>>>>> 0b45cabbe14a0c6d54993de33b61bc7143c09a9f
+              rescue Client::Unauthorized, Errno::ECONNREFUSED, Timeout::Error
                 # Do not add to seen file.
               else
                 add_seen(link)

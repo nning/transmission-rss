@@ -58,7 +58,7 @@ Feeds can also be configured to download files to specific directory:
 
     feeds:
       - url: http://example.com/feed1:
-        download_dir: /home/user/Downloads
+        download_path: /home/user/Downloads
 
 ### All available options
 
@@ -77,7 +77,7 @@ transmission is configured for HTTP basic authentication.
       - url: http://example.com/feed4
         regexp: (match1|match2)
       - url: http://example.com/feed4
-        download_dir: /home/user/Downloads
+        download_path: /home/user/Downloads
 
     update_interval: 600
 
@@ -111,12 +111,12 @@ Remember checking the path in `ExecStart`.
     [Unit]
     Description=Transmission RSS daemon.
     After=network.target transmission-daemon.service
-    
+
     [Service]
     Type=forking
     ExecStart=/usr/local/bin/transmission-rss -f
     ExecReload=/bin/kill -s HUP $MAINPID
-    
+
     [Install]
     WantedBy=multi-user.target
 
