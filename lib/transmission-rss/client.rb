@@ -22,7 +22,7 @@ module TransmissionRSS
         'method' => 'torrent-add',
         'arguments' => {
           'paused' => options[:paused],
-          'download-dir' => options[:download_dir]
+          'download-dir' => options[:download_path]
         }
       }
 
