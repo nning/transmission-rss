@@ -43,16 +43,22 @@ instead of `~/.config`).
 It should at least contain a list of feeds:
 
     feeds:
-      - http://example.com/feed1
-      - http://example.com/feed2
+      - url: http://example.com/feed1
+      - url: http://example.com/feed2
 
 Feed item titles can be filtered by a regular expression:
 
     feeds:
-      - http://example.com/feed1:
+      - url: http://example.com/feed1:
         regexp: foo
-      - http://example.com/feed2:
+      - url: http://example.com/feed2:
         regexp: (foo|bar)
+
+Feeds can also be configured to download files to specific directory:
+
+    feeds:
+      - url: http://example.com/feed1:
+        download_path: /home/user/Downloads
 
 ### All available options
 
@@ -64,12 +70,14 @@ user/group. `login` is also not defined by default. It has to be defined, if
 transmission is configured for HTTP basic authentication.
 
     feeds:
-      - http://example.com/feed1
-      - http://example.com/feed2
-      - http://example.com/feed3:
+      - url: http://example.com/feed1
+      - url: http://example.com/feed2
+      - url: http://example.com/feed3
         regexp: match1
-      - http://example.com/feed4:
+      - url: http://example.com/feed4
         regexp: (match1|match2)
+      - url: http://example.com/feed4
+        download_path: /home/user/Downloads
 
     update_interval: 600
 
@@ -103,12 +111,12 @@ Remember checking the path in `ExecStart`.
     [Unit]
     Description=Transmission RSS daemon.
     After=network.target transmission-daemon.service
-    
+
     [Service]
     Type=forking
     ExecStart=/usr/local/bin/transmission-rss -f
     ExecReload=/bin/kill -s HUP $MAINPID
-    
+
     [Install]
     WantedBy=multi-user.target
 

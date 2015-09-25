@@ -18,14 +18,7 @@ module TransmissionRSS
       seen_file = options[:seen_file]
 
       # Prepare Array of feeds URLs.
-      @feeds = feeds.map { |x| x.is_a?(Hash) ? x.keys.first : x }
-
-      # Prepare Hash of feed URL => Regexp filter.
-      @filters = feeds.select { |x| x.is_a? Hash }
-      @filters = @filters.map do |x|
-        [x.keys.first, Regexp.new(x['regexp'], Regexp::IGNORECASE)]
-      end
-      @filters = Hash[@filters]
+      @feeds = feeds.map { |config| TransmissionRSS::Feed.new(config) }
 
       # Nothing seen, yet.
       @seen = []
@@ -60,12 +53,11 @@ module TransmissionRSS
       @log.debug('aggregator start')
 
       while true
-        @feeds.each do |url|
-          url = URI.encode(url)
-          @log.debug('aggregate ' + url)
+        @feeds.each do |feed|
+          @log.debug('aggregate ' + feed.url)
 
           begin
-            content = open(url, allow_redirections: :safe).read
+            content = open(feed.url, allow_redirections: :safe).read
           rescue Exception => e
             @log.debug("retrieval error (#{e.class}: #{e.message})")
             next
@@ -74,7 +66,6 @@ module TransmissionRSS
           # gzip HTTP Content-Encoding is not automatically decompressed in
           # Ruby 1.9.3.
           content = decompress(content) if RUBY_VERSION == '1.9.3'
-
           begin
             items = RSS::Parser.parse(content, false).items
           rescue Exception => e
@@ -84,7 +75,7 @@ module TransmissionRSS
 
           items.each do |item|
             link = item.enclosure.url rescue item.link
-   
+
             # Item contains no link.
             next if link.nil?
 
@@ -94,17 +85,15 @@ module TransmissionRSS
             # The link is not in +@seen+ Array.
             unless seen?(link)
               # Skip if filter defined and not matching.
-              if @filters.include?(url)
-                unless item.title[@filters[url]]
-                  add_seen(link)
-                  next
-                end
+              unless feed.matches_regexp?(item.title)
+                add_seen(link)
+                next
               end
 
               @log.debug('on_new_item event ' + link)
 
               begin
-                on_new_item(link)
+                on_new_item(link, feed)
               rescue Client::Unauthorized, Errno::ECONNREFUSED, Timeout::Error
                 # Do not add to seen file.
               else
