@@ -49,9 +49,9 @@ It should at least contain a list of feeds:
 Feed item titles can be filtered by a regular expression:
 
     feeds:
-      - url: http://example.com/feed1:
+      - url: http://example.com/feed1
         regexp: foo
-      - url: http://example.com/feed2:
+      - url: http://example.com/feed2
         regexp: (foo|bar)
 
 Feeds can also be configured to download files to specific directory:
