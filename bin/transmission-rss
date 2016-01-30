@@ -154,19 +154,26 @@ aggregator.on_new_item do |torrent_file, feed|
   client.add_torrent(torrent_file, :url, paused: config.add_paused, download_path: feed.download_path)
 end
 
-# Save PID.
-if config.pid_file
-  log.debug('wrote pid to ' + config.pid_file)
-  File.write(config.pid_file, Process.pid)
-end
-
 # Start the aggregation process.
 begin
   if config.fork
     pid = fork { aggregator.run(config.update_interval) }
     log.debug('forked ' + pid.to_s)
+
+    # Save PID.
+    if config.pid_file
+      log.debug('wrote pid to ' + config.pid_file)
+      File.write(config.pid_file, pid)
+    end
   else
     log.debug('pid ' + Process.pid.to_s)
+
+    # Save PID.
+    if config.pid_file
+      log.debug('wrote pid to ' + config.pid_file)
+      File.write(config.pid_file, Process.pid)
+    end
+
     aggregator.run(config.update_interval)
   end
 rescue Interrupt
