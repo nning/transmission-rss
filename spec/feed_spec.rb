@@ -49,4 +49,11 @@ describe Feed do
     expect(feed.matches_regexp?("myfile.doc")).to eq(false)
     expect(feed.matches_regexp?("MYFILE.PDF")).to eq(true)
   end
+
+  it "should union array of regexes" do
+    feed = Feed.new("regexp" => ["foo", "bar"])
+    expect(feed.matches_regexp?("foo")).to be
+    expect(feed.matches_regexp?("bar")).to be
+    expect(feed.matches_regexp?("daz")).not_to be
+  end
 end
