@@ -1,6 +1,11 @@
 transmission-rss
 ================
 
+[![Gem Version](https://img.shields.io/gem/v/transmission-rss.svg)](http://badge.fury.io/rb/transmission-rss)
+[![Build Status](https://img.shields.io/travis/nning/transmission-rss.svg)](https://travis-ci.org/nning/transmission-rss)
+[![Coverage Status](https://img.shields.io/coveralls/nning/transmission-rss.svg)](https://coveralls.io/r/nning/transmission-rss)
+[![Code Climate](https://img.shields.io/codeclimate/github/nning/transmission-rss.svg)](https://codeclimate.com/github/nning/transmission-rss)
+
 transmission-rss is basically a workaround for transmission's lack of the
 ability to monitor RSS feeds and automatically add enclosed torrent links.
 

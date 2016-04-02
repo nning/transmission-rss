@@ -1,3 +1,6 @@
+require 'coveralls'
+Coveralls.wear!
+
 basedir = File.join(File.dirname(__FILE__), '..')
 
 require File.join(basedir, 'lib', 'transmission-rss')
