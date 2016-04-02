@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    transmission-rss (0.1.24)
+    transmission-rss (0.1.26)
       open_uri_redirections (~> 0.1, >= 0.1.4)
 
 GEM
@@ -9,20 +9,20 @@ GEM
   specs:
     diff-lcs (1.2.5)
     open_uri_redirections (0.2.1)
-    rake (10.4.2)
-    rspec (3.3.0)
-      rspec-core (~> 3.3.0)
-      rspec-expectations (~> 3.3.0)
-      rspec-mocks (~> 3.3.0)
-    rspec-core (3.3.2)
-      rspec-support (~> 3.3.0)
-    rspec-expectations (3.3.1)
+    rake (11.1.2)
+    rspec (3.4.0)
+      rspec-core (~> 3.4.0)
+      rspec-expectations (~> 3.4.0)
+      rspec-mocks (~> 3.4.0)
+    rspec-core (3.4.4)
+      rspec-support (~> 3.4.0)
+    rspec-expectations (3.4.0)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.3.0)
-    rspec-mocks (3.3.2)
+      rspec-support (~> 3.4.0)
+    rspec-mocks (3.4.1)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.3.0)
-    rspec-support (3.3.0)
+      rspec-support (~> 3.4.0)
+    rspec-support (3.4.1)
 
 PLATFORMS
   ruby
@@ -33,4 +33,4 @@ DEPENDENCIES
   transmission-rss!
 
 BUNDLED WITH
-   1.10.6
+   1.11.2
