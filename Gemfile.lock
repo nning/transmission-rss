@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    transmission-rss (0.1.26)
+    transmission-rss (0.1.27.pre)
       open_uri_redirections (~> 0.1, >= 0.1.4)
 
 GEM

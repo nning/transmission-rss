@@ -85,7 +85,7 @@ config.load(defaults)
 log = Log.instance
 log.target = config.log_target
 log.level = Logger::DEBUG
-log.formatter = proc do |sev, time, prog, msg|
+log.formatter = proc do |sev, time, _, msg|
   "#{time.to_i}(#{sev.downcase}) #{msg}\n"
 end
 
@@ -103,7 +103,7 @@ if !(custom_config || ENV['HOME'].nil?)
   prefix = ENV['XDG_CONFIG_HOME'] || File.expand_path('~/.config')
   path   = File.join(prefix, 'transmission-rss', 'config.yml')
 
-  if File.exists?(path)
+  if File.exist?(path)
     log.debug('loading user config ' + path)
     config.load(path)
   end

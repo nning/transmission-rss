@@ -34,7 +34,7 @@ module TransmissionRSS
       FileUtils.mkdir_p(File.dirname(@seenfile))
 
       # Touch seen torrents store file.
-      unless File.exists?(@seenfile)
+      unless File.exist?(@seenfile)
         FileUtils.touch(@seenfile)
       end
 
@@ -52,13 +52,13 @@ module TransmissionRSS
     def run(interval = 600)
       @log.debug('aggregator start')
 
-      while true
+      loop do
         @feeds.each do |feed|
           @log.debug('aggregate ' + feed.url)
 
           begin
             content = open(feed.url, allow_redirections: :safe).read
-          rescue Exception => e
+          rescue StandardError => e
             @log.debug("retrieval error (#{e.class}: #{e.message})")
             next
           end
@@ -68,44 +68,22 @@ module TransmissionRSS
           content = decompress(content) if RUBY_VERSION == '1.9.3'
           begin
             items = RSS::Parser.parse(content, false).items
-          rescue Exception => e
+          rescue StandardError => e
             @log.debug("parse error (#{e.class}: #{e.message})")
             next
           end
 
           items.each do |item|
-            link = item.enclosure.url rescue item.link
-
-            # Item contains no link.
-            next if link.nil?
-
-            # Link is not a String directly.
-            link = link.href if link.class != String
-
-            # The link is not in +@seen+ Array.
-            unless seen?(link)
-              # Skip if filter defined and not matching.
-              unless feed.matches_regexp?(item.title)
-                add_seen(link)
-                next
-              end
-
-              @log.debug('on_new_item event ' + link)
-
-              begin
-                on_new_item(link, feed)
-              rescue Client::Unauthorized, Errno::ECONNREFUSED, Timeout::Error
-                # Do not add to seen file.
-              else
-                add_seen(link)
-              end
-            end
+            result = process_link(feed, item)
+            next if result.nil?
           end
         end
 
         sleep(interval)
       end
     end
+
+    private
 
     # To add a link into the list of seen links.
     def add_seen(link)
@@ -116,17 +94,46 @@ module TransmissionRSS
       end
     end
 
-    # To test if a link is in the list of seen links.
-    def seen?(link)
-      @seen.include?(link)
-    end
-
-    private
-
     def decompress(string)
       Zlib::GzipReader.new(StringIO.new(string)).read
     rescue Zlib::GzipFile::Error, Zlib::Error
       string
+    end
+
+    def process_link(feed, item)
+      link = item.enclosure.url rescue item.link
+
+      # Item contains no link.
+      return if link.nil?
+
+      # Link is not a String directly.
+      link = link.href if link.class != String
+
+      # The link is not in +@seen+ Array.
+      unless seen?(link)
+        # Skip if filter defined and not matching.
+        unless feed.matches_regexp?(item.title)
+          add_seen(link)
+          return
+        end
+
+        @log.debug('on_new_item event ' + link)
+
+        begin
+          on_new_item(link, feed)
+        rescue Client::Unauthorized, Errno::ECONNREFUSED, Timeout::Error
+          @log.debug('not added to seen file ' + link)
+        else
+          add_seen(link)
+        end
+      end
+
+      return link
+    end
+
+    # To test if a link is in the list of seen links.
+    def seen?(link)
+      @seen.include?(link)
     end
   end
 end

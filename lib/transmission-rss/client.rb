@@ -40,7 +40,7 @@ module TransmissionRSS
 
       post = Net::HTTP::Post.new \
         '/transmission/rpc',
-        initheader = {
+        {
           'Content-Type' => 'application/json',
           'X-Transmission-Session-Id' => sid
         }

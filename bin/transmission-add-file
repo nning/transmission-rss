@@ -61,7 +61,7 @@ config.load({
 log = Log.instance
 log.target = config.log_target
 log.level = Logger::DEBUG
-log.formatter = proc do |sev, time, prog, msg|
+log.formatter = proc do |sev, time, _, msg|
   "#{time.to_i}(#{sev.downcase}) #{msg}\n"
 end
 

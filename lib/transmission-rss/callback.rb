@@ -9,7 +9,7 @@ module TransmissionRSS
             if block
               @callbacks[name] = block
             elsif @callbacks[name]
-              @callbacks[name].call *args
+              @callbacks[name].call(*args)
             end
           end
         end
