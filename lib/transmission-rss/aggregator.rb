@@ -21,27 +21,10 @@ module TransmissionRSS
       @feeds = feeds.map { |config| TransmissionRSS::Feed.new(config) }
 
       # Nothing seen, yet.
-      @seen = []
+      @seen = SeenFile.new(nil, seen_file)
 
       # Initialize log instance.
       @log = Log.instance
-
-      # Generate path for seen torrents store file.
-      @seenfile = seen_file || File.join(Etc.getpwuid.dir,
-        '/.config/transmission/seen-torrents.conf')
-
-      # Make directories in path if they are not existing.
-      FileUtils.mkdir_p(File.dirname(@seenfile))
-
-      # Touch seen torrents store file.
-      unless File.exist?(@seenfile)
-        FileUtils.touch(@seenfile)
-      end
-
-      # Open file, read torrent URLs and add to +@seen+.
-      open(@seenfile).readlines.each do |line|
-        @seen.push(line.chomp)
-      end
 
       # Log number of +@seen+ URIs.
       @log.debug(@seen.size.to_s + ' uris from seenfile')
@@ -85,15 +68,6 @@ module TransmissionRSS
 
     private
 
-    # To add a link into the list of seen links.
-    def add_seen(link)
-      @seen.push(link)
-
-      File.open(@seenfile, 'w') do |file|
-        file.write(@seen.join("\n"))
-      end
-    end
-
     def decompress(string)
       Zlib::GzipReader.new(StringIO.new(string)).read
     rescue Zlib::GzipFile::Error, Zlib::Error
@@ -110,10 +84,10 @@ module TransmissionRSS
       link = link.href if link.class != String
 
       # The link is not in +@seen+ Array.
-      unless seen?(link)
+      unless @seen.include?(link)
         # Skip if filter defined and not matching.
         unless feed.matches_regexp?(item.title)
-          add_seen(link)
+          @seen.add(link)
           return
         end
 
@@ -124,16 +98,11 @@ module TransmissionRSS
         rescue Client::Unauthorized, Errno::ECONNREFUSED, Timeout::Error
           @log.debug('not added to seen file ' + link)
         else
-          add_seen(link)
+          @seen.add(link)
         end
       end
 
       return link
-    end
-
-    # To test if a link is in the list of seen links.
-    def seen?(link)
-      @seen.include?(link)
     end
   end
 end
