@@ -4,34 +4,30 @@ module TransmissionRSS
   # Persist seen torrent URLs
   class SeenFile
     DEFAULT_LEGACY_PATH =
-      File.join(Etc.getpwuid.dir, '/.config/transmission/seen-torrents.conf')
+      File.join(Etc.getpwuid.dir, '.config/transmission/seen-torrents.conf')
 
     DEFAULT_PATH =
-      File.join(Etc.getpwuid.dir, '/.config/transmission/seen')
+      File.join(Etc.getpwuid.dir, '.config/transmission/seen')
 
     def initialize(path = nil, legacy_path = nil)
-      legacy_path ||= DEFAULT_LEGACY_PATH
-      path        ||= DEFAULT_PATH
+      @legacy_path = legacy_path || DEFAULT_LEGACY_PATH
+      @path        = path || DEFAULT_PATH
 
-      legacy = !Dir.exist?(path)
+      @seen = Set.new
 
-      @legacy_path = legacy_path
-      @path        = path
-      @seen        = []
-
-      if legacy
+      if !File.exist?(@path)
         initialize_legacy_path!
 
         # Open file, read torrent URLs and add to +@seen+.
-        @seen = open(@legacy_path).readlines.map(&:chomp)
+        @seen = Set.new(open(@legacy_path).readlines.map(&:chomp))
       end
     end
 
     def add(url)
       @seen << url
 
-      File.open(@legacy_path, 'w') do |file|
-        file.write(@seen.join("\n"))
+      open(@legacy_path, 'a') do |f|
+        f.write(url + "\n")
       end
     end
 
