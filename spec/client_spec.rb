@@ -3,9 +3,11 @@ require 'spec_helper'
 describe Client do
   describe '#session_id' do
     it 'returns valid session id' do
-      id = Client.new.get_session_id
-      expect(id.class).to eq(String)
-      expect(id.size).to eq(48)
+      VCR.use_cassette('session_id') do
+        id = Client.new.get_session_id
+        expect(id.class).to eq(String)
+        expect(id.size).to eq(48)
+      end
     end
   end
 
