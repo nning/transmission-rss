@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe SeenFile do
   before do
-    @seen_file = SeenFile.new('/tmp/rspec/a', '/tmp/rspec/b')
+    @seen_file = SeenFile.new('spec/tmp/a', 'spec/tmp/b')
     @url = 'http://example.com/foo'
 
     @seen_file.clear!
