@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe SeenFile do
-  before do
+  before(:each, :init) do
     @seen_file = SeenFile.new('spec/tmp/a', 'spec/tmp/b')
     @url = 'http://example.com/foo'
 
@@ -9,7 +9,11 @@ describe SeenFile do
     @seen_file.add(@url)
   end
 
-  describe '#add' do
+  after do
+    FileUtils.rm_rf('spec/tmp')
+  end
+
+  describe '#add', :init do
     it 'saves entry in instance' do
       expect(@seen_file.include?(@url)).to be true
     end
@@ -19,7 +23,7 @@ describe SeenFile do
     end
   end
 
-  describe '#clear' do
+  describe '#clear', :init do
     it 'removes all entries' do
       @seen_file.clear!
 
@@ -28,9 +32,17 @@ describe SeenFile do
     end
   end
 
-  describe '#size' do
+  describe '#size', :init do
     it 'returns size' do
       expect(@seen_file.size).to eq(1)
     end
+  end
+
+  describe '.migrate!' do
+    before do
+      @seen_file = SeenFile.new('spec/tmp/a', 'spec/tmp/b')
+    end
+
+    pending
   end
 end

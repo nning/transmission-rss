@@ -1,3 +1,4 @@
+require 'digest'
 require 'etc'
 
 module TransmissionRSS
@@ -11,41 +12,68 @@ module TransmissionRSS
     DEFAULT_PATH =
       File.join(Etc.getpwuid.dir, '.config/transmission/seen')
     
-    def_delegator  :@seen, :clear, :clear!
-    def_delegators :@seen, :include?, :size, :to_a
+    def_delegators :@seen, :size, :to_a
 
     def initialize(path = nil, legacy_path = nil)
       @legacy_path = legacy_path || DEFAULT_LEGACY_PATH
       @path        = path || DEFAULT_PATH
 
-      @seen = Set.new
+      initialize_path!
+      migrate!
 
-      if !File.exist?(@path)
-        initialize_legacy_path!
-
-        # Open file, read torrent URLs and add to +@seen+.
-        @seen = Set.new(open(@legacy_path).readlines.map(&:chomp))
-      end
+      @seen = Set.new(file_to_array(@path))
     end
 
     def add(url)
-      @seen << url
+      hash = digest(url)
+      
+      return if @seen.include?(hash)
 
-      open(@legacy_path, 'a') do |f|
-        f.write(url + "\n")
+      @seen << hash
+
+      open(@path, 'a') do |f|
+        f.write(hash + "\n")
       end
+    end
+
+    def clear!
+      @seen.clear
+      open(@path, 'w') {}
+    end
+
+    def include?(url)
+      @seen.include?(digest(url))
     end
 
     private
 
-    def initialize_legacy_path!
-      return if File.exist?(@legacy_path)
+    def digest(s)
+      Digest::SHA256.hexdigest(s)
+    end
 
-      # Make directories in path if they are not existing.
-      FileUtils.mkdir_p(File.dirname(@legacy_path))
+    def file_to_array(path)
+      open(path, 'r').readlines.map(&:chomp)
+    end
 
-      # Touch seen torrents store file.
-      FileUtils.touch(@legacy_path)
+    def initialize_path!
+      return if File.exist?(@path)
+
+      FileUtils.mkdir_p(File.dirname(@path))
+      FileUtils.touch(@path)
+    end
+
+    def migrate!
+      return unless File.exist?(@legacy_path)
+
+      legacy_seen = file_to_array(@legacy_path)
+      hashes = legacy_seen.map { |url| digest(url) }
+
+      open(@path, 'w') do |f|
+        f.write(hashes.join("\n"))
+        f.write("\n")
+      end
+
+      FileUtils.rm_f(@legacy_path)
     end
   end
 end
