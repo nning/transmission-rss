@@ -18,7 +18,7 @@ describe Client do
     end
 
     it 'should raise exception on timeout' do
-      c = Client.new('localhost', 9091, nil, timeout: 0.00000001)
+      c = Client.new('localhost', 9091, nil, timeout: 1.0e-25)
       expect { c.get_session_id }.to raise_exception(Timeout::Error)
     end
   end
