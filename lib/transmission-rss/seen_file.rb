@@ -1,5 +1,6 @@
 require 'digest'
 require 'etc'
+require 'fileutils'
 
 module TransmissionRSS
   # Persist seen torrent URLs

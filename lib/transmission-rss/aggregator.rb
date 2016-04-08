@@ -1,5 +1,3 @@
-require 'etc'
-require 'fileutils'
 require 'open-uri'
 require 'open_uri_redirections'
 require 'rss'

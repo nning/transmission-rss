@@ -1,8 +1,11 @@
 require 'spec_helper'
 
 describe SeenFile do
+  let(:a) { 'spec/tmp/a' }
+  let(:b) { 'spec/tmp/b' }
+
   before(:each, :init) do
-    @seen_file = SeenFile.new('spec/tmp/a', 'spec/tmp/b')
+    @seen_file = SeenFile.new(a, b)
     @url = 'http://example.com/foo'
 
     @seen_file.clear!
@@ -38,11 +41,37 @@ describe SeenFile do
     end
   end
 
-  describe '.migrate!' do
+  describe '#migrate!' do
+    subject { SeenFile.new(a, b) }
+    let(:urls) { ['http://example.com/foo', 'http://example.com/bar', nil] }
+
     before do
-      @seen_file = SeenFile.new('spec/tmp/a', 'spec/tmp/b')
+      FileUtils.mkdir_p(File.dirname(b))
+      open(b, 'w') { |f| f.write(urls.join("\n")) }
     end
 
-    pending
+    it 'new seen file should URLs from legacy one' do
+      urls.compact.each do |url|
+        expect(subject.include?(url)).to be true
+      end
+    end
+  end
+
+  describe '#file_to_array', :init do
+    subject { @seen_file.send(:file_to_array, a) }
+    let(:hash) { @seen_file.send(:digest, @url) }
+
+    it 'returns array' do
+      expect(subject).to be_a Array
+    end
+
+    it 'has correct size' do
+      expect(subject.empty?).to be false
+      expect(subject.size).to eq(1)
+    end
+
+    it 'has correct content' do
+      expect(subject.include?(hash)).to be true
+    end
   end
 end
