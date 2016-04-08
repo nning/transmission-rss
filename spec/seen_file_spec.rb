@@ -1,19 +1,19 @@
 require 'spec_helper'
 
 describe SeenFile do
-  let(:a) { 'spec/tmp/a' }
-  let(:b) { 'spec/tmp/b' }
+  A = tmp_path(:a)
+  B = tmp_path(:b)
 
   before(:each, :init) do
-    @seen_file = SeenFile.new(a, b)
+    @seen_file = SeenFile.new(A, B)
     @url = 'http://example.com/foo'
 
     @seen_file.clear!
     @seen_file.add(@url)
   end
 
-  after do
-    FileUtils.rm_rf('spec/tmp')
+  after(:all) do
+    FileUtils.rm_rf(File.dirname(A))
   end
 
   describe '#add', :init do
@@ -22,7 +22,7 @@ describe SeenFile do
     end
 
     it 'saves entry over instances' do
-      expect(SeenFile.new.include?(@url)).to be true
+      expect(SeenFile.new(A, B).include?(@url)).to be true
     end
   end
 
@@ -42,23 +42,23 @@ describe SeenFile do
   end
 
   describe '#migrate!' do
-    subject { SeenFile.new(a, b) }
-    let(:urls) { ['http://example.com/foo', 'http://example.com/bar', nil] }
+    subject { SeenFile.new(A, B) }
+    let(:urls) { ['http://example.com/foo', 'http://example.com/bar'] }
 
     before do
-      FileUtils.mkdir_p(File.dirname(b))
-      open(b, 'w') { |f| f.write(urls.join("\n")) }
+      FileUtils.mkdir_p(File.dirname(B))
+      open(B, 'w') { |f| f.write(urls.join("\n") + "\n") }
     end
 
-    it 'new seen file should URLs from legacy one' do
-      urls.compact.each do |url|
+    it 'new seen file should include URLs from legacy one' do
+      urls.each do |url|
         expect(subject.include?(url)).to be true
       end
     end
   end
 
   describe '#file_to_array', :init do
-    subject { @seen_file.send(:file_to_array, a) }
+    subject { @seen_file.send(:file_to_array, A) }
     let(:hash) { @seen_file.send(:digest, @url) }
 
     it 'returns array' do
