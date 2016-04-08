@@ -89,22 +89,26 @@ module TransmissionRSS
 
       Timeout.timeout(@timeout) do
         @log.debug("request #@host:#@port")
-        Net::HTTP.new(@host, @port).start do |http|
-          http.request(data)
-        end
+        http_get(data)
       end
     rescue Errno::ECONNREFUSED
       @log.debug('connection refused')
       raise
     rescue Timeout::Error
       s  = 'connection timeout'
-      s += " (retry #{c})" if c > 0
+      s << " (retry #{c})" if c > 0
       @log.debug(s)
 
       c += 1
       retry unless c > 2
 
       raise
+    end
+
+    def http_get(data)
+      Net::HTTP.new(@host, @port).start do |http|
+        http.request(data)
+      end
     end
   end
 end

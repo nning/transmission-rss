@@ -9,17 +9,13 @@ describe Client do
         expect(id.size).to eq(48)
       end
     end
-  end
 
-  describe 'connection error' do
-    it 'should raise exception on refusal' do
-      c = Client.new('localhost', 65535)
-      expect { c.get_session_id }.to raise_exception(Errno::ECONNREFUSED)
-    end
-
-    it 'should raise exception on timeout' do
-      c = Client.new('localhost', 9091, nil, timeout: 1.0e-25)
-      expect { c.get_session_id }.to raise_exception(Timeout::Error)
+    [[Errno::ECONNREFUSED, 1], [Timeout::Error, 3]].each do |error, n|
+      it 'should raise ' + error.to_s do
+        c = Client.new
+        expect(c).to receive(:http_get).exactly(n).times.and_raise(error)
+        expect { c.get_session_id }.to raise_exception(error)
+      end
     end
   end
 end
