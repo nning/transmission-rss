@@ -6,6 +6,10 @@ require File.join(basedir, 'lib', 'transmission-rss')
 
 include TransmissionRSS
 
+def tmp_path(file)
+  File.join(Dir.tmpdir, 'rspec', file.to_s)
+end
+
 Coveralls.wear!
 
 Log.instance.target = File.open(File.join(basedir, 'log', 'test.log'), 'a')
