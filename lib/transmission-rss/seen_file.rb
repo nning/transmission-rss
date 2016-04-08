@@ -3,11 +3,16 @@ require 'etc'
 module TransmissionRSS
   # Persist seen torrent URLs
   class SeenFile
+    extend Forwardable
+
     DEFAULT_LEGACY_PATH =
       File.join(Etc.getpwuid.dir, '.config/transmission/seen-torrents.conf')
 
     DEFAULT_PATH =
       File.join(Etc.getpwuid.dir, '.config/transmission/seen')
+    
+    def_delegator  :@seen, :clear, :clear!
+    def_delegators :@seen, :include?, :size, :to_a
 
     def initialize(path = nil, legacy_path = nil)
       @legacy_path = legacy_path || DEFAULT_LEGACY_PATH
@@ -29,22 +34,6 @@ module TransmissionRSS
       open(@legacy_path, 'a') do |f|
         f.write(url + "\n")
       end
-    end
-
-    def clear!
-      @seen.clear
-    end
-
-    def include?(url)
-      @seen.include?(url)
-    end
-
-    def size
-      @seen.size
-    end
-
-    def to_a
-      @seen.to_a
     end
 
     private
