@@ -17,11 +17,11 @@ module TransmissionRSS
       @regexp.nil? || !(title =~ @regexp).nil?
     end
 
-    protected
+    private
 
-    def build_regexp(matcher)
-      matcher = Array(matcher).map{ |m| Regexp.new(m,Regexp::IGNORECASE) }
-      matcher.empty? ? nil : Regexp.union(matcher)
+    def build_regexp(matchers)
+      matchers = Array(matchers).map { |m| Regexp.new(m, Regexp::IGNORECASE) }
+      matchers.empty? ? nil : Regexp.union(matchers)
     end
   end
 end
