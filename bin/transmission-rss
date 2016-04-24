@@ -136,6 +136,11 @@ aggregator.on_new_item do |torrent_file, feed, download_path|
   client.add_torrent(torrent_file, :url, paused: config.add_paused, download_path: download_path)
 end
 
+# Callback for changes to the config.
+config.on_change do
+  aggregator.reinitialize!(config.feeds, seen_file: config.seen_file)
+end
+
 # Start the aggregation process.
 begin
   if config.fork

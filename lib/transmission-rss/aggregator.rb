@@ -13,6 +13,10 @@ module TransmissionRSS
     callback(:on_new_item) # Declare callback for new items.
 
     def initialize(feeds = [], options = {})
+      reinitialize!(feeds, options)
+    end
+
+    def reinitialize!(feeds = [], options = {})
       seen_file = options[:seen_file]
 
       # Prepare Array of feeds URLs.

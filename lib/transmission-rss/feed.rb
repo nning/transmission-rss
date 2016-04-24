@@ -3,12 +3,13 @@ module TransmissionRSS
     attr_reader :url, :regexp
 
     def initialize(config = {})
+      @download_paths = {}
+
       case config
       when Hash
         @url = URI.encode(config['url'] || config.keys.first)
 
         @download_path = config['download_path']
-        @download_paths = {}
 
         matchers = Array(config['regexp']).map do |e|
           e.is_a?(String) ? e : e['matcher']

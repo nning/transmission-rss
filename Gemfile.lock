@@ -3,6 +3,7 @@ PATH
   specs:
     transmission-rss (0.2.0.pre)
       open_uri_redirections (~> 0.1, >= 0.1.4)
+      rb-inotify (~> 0.9, >= 0.9.7)
 
 GEM
   remote: https://rubygems.org/
@@ -21,6 +22,7 @@ GEM
     docile (1.1.5)
     domain_name (0.5.25)
       unf (>= 0.0.5, < 1.0.0)
+    ffi (1.9.10)
     hashdiff (0.3.0)
     http-cookie (1.0.2)
       domain_name (~> 0.5)
@@ -29,6 +31,8 @@ GEM
     netrc (0.11.0)
     open_uri_redirections (0.2.1)
     rake (11.1.2)
+    rb-inotify (0.9.7)
+      ffi (>= 0.5.0)
     rest-client (1.8.0)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 3.0)

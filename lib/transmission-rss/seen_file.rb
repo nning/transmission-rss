@@ -1,11 +1,12 @@
 require 'digest'
 require 'etc'
 require 'fileutils'
+require 'forwardable'
 
 module TransmissionRSS
   # Persist seen torrent URLs
   class SeenFile
-    extend Forwardable
+    extend ::Forwardable
 
     DEFAULT_LEGACY_PATH =
       File.join(Etc.getpwuid.dir, '.config/transmission/seen-torrents.conf')
