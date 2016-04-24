@@ -63,7 +63,7 @@ Feed item titles can be filtered by a regular expression:
 Feeds can also be configured to download files to specific directory:
 
     feeds:
-      - url: http://example.com/feed1:
+      - url: http://example.com/feed1
         download_path: /home/user/Downloads
 
 ### All available options
