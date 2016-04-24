@@ -6,7 +6,7 @@ module TransmissionRSS
       case config
       when Hash
         @url = URI.encode(config['url'] || config.keys.first)
-        @regexp = Regexp.new(config['regexp'], Regexp::IGNORECASE) if config['regexp']
+        @regexp = build_regexp(config['regexp'])
         @download_path = config['download_path']
       else
         @url = config.to_s
@@ -15,6 +15,13 @@ module TransmissionRSS
 
     def matches_regexp?(title)
       @regexp.nil? || !(title =~ @regexp).nil?
+    end
+
+    protected
+
+    def build_regexp(matcher)
+      matcher = Array(matcher).map{ |m| Regexp.new(m,Regexp::IGNORECASE) }
+      matcher.empty? ? nil : Regexp.union(matcher)
     end
   end
 end
