@@ -32,6 +32,7 @@ Installation
 
     git clone https://github.com/nning/transmission-rss
     cd transmission-rss
+	bundle
     gem build transmission-rss.gemspec
     gem install transmission-rss-*.gem
 
