@@ -22,6 +22,8 @@ module TransmissionRSS
     # Merge Config Hash with Hash from YAML file.
     def merge_yaml!(path)
       self.merge! YAML.load_file(path)
+    rescue TypeError
+      # If YAML loading fails, .load_file returns `false`.
     end
   end
 end
