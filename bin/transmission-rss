@@ -59,27 +59,9 @@ options.each do |option, argument|
   end
 end
 
-# Seems to be necessary when called from gem installation.
+# Module prefix seems to be necessary when called from gem installation.
 # Otherwise Config is somehow mixed up with RbConfig.
 config = TransmissionRSS::Config.instance
-
-# Default configuration.
-defaults = {
-  'feeds' => [],
-  'update_interval' => 600,
-  'add_paused' => false,
-  'server' => {
-    'host' => 'localhost',
-    'port' => 9091
-  },
-  'login' => nil,
-  'log_target' => $stderr,
-  'fork' => false,
-  'pid_file' => false,
-  'privileges' => {},
-  'seen_file' => nil
-}
-config.load(defaults)
 
 # Initialize a log instance and configure it.
 log = Log.instance

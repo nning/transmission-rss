@@ -44,19 +44,6 @@ usage_message(config_file) if ARGV.empty?
 # Otherwise Config is somehow mixed up with RbConfig.
 config = TransmissionRSS::Config.instance
 
-# Default configuration.
-config.load({
-  'feeds' => [],
-  'update_interval' => 600,
-  'add_paused' => false,
-  'server' => {
-    'host' => 'localhost',
-    'port' => 9091
-  },
-  'log_target' => $stderr,
-  'privileges' => {}
-})
-
 # Initialize a log instance and configure it.
 log = Log.instance
 log.target = config.log_target
