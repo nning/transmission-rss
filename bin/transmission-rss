@@ -150,8 +150,8 @@ aggregator = Aggregator.new(config.feeds, seen_file: config.seen_file)
 client = Client.new(config.server.host, config.server.port, config.login)
 
 # Callback for a new item on one of the feeds.
-aggregator.on_new_item do |torrent_file, feed|
-  client.add_torrent(torrent_file, :url, paused: config.add_paused, download_path: feed.download_path)
+aggregator.on_new_item do |torrent_file, feed, download_path|
+  client.add_torrent(torrent_file, :url, paused: config.add_paused, download_path: download_path)
 end
 
 # Start the aggregation process.

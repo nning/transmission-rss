@@ -87,6 +87,12 @@ transmission is configured for HTTP basic authentication.
         regexp:
           - match1
           - match2
+      - url: http://example.com/feed5
+        regexp:
+          - matcher: match1
+		  	download_path: /home/user/match1
+          - matcher: match2
+		  	download_path: /home/user/match2
 
     update_interval: 600
 

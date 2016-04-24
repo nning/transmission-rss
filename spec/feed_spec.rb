@@ -56,4 +56,18 @@ describe Feed do
     expect(feed.matches_regexp?('bar')).to be
     expect(feed.matches_regexp?('daz')).not_to be
   end
+
+  it 'should return download_path per regexp' do
+    feed = Feed.new('download_path' => '/tmp', 'regexp' => [{'matcher' => 'foo', 'download_path' => '/tmp/foo'}, {'matcher' => 'bar'}])
+    expect(feed.download_path).to eq('/tmp')
+    expect(feed.download_path('foo')).to eq('/tmp/foo')
+    expect(feed.download_path('bar')).to eq('/tmp')
+  end
+
+  it 'should return download_path per regexp if feed download_path is nil' do
+    feed = Feed.new('regexp' => [{'matcher' => 'foo', 'download_path' => '/tmp/foo'}, {'matcher' => 'bar'}])
+    expect(feed.download_path).to eq(nil)
+    expect(feed.download_path('foo')).to eq('/tmp/foo')
+    expect(feed.download_path('bar')).to eq(nil)
+  end
 end
