@@ -1,5 +1,5 @@
 require 'pathname'
-require 'rb-inotify'
+require 'rb-inotify' if linux?
 require 'singleton'
 require 'yaml'
 
@@ -59,7 +59,7 @@ module TransmissionRSS
     rescue TypeError
       # If YAML loading fails, .load_file returns `false`.
     else
-      watch_file(path) if watch
+      watch_file(path) if watch && linux?
     end
 
     def reset!
