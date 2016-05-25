@@ -38,6 +38,7 @@ feeds:
 #server:
 #  host: localhost
 #  port: 9091
+#  rpc_path: /transmission/rpc
 
 # Uncomment if transmission server requires login.
 
