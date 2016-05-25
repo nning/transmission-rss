@@ -102,6 +102,7 @@ transmission is configured for HTTP basic authentication.
     server:
       host: localhost
       port: 9091
+      rpc_path: /transmission/rpc
 
 	login:
 	  username: transmission

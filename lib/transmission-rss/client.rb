@@ -10,8 +10,8 @@ module TransmissionRSS
     class Unauthorized < StandardError
     end
 
-    def initialize(host = 'localhost', port = 9091, login = nil, options = {})
-      @host, @port, @login = host, port, login
+    def initialize(host = 'localhost', port = 9091, rpc_path = '/transmission/rpc', login = nil, options = {})
+      @host, @port, @rpc_path, @login = host, port, rpc_path, login
       @timeout = options[:timeout] || 5
       @log = TransmissionRSS::Log.instance
     end
@@ -39,7 +39,7 @@ module TransmissionRSS
       raise Unauthorized unless sid
 
       post = Net::HTTP::Post.new \
-        '/transmission/rpc',
+        @rpc_path,
         {
           'Content-Type' => 'application/json',
           'X-Transmission-Session-Id' => sid
@@ -58,7 +58,7 @@ module TransmissionRSS
 
     # Get transmission session id.
     def get_session_id
-      get = Net::HTTP::Get.new('/transmission/rpc')
+      get = Net::HTTP::Get.new(@rpc_path)
 
       auth(get)
 

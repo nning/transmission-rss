@@ -42,7 +42,8 @@ module TransmissionRSS
         'add_paused' => false,
         'server' => {
           'host' => 'localhost',
-          'port' => 9091
+          'port' => 9091,
+          'rpc_path' => '/transmission/rpc'
         },
         'login' => nil,
         'log_target' => $stderr,
