@@ -10,10 +10,14 @@ module TransmissionRSS
     class Unauthorized < StandardError
     end
 
-    def initialize(host = 'localhost', port = 9091, rpc_path = '/transmission/rpc', login = nil, options = {})
-      @host, @port, @rpc_path, @login = host, port, rpc_path, login
-      @timeout = options[:timeout] || 5
-      @log = TransmissionRSS::Log.instance
+    def initialize(server = {}, login = nil, options = {})
+      @host     = server[:host] || 'localhost'
+      @port     = server[:port] || 9091
+      @rpc_path = server[:rpc_path] || '/transmission/rpc'
+      @login    = login
+
+      @timeout  = options[:timeout] || 5
+      @log      = TransmissionRSS::Log.instance
     end
 
     # POST json packed torrent add command.
