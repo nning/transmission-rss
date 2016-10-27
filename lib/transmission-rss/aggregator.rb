@@ -12,6 +12,8 @@ module TransmissionRSS
     extend Callback
     callback(:on_new_item) # Declare callback for new items.
 
+    attr_reader :seen
+
     def initialize(feeds = [], options = {})
       reinitialize!(feeds, options)
     end

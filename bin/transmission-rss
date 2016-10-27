@@ -18,6 +18,9 @@ dofork = false
 # No PID file by default.
 pid_file = false
 
+# Seen file not reset by default.
+reset_seen_file = false
+
 # Shows a summary of the command line options.
 def usage_message(config_file)
   $stderr << "#{File.basename $0} [options]
@@ -27,6 +30,7 @@ Adds torrents from rss feeds to transmission web frontend.
   -f          Fork into background after startup.
   -h          This help.
   -p <file>   Write PID to file.
+  -r          Reset seenfile on startup.
   -v          Show program version and exit.
 
 "
@@ -39,6 +43,7 @@ options = GetoptLong.new \
   ['-f', GetoptLong::NO_ARGUMENT],
   ['-h', GetoptLong::NO_ARGUMENT],
   ['-p', GetoptLong::REQUIRED_ARGUMENT],
+  ['-r', GetoptLong::NO_ARGUMENT],
   ['-v', GetoptLong::NO_ARGUMENT]
 
 # Parse given options.
@@ -53,6 +58,8 @@ options.each do |option, argument|
       usage_message(config_file)
     when '-p'
       pid_file = argument
+    when '-r'
+      reset_seen_file = true
     when '-v'
       puts TransmissionRSS::VERSION
       exit
@@ -127,6 +134,11 @@ end
 
 # Initialize feed aggregator.
 aggregator = Aggregator.new(config.feeds, seen_file: config.seen_file)
+
+if reset_seen_file
+  aggregator.seen.clear! 
+  log.debug('seenfile reset')
+end
 
 # Initialize communication to transmission.
 client = Client.new(config.server, config.login)
