@@ -118,6 +118,8 @@ transmission is configured for HTTP basic authentication.
 
     pid_file: false
 
+	seen_file: ~/.config/transmission/seen
+
 Daemonized Startup
 ------------------
 
