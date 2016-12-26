@@ -146,7 +146,10 @@ client = Client.new(config.server, config.login)
 
 # Callback for a new item on one of the feeds.
 aggregator.on_new_item do |torrent_file, feed, download_path|
-  client.add_torrent(torrent_file, :url, paused: config.add_paused, download_path: download_path)
+  client.add_torrent(torrent_file, :url,
+    paused: config.add_paused,
+    download_path: download_path,
+    seed_ratio_limit: feed.config.seed_ratio_limit)
 end
 
 # Callback for changes to the config.

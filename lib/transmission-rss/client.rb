@@ -49,22 +49,60 @@ module TransmissionRSS
           'X-Transmission-Session-Id' => sid
         }
 
-      auth(post)
+      add_basic_auth(post)
 
       post.body = hash.to_json
 
       response = request(post)
+      response = JSON.parse(response.body)
 
-      result = JSON.parse(response.body).result
+      id = get_id_from_response(response)
 
-      @log.debug('add_torrent result: ' + result)
+      log_message = 'add_torrent result: ' + response.result
+      log_message << ' (id ' + id.to_s + ')' if id
+      @log.debug(log_message)
+
+      if id && options[:seed_ratio_limit]
+        set_torrent(id, options) 
+      end
+    end
+
+    def set_torrent(id, options = {})
+      hash = {
+        'method' => 'torrent-set',
+        'arguments' => {
+          'ids' => [id],
+          'seed-ratio-limit' => options[:seed_ratio_limit].to_f,
+          'seed-ratio-mode' => 1
+        }
+      }
+
+      sid = get_session_id
+      raise Unauthorized unless sid
+
+      post = Net::HTTP::Post.new \
+        @rpc_path,
+        {
+          'Content-Type' => 'application/json',
+          'X-Transmission-Session-Id' => sid
+        }
+
+      add_basic_auth(post)
+
+      post.body = hash.to_json
+      @log.debug(hash.to_json)
+
+      response = request(post)
+      response = JSON.parse(response.body)
+
+      @log.debug(response)
     end
 
     # Get transmission session id.
     def get_session_id
       get = Net::HTTP::Get.new(@rpc_path)
 
-      auth(get)
+      add_basic_auth(get)
 
       response = request(get)
 
@@ -82,9 +120,19 @@ module TransmissionRSS
 
     private
 
-    def auth(request)
-      unless @login.nil?
-        request.basic_auth(@login['username'], @login['password'])
+    def add_basic_auth(request)
+      return if @login.nil?
+      request.basic_auth(@login['username'], @login['password'])
+    end
+
+    def get_id_from_response(response)
+      response.arguments.first.last.id
+    rescue
+    end
+
+    def http_request(data)
+      Net::HTTP.new(@host, @port).start do |http|
+        http.request(data)
       end
     end
 
@@ -93,7 +141,7 @@ module TransmissionRSS
 
       Timeout.timeout(@timeout) do
         @log.debug("request #@host:#@port")
-        http_get(data)
+        http_request(data)
       end
     rescue Errno::ECONNREFUSED
       @log.debug('connection refused')
@@ -107,12 +155,6 @@ module TransmissionRSS
       retry unless c > 2
 
       raise
-    end
-
-    def http_get(data)
-      Net::HTTP.new(@host, @port).start do |http|
-        http.request(data)
-      end
     end
   end
 end

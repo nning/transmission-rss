@@ -13,7 +13,7 @@ describe Client do
     [[Errno::ECONNREFUSED, 1], [Timeout::Error, 3]].each do |error, n|
       it 'should raise ' + error.to_s do
         c = Client.new
-        expect(c).to receive(:http_get).exactly(n).times.and_raise(error)
+        expect(c).to receive(:http_request).exactly(n).times.and_raise(error)
         expect { c.get_session_id }.to raise_exception(error)
       end
     end

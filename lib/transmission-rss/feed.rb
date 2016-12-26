@@ -1,12 +1,14 @@
 module TransmissionRSS
   class Feed
-    attr_reader :url, :regexp
+    attr_reader :url, :regexp, :config
 
     def initialize(config = {})
       @download_paths = {}
 
       case config
       when Hash
+        @config = config
+
         @url = URI.encode(config['url'] || config.keys.first)
 
         @download_path = config['download_path']
