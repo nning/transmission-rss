@@ -99,6 +99,7 @@ if !(custom_config || ENV['HOME'].nil?)
 end
 
 # Print current config.
+log.debug('version ' + VERSION)
 log.debug(config)
 
 # Fork value from command line.
