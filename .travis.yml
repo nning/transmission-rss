@@ -20,6 +20,7 @@ notifications:
   email: false
 
 install:
+  - gem install bundler
   - bundle install --jobs=3 --retry=3
 
 script:
