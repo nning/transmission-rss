@@ -7,14 +7,14 @@ os:
 rvm:
   - ruby-head
   - 2.3
-  - jruby-9.1
+  - jruby-9.1.5.0
 
 matrix:
   fast_finish: true
   allow_failures:
     - os: osx
     - rvm: ruby-head
-    - rvm: jruby-9.1
+    - rvm: jruby-9.1.5.0
 
 notifications:
   email: false
