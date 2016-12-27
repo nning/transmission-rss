@@ -6,7 +6,8 @@ os:
 
 rvm:
   - ruby-head
-  - 2.3
+  - 2.4.0
+  - 1.9.3
   - jruby-9.1.5.0
 
 matrix:
@@ -14,6 +15,7 @@ matrix:
   allow_failures:
     - os: osx
     - rvm: ruby-head
+    - rvm: 1.9.3
     - rvm: jruby-9.1.5.0
 
 notifications:
