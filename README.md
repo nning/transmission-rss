@@ -32,7 +32,7 @@ Installation
 
     git clone https://github.com/nning/transmission-rss
     cd transmission-rss
-	bundle
+    bundle
     gem build transmission-rss.gemspec
     gem install transmission-rss-*.gem
 
@@ -66,6 +66,12 @@ Feeds can also be configured to download files to specific directory:
       - url: http://example.com/feed1
         download_path: /home/user/Downloads
 
+Setting the seed ratio limit is supported per feed:
+
+    feeds:
+      - url: http://example.com/feed1
+        seed_ratio_limit: 0
+
 ### All available options
 
 The following configuration file example contains every existing option
@@ -85,15 +91,17 @@ transmission is configured for HTTP basic authentication.
       - url: http://example.com/feed4
         download_path: /home/user/Downloads
       - url: http://example.com/feed4
+        seed_ratio_limit: 1
+      - url: http://example.com/feed4
         regexp:
           - match1
           - match2
       - url: http://example.com/feed5
         regexp:
           - matcher: match1
-		  	download_path: /home/user/match1
+            download_path: /home/user/match1
           - matcher: match2
-		  	download_path: /home/user/match2
+            download_path: /home/user/match2
 
     update_interval: 600
 
@@ -104,9 +112,9 @@ transmission is configured for HTTP basic authentication.
       port: 9091
       rpc_path: /transmission/rpc
 
-	login:
-	  username: transmission
-	  password: transmission
+    login:
+      username: transmission
+      password: transmission
 
     log_target: /var/log/transmissiond-rss.log
 
@@ -118,7 +126,7 @@ transmission is configured for HTTP basic authentication.
 
     pid_file: false
 
-	seen_file: ~/.config/transmission/seen
+    seen_file: ~/.config/transmission/seen
 
 Daemonized Startup
 ------------------

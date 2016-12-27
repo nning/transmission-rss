@@ -1,0 +1,78 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://localhost:9091/transmission/rpc
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 409
+      message: Conflict
+    headers:
+      Server:
+      - Transmission
+      X-Transmission-Session-Id:
+      - XDD7zLE1f8S0lJHdow9Jjpavvvt6WzrS8dWJEIq6obO3ITRp
+      Date:
+      - Tue, 27 Dec 2016 14:11:58 GMT
+      Content-Length:
+      - '580'
+      Content-Type:
+      - text/html; charset=ISO-8859-1
+    body:
+      encoding: UTF-8
+      string: '<h1>409: Conflict</h1><p>Your request had an invalid session-id header.</p><p>To
+        fix this, follow these steps:<ol><li> When reading a response, get its X-Transmission-Session-Id
+        header and remember it<li> Add the updated header to your outgoing requests<li>
+        When you get this 409 error message, resend your request with the updated
+        header</ol></p><p>This requirement has been added to help prevent <a href="http://en.wikipedia.org/wiki/Cross-site_request_forgery">CSRF</a>
+        attacks.</p><p><code>X-Transmission-Session-Id: XDD7zLE1f8S0lJHdow9Jjpavvvt6WzrS8dWJEIq6obO3ITRp</code></p>'
+    http_version: 
+  recorded_at: Tue, 27 Dec 2016 14:13:19 GMT
+- request:
+    method: post
+    uri: http://localhost:9091/transmission/rpc
+    body:
+      encoding: UTF-8
+      string: '{"method":"torrent-set","arguments":{"seedRatioLimit":1,"seedRatioMode":1,"ids":[18]}}'
+    headers:
+      Content-Type:
+      - application/json
+      X-Transmission-Session-Id:
+      - XDD7zLE1f8S0lJHdow9Jjpavvvt6WzrS8dWJEIq6obO3ITRp
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Transmission
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Tue, 27 Dec 2016 14:11:58 GMT
+      Content-Length:
+      - '56'
+    body:
+      encoding: ASCII-8BIT
+      string: '{"arguments":{},"result":"success"}
+
+'
+    http_version: 
+  recorded_at: Tue, 27 Dec 2016 14:13:19 GMT
+recorded_with: VCR 3.0.3

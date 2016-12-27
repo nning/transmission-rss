@@ -20,82 +20,62 @@ module TransmissionRSS
       @log      = TransmissionRSS::Log.instance
     end
 
-    # POST json packed torrent add command.
-    def add_torrent(file, type, options = {})
-      hash = {
-        'method' => 'torrent-add',
-        'arguments' => {
-          'paused' => options[:paused],
-          'download-dir' => options[:download_path]
+    def rpc(method, arguments)
+      sid = get_session_id
+      raise Unauthorized unless sid
+
+      post = Net::HTTP::Post.new \
+        @rpc_path,
+        {
+          'Content-Type' => 'application/json',
+          'X-Transmission-Session-Id' => sid
         }
+
+      add_basic_auth(post)
+      post.body = {method: method, arguments: arguments}.to_json
+
+      JSON.parse(request(post).body)
+    end
+
+    # POST json packed torrent add command.
+    def add_torrent(file, type = :url, options = {})
+      arguments = {
+        'paused' => options[:paused],
+        'download-dir' => options[:download_path]
       }
 
       case type
         when :url
-          hash.arguments.filename = file
+          arguments.filename = file
         when :file
-          hash.arguments.metainfo = Base64.encode64(File.read(file))
+          arguments.metainfo = Base64.encode64(File.read(file))
         else
           raise ArgumentError.new('type has to be :url or :file.')
       end
 
-      sid = get_session_id
-      raise Unauthorized unless sid
-
-      post = Net::HTTP::Post.new \
-        @rpc_path,
-        {
-          'Content-Type' => 'application/json',
-          'X-Transmission-Session-Id' => sid
-        }
-
-      add_basic_auth(post)
-
-      post.body = hash.to_json
-
-      response = request(post)
-      response = JSON.parse(response.body)
-
+      response = rpc('torrent-add', arguments)
       id = get_id_from_response(response)
 
-      log_message = 'add_torrent result: ' + response.result
+      log_message = 'torrent-add result: ' + response.result
       log_message << ' (id ' + id.to_s + ')' if id
       @log.debug(log_message)
 
       if id && options[:seed_ratio_limit]
-        set_torrent(id, options) 
+        set_torrent(id, {
+          'seedRatioLimit': options[:seed_ratio_limit].to_f,
+          'seedRatioMode': 1
+        })
       end
+
+      response
     end
 
-    def set_torrent(id, options = {})
-      hash = {
-        'method' => 'torrent-set',
-        'arguments' => {
-          'ids' => [id],
-          'seed-ratio-limit' => options[:seed_ratio_limit].to_f,
-          'seed-ratio-mode' => 1
-        }
-      }
+    def set_torrent(id, arguments = {})
+      arguments.ids = [id]
+      response = rpc('torrent-set', arguments)
+      @log.debug('torrent-set result: ' + response.result)
 
-      sid = get_session_id
-      raise Unauthorized unless sid
-
-      post = Net::HTTP::Post.new \
-        @rpc_path,
-        {
-          'Content-Type' => 'application/json',
-          'X-Transmission-Session-Id' => sid
-        }
-
-      add_basic_auth(post)
-
-      post.body = hash.to_json
-      @log.debug(hash.to_json)
-
-      response = request(post)
-      response = JSON.parse(response.body)
-
-      @log.debug(response)
+      response
     end
 
     # Get transmission session id.
