@@ -62,8 +62,8 @@ module TransmissionRSS
 
       if id && options[:seed_ratio_limit]
         set_torrent(id, {
-          'seedRatioLimit': options[:seed_ratio_limit].to_f,
-          'seedRatioMode': 1
+          'seedRatioLimit' => options[:seed_ratio_limit].to_f,
+          'seedRatioMode' => 1
         })
       end
 
