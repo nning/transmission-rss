@@ -43,8 +43,8 @@ describe Client do
     it 'sets ratio limit' do
       VCR.use_cassette('set_torrent') do
         response = Client.new.set_torrent(18, {
-          'seedRatioLimit': 1,
-          'seedRatioMode': 1
+          'seedRatioLimit' => 1,
+          'seedRatioMode' => 1
         })
 
         expect(response.result).to eq('success')
