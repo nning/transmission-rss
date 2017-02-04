@@ -25,7 +25,7 @@ module TransmissionRSS
       @feeds = feeds.map { |config| TransmissionRSS::Feed.new(config) }
 
       # Nothing seen, yet.
-      @seen = SeenFile.new(nil, seen_file)
+      @seen = SeenFile.new(seen_file)
 
       # Initialize log instance.
       @log = Log.instance
