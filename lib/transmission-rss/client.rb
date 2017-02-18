@@ -11,12 +11,12 @@ module TransmissionRSS
     end
 
     def initialize(server = {}, login = nil, options = {})
-      @host     = server[:host] || 'localhost'
-      @port     = server[:port] || 9091
-      @rpc_path = server[:rpc_path] || '/transmission/rpc'
+      @host     = server.host || 'localhost'
+      @port     = server.port || 9091
+      @rpc_path = server.rpc_path || '/transmission/rpc'
       @login    = login
 
-      @timeout  = options[:timeout] || 5
+      @timeout  = options.timeout || 5
       @log      = TransmissionRSS::Log.instance
     end
 

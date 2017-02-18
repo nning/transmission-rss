@@ -137,11 +137,12 @@ end
 aggregator = Aggregator.new(config.feeds, seen_file: config.seen_file)
 
 if reset_seen_file
-  aggregator.seen.clear! 
+  aggregator.seen.clear!
   log.debug('seenfile reset')
 end
 
 # Initialize communication to transmission.
+p config.server
 client = Client.new(config.server, config.login)
 
 # Callback for a new item on one of the feeds.

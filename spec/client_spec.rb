@@ -29,6 +29,13 @@ describe Client do
       end
     end
 
+    it 'adds magnet link using alternative port' do
+      VCR.use_cassette('add_torrent_alt_port') do
+        response = Client.new({'port' => 8081}).add_torrent(MAGNET_LINK)
+        expect(response.result).to eq('success')
+      end
+    end
+
     it 'adds magnet link with seed ratio' do
       VCR.use_cassette('add_torrent_with_ratio') do
         response = Client.new.add_torrent(MAGNET_LINK, :url,
