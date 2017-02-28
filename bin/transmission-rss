@@ -12,6 +12,11 @@ include TransmissionRSS
 config_file   = '/etc/transmission-rss.conf'
 custom_config = false
 
+# Change default config file path on BSD.
+if bsd?
+  config_file = '/usr/local' + config_file
+end
+
 # Do not fork by default.
 dofork = false
 
