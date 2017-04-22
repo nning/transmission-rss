@@ -1,7 +1,7 @@
 [Unit]
 Description=Transmission RSS daemon.
-#After=network.target transmission-daemon.service
-After=network.target
+#After=transmission-daemon.service
+Wants=network-online.target
 
 [Service]
 Type=forking
