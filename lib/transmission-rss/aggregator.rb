@@ -1,6 +1,7 @@
 require 'open-uri'
 require 'open_uri_redirections'
 require 'rss'
+require 'openssl'
 
 libdir = File.dirname(__FILE__)
 require File.join(libdir, 'log')
@@ -42,9 +43,16 @@ module TransmissionRSS
       loop do
         @feeds.each do |feed|
           @log.debug('aggregate ' + feed.url)
+		  
+          options = {allow_redirections: :safe}
+
+          unless feed.validate_cert
+            @log.debug('aggregate certificate validation: false')
+            options[:ssl_verify_mode] = OpenSSL::SSL::VERIFY_NONE
+          end
 
           begin
-            content = open(feed.url, allow_redirections: :safe).read
+            content = open(feed.url, options).read
           rescue StandardError => e
             @log.debug("retrieval error (#{e.class}: #{e.message})")
             next
