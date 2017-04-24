@@ -36,6 +36,12 @@ Installation
     gem build transmission-rss.gemspec
     gem install transmission-rss-*.gem
 
+### Via Docker
+
+    docker run \
+      -v $(pwd)/transmission-rss.conf:/etc/transmission-rss.conf \
+      nning2/transmission-rss
+
 Configuration
 -------------
 
