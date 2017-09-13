@@ -12,18 +12,20 @@ feeds:
     regexp: match1
   - url: http://example.com/feed4
     regexp: (match1|match2)
-  - url: http://example.com/feed4
+  - url: http://example.com/feed5
     download_path: /home/user/Downloads
-  - url: http://example.com/feed4
+  - url: http://example.com/feed6
     regexp:
       - match1
       - match2
-  - url: http://example.com/feed5
+  - url: http://example.com/feed7
     regexp:
       - matcher: match1
         download_path: /home/user/match1
       - matcher: match2
         download_path: /home/user/match2
+  - url: http://example.com/feed8
+    validate_cert: false
 
 # Feed probing interval in seconds. Default is 600.
 

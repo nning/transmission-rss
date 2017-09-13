@@ -77,6 +77,12 @@ Setting the seed ratio limit is supported per feed:
     feeds:
       - url: http://example.com/feed1
         seed_ratio_limit: 0
+		
+Configurable certificate validation, good for self-signed certificates. Default is true:
+
+    feeds:
+      - url: http://example.com/feed1
+        validate_cert: false
 
 ### All available options
 
@@ -94,20 +100,22 @@ transmission is configured for HTTP basic authentication.
         regexp: match1
       - url: http://example.com/feed4
         regexp: (match1|match2)
-      - url: http://example.com/feed4
+      - url: http://example.com/feed5
         download_path: /home/user/Downloads
-      - url: http://example.com/feed4
+      - url: http://example.com/feed6
         seed_ratio_limit: 1
-      - url: http://example.com/feed4
+      - url: http://example.com/feed7
         regexp:
           - match1
           - match2
-      - url: http://example.com/feed5
+      - url: http://example.com/feed8
         regexp:
           - matcher: match1
             download_path: /home/user/match1
           - matcher: match2
             download_path: /home/user/match2
+      - url: http://example.com/feed9
+        validate_cert: false
 
     update_interval: 600
 
