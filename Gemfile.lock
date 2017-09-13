@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    transmission-rss (0.2.5)
+    transmission-rss (0.2.6.pre)
       open_uri_redirections (~> 0.1, >= 0.1.4)
       rb-inotify (~> 0.9, >= 0.9.7)
 
