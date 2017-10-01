@@ -45,7 +45,7 @@ module TransmissionRSS
                'rpc_path' => '/transmission/rpc'
              },
              'web_trigger' => {
-               'enabled' => true,
+               'enabled' => false,
                'port' => 8001
              },
              'login' => nil,
