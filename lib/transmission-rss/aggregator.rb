@@ -17,6 +17,7 @@ module TransmissionRSS
 
     def initialize(feeds = [], options = {})
       reinitialize!(feeds, options)
+      @semaphore = Mutex.new
     end
 
     def reinitialize!(feeds = [], options = {})
@@ -41,10 +42,26 @@ module TransmissionRSS
       @log.debug('aggregator start')
 
       loop do
+        scan
+        sleep(interval)
+      end
+    end
+
+    def scan_now
+      Thread.new do
+        scan
+      end
+    end
+
+    private
+
+    def scan
+      @semaphore.synchronize do
+        @log.debug('starting aggregate')
         @feeds.each do |feed|
           @log.debug('aggregate ' + feed.url)
-		  
-          options = {allow_redirections: :safe}
+
+          options = { allow_redirections: :safe }
 
           unless feed.validate_cert
             @log.debug('aggregate certificate validation: false')
@@ -73,12 +90,8 @@ module TransmissionRSS
             next if result.nil?
           end
         end
-
-        sleep(interval)
       end
     end
-
-    private
 
     def decompress(string)
       Zlib::GzipReader.new(StringIO.new(string)).read
@@ -87,7 +100,11 @@ module TransmissionRSS
     end
 
     def process_link(feed, item)
-      link = item.enclosure.url rescue item.link
+      link = begin
+               item.enclosure.url
+             rescue
+               item.link
+             end
 
       # Item contains no link.
       return if link.nil?
@@ -116,7 +133,7 @@ module TransmissionRSS
         end
       end
 
-      return link
+      link
     end
   end
 end

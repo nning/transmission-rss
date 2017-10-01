@@ -165,6 +165,10 @@ end
 
 # Start the aggregation process.
 begin
+  if config.web_trigger.enabled
+    trigger_server = Trigger.new(aggregator,config.web_trigger.port)
+  end
+
   if config.fork
     pid = fork { aggregator.run(config.update_interval) }
     log.debug('forked ' + pid.to_s)

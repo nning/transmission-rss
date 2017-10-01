@@ -17,8 +17,8 @@ module TransmissionRSS
     callback(:on_change) # Declare callback for changed config.
 
     def initialize(file = nil)
-      self.merge_defaults!
-      self.load(file) unless file.nil?
+      merge_defaults!
+      load(file) unless file.nil?
 
       @log = Log.instance
     end
@@ -27,36 +27,38 @@ module TransmissionRSS
     def load(config)
       case config.class.to_s
       when 'Hash'
-        self.merge!(config)
+        merge!(config)
       when 'String'
-        self.merge_yaml!(config)
+        merge_yaml!(config)
       else
-        raise ArgumentError.new('Could not load config.')
+        raise ArgumentError, 'Could not load config.'
       end
     end
 
     def merge_defaults!
-      self.merge!({
-        'feeds' => [],
-        'update_interval' => 600,
-        'add_paused' => false,
-        'server' => {
-          'host' => 'localhost',
-          'port' => 9091,
-          'rpc_path' => '/transmission/rpc'
-        },
-        'login' => nil,
-        'log_target' => $stderr,
-        'fork' => false,
-        'pid_file' => false,
-        'privileges' => {},
-        'seen_file' => nil
-      })
+      merge!('feeds' => [],
+             'update_interval' => 600,
+             'add_paused' => false,
+             'server' => {
+               'host' => 'localhost',
+               'port' => 9091,
+               'rpc_path' => '/transmission/rpc'
+             },
+             'web_trigger' => {
+               'enabled' => true,
+               'port' => 8001
+             },
+             'login' => nil,
+             'log_target' => $stderr,
+             'fork' => false,
+             'pid_file' => false,
+             'privileges' => {},
+             'seen_file' => nil)
     end
 
     # Merge Config Hash with Hash from YAML file.
     def merge_yaml!(path, watch = true)
-      self.merge!(YAML.load_file(path))
+      merge!(YAML.load_file(path))
     rescue TypeError
       # If YAML loading fails, .load_file returns `false`.
     else
@@ -64,8 +66,8 @@ module TransmissionRSS
     end
 
     def reset!
-      self.clear
-      self.merge_defaults!
+      clear
+      merge_defaults!
     end
 
     def watch_file(path)
@@ -73,9 +75,9 @@ module TransmissionRSS
       @log.debug('watch_file ' + path)
 
       @notifier ||= INotify::Notifier.new
-      @notifier.watch(path, :close_write) do |e|
-        self.reset!
-        self.merge_yaml!(path, false)
+      @notifier.watch(path, :close_write) do |_e|
+        reset!
+        merge_yaml!(path, false)
 
         @log.debug('reloaded config file ' + path)
         @log.debug(self)
