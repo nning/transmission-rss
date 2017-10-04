@@ -11,7 +11,7 @@ module TransmissionRSS
 
         @url = URI.encode(config['url'] || config.keys.first)
 
-        @download_path = config['download_path']		
+        @download_path = config['download_path']
         @validate_cert = config['validate_cert'].nil? || config['validate_cert']
 
         matchers = Array(config['regexp']).map do |e|
@@ -22,6 +22,7 @@ module TransmissionRSS
 
         initialize_download_paths(config['regexp'])
       else
+        @config = {}
         @url = config.to_s
       end
     end
@@ -33,7 +34,7 @@ module TransmissionRSS
         return path if title =~ to_regexp(regexp)
       end
 
-      return @download_path
+      @download_path
     end
 
     def matches_regexp?(title)

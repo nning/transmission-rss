@@ -11,6 +11,7 @@ describe Feed do
   it 'should be parse simple array format' do
     feed = Feed.new(@url)
     expect(feed.url).to eq(@url)
+    expect(feed.config).not_to be_nil
     expect(feed.download_path).to be_nil
     expect(feed.regexp).to be_nil
   end

@@ -43,7 +43,7 @@ module TransmissionRSS
       loop do
         @feeds.each do |feed|
           @log.debug('aggregate ' + feed.url)
-		  
+
           options = {allow_redirections: :safe}
 
           unless feed.validate_cert
