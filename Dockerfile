@@ -6,10 +6,11 @@ MAINTAINER henning mueller <mail@nning.io>
 
 RUN useradd -m ruby
 
-USER ruby
 WORKDIR home/ruby
 ADD . transmission-rss
+RUN chown -R ruby:ruby transmission-rss
 
+USER ruby
 WORKDIR transmission-rss
 RUN bundle
 
