@@ -5,6 +5,7 @@ transmission-rss
 [![Build Status](https://img.shields.io/travis/nning/transmission-rss/master.svg)](https://travis-ci.org/nning/transmission-rss)
 [![Coverage Status](https://img.shields.io/coveralls/nning/transmission-rss/master.svg)](https://coveralls.io/r/nning/transmission-rss)
 [![Code Climate](https://img.shields.io/codeclimate/github/nning/transmission-rss.svg)](https://codeclimate.com/github/nning/transmission-rss)
+[![Docker Hub Build Status](https://img.shields.io/docker/build/jrottenberg/ffmpeg.svg)](https://hub.docker.com/r/nning2/transmission-rss/)
 
 transmission-rss is basically a workaround for transmission's lack of the
 ability to monitor RSS feeds and automatically add enclosed torrent links.
@@ -77,7 +78,7 @@ Setting the seed ratio limit is supported per feed:
     feeds:
       - url: http://example.com/feed1
         seed_ratio_limit: 0
-		
+
 Configurable certificate validation, good for self-signed certificates. Default is true:
 
     feeds:
