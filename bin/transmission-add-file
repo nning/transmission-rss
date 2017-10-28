@@ -47,10 +47,6 @@ config = TransmissionRSS::Config.instance
 # Initialize a log instance and configure it.
 log = Log.instance
 log.target = config.log_target
-log.level = Logger::DEBUG
-log.formatter = proc do |sev, time, _, msg|
-  "#{time.to_i}(#{sev.downcase}) #{msg}\n"
-end
 
 # Load config file (default or given by argument).
 begin
