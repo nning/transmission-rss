@@ -16,7 +16,7 @@ module TransmissionRSS
       @rpc_path = server.rpc_path || '/transmission/rpc'
       @login    = login
 
-      @timeout  = options.timeout || 5
+      @timeout  = options.timeout || 30
       @log      = TransmissionRSS::Log.instance
     end
 
