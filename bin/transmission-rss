@@ -143,7 +143,7 @@ if reset_seen_file
 end
 
 # Initialize communication to transmission.
-client = Client.new(config.server, config.login)
+client = Client.new(config.server, config.login, config.client)
 
 # Callback for a new item on one of the feeds.
 aggregator.on_new_item do |torrent_file, feed, download_path|

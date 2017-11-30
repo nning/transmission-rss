@@ -79,7 +79,8 @@ Setting the seed ratio limit is supported per feed:
       - url: http://example.com/feed1
         seed_ratio_limit: 0
 
-Configurable certificate validation, good for self-signed certificates. Default is true:
+Configurable certificate validation, good for self-signed certificates. Default
+is true:
 
     feeds:
       - url: http://example.com/feed1
@@ -136,6 +137,9 @@ transmission is configured for HTTP basic authentication.
     privileges:
       user: nobody
       group: nobody
+
+    client:
+      timeout: 5
 
     fork: false
 

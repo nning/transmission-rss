@@ -58,6 +58,11 @@ feeds:
 #  user: nobody
 #  group: nobody
 
+# Other Transmission client options
+
+#client:
+#  timeout: 5
+
 # Fork?
 
 #fork: false
