@@ -11,6 +11,8 @@ module TransmissionRSS
     end
 
     def initialize(server = {}, login = nil, options = {})
+      options ||= {}
+
       @host     = server.host || 'localhost'
       @port     = server.port || 9091
       @rpc_path = server.rpc_path || '/transmission/rpc'
