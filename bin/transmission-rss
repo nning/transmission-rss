@@ -149,7 +149,7 @@ client = Client.new(config.server, config.login, config.client)
 aggregator.on_new_item do |torrent_file, feed, download_path|
   client.add_torrent(torrent_file, :url,
     paused: config.add_paused,
-    download_path: download_path,
+    download_dir: download_path,
     seed_ratio_limit: feed.config.seed_ratio_limit)
 end
 

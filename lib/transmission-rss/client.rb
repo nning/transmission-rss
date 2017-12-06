@@ -7,6 +7,8 @@ require File.join(File.dirname(__FILE__), 'log')
 module TransmissionRSS
   # Class for communication with transmission utilizing the RPC web interface.
   class Client
+    OPTIONS = [:paused, :download_dir]
+
     class Unauthorized < StandardError
     end
 
@@ -41,10 +43,7 @@ module TransmissionRSS
 
     # POST json packed torrent add command.
     def add_torrent(file, type = :url, options = {})
-      arguments = {
-        'paused' => options[:paused],
-        'download-dir' => options[:download_path]
-      }
+      arguments = set_arguments_from_options(options)
 
       case type
         when :url
@@ -137,6 +136,18 @@ module TransmissionRSS
       retry unless c > 2
 
       raise
+    end
+
+    def set_arguments_from_options(options)
+      arguments = {}
+
+      OPTIONS.each do |o|
+        unless options[o].nil?
+          arguments[o.to_s.sub('_', '-')] = options[o]
+        end
+      end
+
+      arguments
     end
   end
 end

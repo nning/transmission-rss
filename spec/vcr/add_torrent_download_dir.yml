@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: http://localhost:8081/transmission/rpc
+    uri: http://localhost:9091/transmission/rpc
     body:
       encoding: US-ASCII
       string: ''
@@ -21,9 +21,9 @@ http_interactions:
       Server:
       - Transmission
       X-Transmission-Session-Id:
-      - ordUcMBZp0CQVjPgYPljUFqrKbu8sQPh4grRowAsRMBE4B6T
+      - XDD7zLE1f8S0lJHdow9Jjpavvvt6WzrS8dWJEIq6obO3ITRp
       Date:
-      - Sat, 18 Feb 2017 14:05:58 GMT
+      - Tue, 27 Dec 2016 13:57:26 GMT
       Content-Length:
       - '580'
       Content-Type:
@@ -35,20 +35,20 @@ http_interactions:
         header and remember it<li> Add the updated header to your outgoing requests<li>
         When you get this 409 error message, resend your request with the updated
         header</ol></p><p>This requirement has been added to help prevent <a href="http://en.wikipedia.org/wiki/Cross-site_request_forgery">CSRF</a>
-        attacks.</p><p><code>X-Transmission-Session-Id: ordUcMBZp0CQVjPgYPljUFqrKbu8sQPh4grRowAsRMBE4B6T</code></p>'
+        attacks.</p><p><code>X-Transmission-Session-Id: XDD7zLE1f8S0lJHdow9Jjpavvvt6WzrS8dWJEIq6obO3ITRp</code></p>'
     http_version:
-  recorded_at: Sat, 18 Feb 2017 14:08:43 GMT
+  recorded_at: Tue, 27 Dec 2016 13:58:47 GMT
 - request:
     method: post
-    uri: http://localhost:8081/transmission/rpc
+    uri: http://localhost:9091/transmission/rpc
     body:
       encoding: UTF-8
-      string: '{"method":"torrent-add","arguments":{"filename":"magnet:?xt=urn:btih:a31bf5dacae5b6f7bbe42d916549c8c4f34489de&dn=archlinux-2016.12.01-dual.iso&tr=udp://tracker.archlinux.org:6969&tr=http://tracker.archlinux.org:6969/announce"}}'
+      string: '{"method":"torrent-add","arguments":{"download-dir":"/tmp","filename":"magnet:?xt=urn:btih:a31bf5dacae5b6f7bbe42d916549c8c4f34489de&dn=archlinux-2016.12.01-dual.iso&tr=udp://tracker.archlinux.org:6969&tr=http://tracker.archlinux.org:6969/announce"}}'
     headers:
       Content-Type:
       - application/json
       X-Transmission-Session-Id:
-      - ordUcMBZp0CQVjPgYPljUFqrKbu8sQPh4grRowAsRMBE4B6T
+      - XDD7zLE1f8S0lJHdow9Jjpavvvt6WzrS8dWJEIq6obO3ITRp
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -65,14 +65,14 @@ http_interactions:
       Content-Type:
       - application/json; charset=UTF-8
       Date:
-      - Sat, 18 Feb 2017 14:05:58 GMT
+      - Tue, 27 Dec 2016 13:57:26 GMT
       Content-Length:
       - '149'
     body:
       encoding: ASCII-8BIT
-      string: '{"arguments":{"torrent-added":{"hashString":"a31bf5dacae5b6f7bbe42d916549c8c4f34489de","id":132,"name":"archlinux-2016.12.01-dual.iso"}},"result":"success"}
+      string: '{"arguments":{"torrent-added":{"hashString":"a31bf5dacae5b6f7bbe42d916549c8c4f34489de","id":18,"name":"archlinux-2016.12.01-dual.iso"}},"result":"success"}
 
 '
     http_version:
-  recorded_at: Sat, 18 Feb 2017 14:08:43 GMT
+  recorded_at: Tue, 27 Dec 2016 13:58:47 GMT
 recorded_with: VCR 3.0.3
