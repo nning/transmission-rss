@@ -5,7 +5,7 @@ transmission-rss
 [![Build Status](https://img.shields.io/travis/nning/transmission-rss/master.svg)](https://travis-ci.org/nning/transmission-rss)
 [![Coverage Status](https://img.shields.io/coveralls/nning/transmission-rss/master.svg)](https://coveralls.io/r/nning/transmission-rss)
 [![Code Climate](https://img.shields.io/codeclimate/github/nning/transmission-rss.svg)](https://codeclimate.com/github/nning/transmission-rss)
-[![Docker Hub Build Status](https://img.shields.io/docker/build/jrottenberg/ffmpeg.svg)](https://hub.docker.com/r/nning2/transmission-rss/)
+[![Docker Hub Build Status](https://img.shields.io/docker/build/nning2/transmission-rss.svg)](https://hub.docker.com/r/nning2/transmission-rss/)
 
 transmission-rss is basically a workaround for transmission's lack of the
 ability to monitor RSS feeds and automatically add enclosed torrent links.
