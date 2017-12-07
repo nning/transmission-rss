@@ -1,3 +1,3 @@
 module TransmissionRSS
-  VERSION = '0.2.7.pre'
+  VERSION = '1.0.0.pre'
 end
