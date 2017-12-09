@@ -156,6 +156,11 @@ end
 # Callback for changes to the config.
 config.on_change do
   aggregator.reinitialize!(config.feeds, seen_file: config.seen_file)
+
+  if reset_seen_file
+    aggregator.seen.clear!
+    log.debug('seenfile reset after config change')
+  end
 end
 
 # Start the aggregation process.
