@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    transmission-rss (0.2.7.pre)
+    transmission-rss (1.0.0.alpha2)
       open_uri_redirections (~> 0.1, >= 0.1.4)
       rb-inotify (~> 0.9, >= 0.9.7)
 
@@ -69,4 +69,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   1.15.4
+   1.16.0
