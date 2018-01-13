@@ -24,15 +24,15 @@ GEM
     hashdiff (0.3.7)
     json (2.1.0)
     open_uri_redirections (0.2.1)
-    public_suffix (3.0.0)
-    rake (12.2.1)
+    public_suffix (3.0.1)
+    rake (12.3.0)
     rb-inotify (0.9.10)
       ffi (>= 0.5.0, < 2)
     rspec (3.7.0)
       rspec-core (~> 3.7.0)
       rspec-expectations (~> 3.7.0)
       rspec-mocks (~> 3.7.0)
-    rspec-core (3.7.0)
+    rspec-core (3.7.1)
       rspec-support (~> 3.7.0)
     rspec-expectations (3.7.0)
       diff-lcs (>= 1.2.0, < 2.0)
@@ -50,9 +50,9 @@ GEM
     term-ansicolor (1.6.0)
       tins (~> 1.0)
     thor (0.19.4)
-    tins (1.15.0)
-    vcr (3.0.3)
-    webmock (3.1.0)
+    tins (1.16.3)
+    vcr (4.0.0)
+    webmock (3.2.1)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
@@ -69,4 +69,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   1.16.0
+   1.16.1
