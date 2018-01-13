@@ -6,23 +6,19 @@ os:
 
 rvm:
   - ruby-head
-  - 2.4
+  - 2.5
   - 2.1
-  - jruby
 
 matrix:
   fast_finish: true
   allow_failures:
     - os: osx
     - rvm: ruby-head
-    - rvm: jruby
   exclude:
     - os: osx
       rvm: ruby-head
     - os: osx
       rvm: 2.1
-    - os: osx
-      rvm: jruby
 
 notifications:
   email: false
