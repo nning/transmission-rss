@@ -24,12 +24,12 @@ module TransmissionRSS
     end
 
     # Merges a Hash or YAML file (containing a Hash) with itself.
-    def load(config)
+    def load(config, watch: true)
       case config.class.to_s
       when 'Hash'
         self.merge!(config)
       when 'String'
-        self.merge_yaml!(config)
+        self.merge_yaml!(config, watch)
       else
         raise ArgumentError.new('Could not load config.')
       end

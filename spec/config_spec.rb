@@ -44,7 +44,7 @@ describe TransmissionRSS::Config do
       before do
         @path = '/tmp/transmission-rss-config-test.yml'
         File.write(@path, @hash.to_yaml)
-        @config.load(@path)
+        @config.load(@path, watch: false)
       end
 
       it 'should merge' do
