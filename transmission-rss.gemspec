@@ -17,8 +17,8 @@ Gem::Specification.new do |s|
   s.files = Dir.glob('{bin,lib}/**/*').push 'README.md', 'transmission-rss.conf.example'
   s.executables = Dir.glob('bin/**').map { |x| x[4..-1] }
 
-  s.required_ruby_version = '~> 2.1'
+  s.required_ruby_version = '>= 2.1'
 
-  s.add_dependency 'open_uri_redirections', '~> 0.1', '>= 0.1.4'
-  s.add_dependency 'rb-inotify', '~> 0.9', '>= 0.9.7'
+  s.add_dependency 'open_uri_redirections', '~> 0.2', '>= 0.2.1'
+  s.add_dependency 'rb-inotify', '~> 0.9', '>= 0.9.10'
 end
