@@ -6,30 +6,42 @@ module TransmissionRSS
   class Log
     include Singleton
 
-    def initialize(target = $stderr)
-      old_logger = @logger
-      @logger ||= Logger.new(target)
+    def initialize(target = $stderr, level = :debug)
+      @target = target
+      @level = level
 
-      if old_logger
-        @logger.level = old_logger.level
-        @logger.formatter = old_logger.formatter
-      else
-        @logger.level = Logger::DEBUG
-        @logger.formatter = proc do |sev, time, _, msg|
-          time = time.strftime('%Y-%m-%d %H:%M:%S')
-          "#{time} (#{sev.downcase}) #{msg}\n"
-        end
+      @logger = Logger.new(target)
+      @logger.level = to_level_const(level)
+      @logger.formatter = proc do |sev, time, _, msg|
+        time = time.strftime('%Y-%m-%d %H:%M:%S')
+        "#{time} (#{sev.downcase}) #{msg}\n"
       end
     end
 
-    # Change log target (IO or path to a file as String).
+    # Change log target (IO, path to a file as String, or Symbol for IO
+    # constant).
     def target=(target)
-      initialize(target)
+      if target.is_a? Symbol
+        target = Object.const_get(target.to_s.upcase)
+      end
+
+      initialize(target, @level)
+    end
+
+    # Change log level (String or Symbol)
+    def level=(level)
+      initialize(@target, level)
     end
 
     # If this class misses a method, call it on the encapsulated Logger class.
     def method_missing(sym, *args)
       @logger.send(sym, *args)
+    end
+
+    private
+
+    def to_level_const(level)
+      Object.const_get('Logger::' + level.to_s.upcase)
     end
   end
 end

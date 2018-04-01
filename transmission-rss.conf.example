@@ -2,6 +2,11 @@
 # Indent consistently with spaces!
 # Format documentation on http://www.yaml.org/.
 #
+# WARNING:
+#   If you want to override a nested option like `log.target` you also have to
+#   explicitly specify the others like `log.level`. (True for categories
+#   `server`, `login`, `log`, `privileges`, and `client`.)
+#
 
 # List of feeds to watch.
 
@@ -48,9 +53,14 @@ feeds:
 #  username: transmission
 #  password: transmission
 
-# Where to log. Default is stderr.
+# Where to log. Default target is stderr, level debug. Target can be IO symbol
+# (e.g. ":stderr", ":stdout") or file path (e.g.
+# "/var/log/transmission-rss.log"). Level can be "error", "warn", "info",
+# "debug".
 
-#log_target: /var/log/transmissiond-rss.log
+#log:
+#  target: :stderr
+#  level: debug
 
 # Drop privileges. If omitted, privileges are not dropped.
 

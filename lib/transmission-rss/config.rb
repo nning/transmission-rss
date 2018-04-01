@@ -8,6 +8,10 @@ require File.join(libdir, 'log')
 require File.join(libdir, 'callback')
 
 module TransmissionRSS
+  DEPRECATED = {
+    log_target: 'log.target'
+  }
+
   # Class handles configuration parameters.
   class Config < Hash
     # This is a singleton class.
@@ -33,6 +37,8 @@ module TransmissionRSS
       else
         raise ArgumentError.new('Could not load config.')
       end
+
+      check_deprecated
     end
 
     def merge_defaults!
@@ -46,7 +52,10 @@ module TransmissionRSS
           'rpc_path' => '/transmission/rpc'
         },
         'login' => nil,
-        'log_target' => $stderr,
+        'log' => {
+          'target' => $stderr,
+          'level' => :debug
+        },
         'fork' => false,
         'pid_file' => false,
         'privileges' => {},
@@ -70,7 +79,6 @@ module TransmissionRSS
 
     def watch_file(path)
       path = Pathname.new(path).realpath.to_s
-      @log.debug('watch_file ' + path)
 
       @notifier ||= INotify::Notifier.new
       @notifier.watch(path, :close_write) do |e|
@@ -85,6 +93,16 @@ module TransmissionRSS
 
       @notifier_thread ||= Thread.start do
         @notifier.run
+      end
+    end
+
+    private
+
+    def check_deprecated
+      DEPRECATED.each do |key, value|
+        if self[key.to_s]
+          @log.warn('[DEPRECATED] option %s, use %s' % [key, value])
+        end
       end
     end
   end

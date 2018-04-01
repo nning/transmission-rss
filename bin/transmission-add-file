@@ -46,12 +46,12 @@ config = TransmissionRSS::Config.instance
 
 # Initialize a log instance and configure it.
 log = Log.instance
-log.target = config.log_target
 
 # Load config file (default or given by argument).
 begin
   config.load(config_file)
-  log.target = config.log_target
+  log.target = config.log.target
+  log.level  = config.log.level
 rescue Errno::ENOENT
   log.error(config_file + ' not found')
 end

@@ -52,6 +52,10 @@ can override some options for their transmission-rss instances by providing a
 config at `~/.config/transmission-rss/config.yml` (or in `$XDG_CONFIG_HOME`
 instead of `~/.config`).
 
+**WARNING:** If you want to override a nested option like `log.target` you also
+have to explicitly specify the others like `log.level`. (True for categories
+`server`, `login`, `log`, `privileges`, and `client`.)
+
 ### Minimal example
 
 It should at least contain a list of feeds:
@@ -90,11 +94,13 @@ is true:
 ### All available options
 
 The following configuration file example contains every existing option
-(although `update_interval`, `add_paused`, `server`, `fork`, and `pid_file` are
-default values and could be omitted). The default `log_target` is STDERR.
-`privileges` is not defined by default, so the script runs as current
+(although `update_interval`, `add_paused`, `server`, `log`, `fork`, and
+`pid_file` are default values and could be omitted). The default `log.target` is
+STDERR. `privileges` is not defined by default, so the script runs as current
 user/group. `login` is also not defined by default. It has to be defined, if
 transmission is configured for HTTP basic authentication.
+
+See `./transmission-rss.conf.example` for more documentation.
 
     feeds:
       - url: http://example.com/feed1
@@ -133,7 +139,9 @@ transmission is configured for HTTP basic authentication.
       username: transmission
       password: transmission
 
-    log_target: /var/log/transmissiond-rss.log
+    log:
+      target: /var/log/transmissiond-rss.log
+      level: debug
 
     privileges:
       user: nobody

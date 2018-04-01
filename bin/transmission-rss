@@ -77,12 +77,12 @@ config = TransmissionRSS::Config.instance
 
 # Initialize a log instance and configure it.
 log = Log.instance
-log.target = config.log_target
 
 # Load config file (default or given by argument).
 begin
   config.load(config_file)
-  log.target = config.log_target
+  log.target = config.log.target
+  log.level  = config.log.level
 rescue Errno::ENOENT
   log.error(config_file + ' not found')
 end
@@ -100,7 +100,7 @@ if !(custom_config || ENV['HOME'].nil?)
 end
 
 # Print current config.
-log.debug('version ' + VERSION)
+log.info('transmission-rss ' + VERSION)
 log.debug(config)
 
 # Fork value from command line.
