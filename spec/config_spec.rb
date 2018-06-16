@@ -14,6 +14,25 @@ describe TransmissionRSS::Config do
       end
     end
 
+    it 'should warn on deprecated options' do
+      expect(@config.send(:check_deprecated)).to be false
+
+      @config.load(YAML.load("log_target: 1"))
+      expect(@config.send(:check_deprecated)).to be true
+    end
+
+    it 'should warn on duplicate urls' do
+      expect(@config.send(:check_warnings)).to be false
+
+      @config.load(YAML.load("
+        feeds:
+          - url: http://example.com
+          - url: http://example.com
+      "))
+
+      expect(@config.send(:check_warnings)).to be true
+    end
+
     describe 'hash' do
       before do
         @config.load(@hash)

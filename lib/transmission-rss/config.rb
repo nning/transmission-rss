@@ -39,6 +39,9 @@ module TransmissionRSS
       end
 
       check_deprecated
+      check_warnings
+
+      self
     end
 
     def merge_defaults!
@@ -99,11 +102,30 @@ module TransmissionRSS
     private
 
     def check_deprecated
+      warnings = false
+
       DEPRECATED.each do |key, value|
         if self[key.to_s]
           @log.warn('[DEPRECATED] option %s, use %s' % [key, value])
+          warnings = true
         end
       end
+
+      warnings
+    end
+
+    def check_warnings
+      return false unless self['feeds']
+
+      warnings = false
+
+      urls = self['feeds'].map { |feed| feed['url'] }
+      urls.duplicates.each do |duplicate|
+        @log.warn('Duplicate URL definition: %s' % duplicate)
+        warnings = true
+      end
+
+      warnings
     end
   end
 end
