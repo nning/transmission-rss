@@ -12,6 +12,17 @@ namespace :docker do
 
   desc 'Run docker image'
   task :run do
-    sh 'docker run -it -v $(pwd)/transmission-rss.conf:/etc/transmission-rss.conf transmission-rss'
+    sh '
+      touch \
+        $(pwd)/transmission-rss.conf \
+        $(pwd)/.seen
+
+      docker run \
+        -it \
+        --net host \
+        -v $(pwd)/transmission-rss.conf:/etc/transmission-rss.conf \
+        -v $(pwd)/.seen:/home/ruby/.config/transmission/seen \
+        transmission-rss
+    '
   end
 end
