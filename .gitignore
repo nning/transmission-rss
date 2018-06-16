@@ -2,3 +2,4 @@
 /log
 /*.gem
 /Gemfile.lock
+/transmission-rss.conf
