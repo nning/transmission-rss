@@ -1,0 +1,78 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://localhost:9091/transmission/rpc
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 409
+      message: Conflict
+    headers:
+      Server:
+      - Transmission
+      X-Transmission-Session-Id:
+      - NQZGyjmLI9krJxK1Mch4KdvsPWGPuYNw2kEEnGfwXcL8C02t
+      Date:
+      - Mon, 17 Sep 2018 07:30:44 GMT
+      Content-Length:
+      - '581'
+      Content-Type:
+      - text/html; charset=ISO-8859-1
+    body:
+      encoding: UTF-8
+      string: '<h1>409: Conflict</h1><p>Your request had an invalid session-id header.</p><p>To
+        fix this, follow these steps:<ol><li> When reading a response, get its X-Transmission-Session-Id
+        header and remember it<li> Add the updated header to your outgoing requests<li>
+        When you get this 409 error message, resend your request with the updated
+        header</ol></p><p>This requirement has been added to help prevent <a href="https://en.wikipedia.org/wiki/Cross-site_request_forgery">CSRF</a>
+        attacks.</p><p><code>X-Transmission-Session-Id: NQZGyjmLI9krJxK1Mch4KdvsPWGPuYNw2kEEnGfwXcL8C02t</code></p>'
+    http_version: 
+  recorded_at: Mon, 17 Sep 2018 07:30:44 GMT
+- request:
+    method: post
+    uri: http://localhost:9091/transmission/rpc
+    body:
+      encoding: UTF-8
+      string: '{"method":"torrent-add","arguments":{"filename":"https://nning.io/Sin%20Tel.torrent"}}'
+    headers:
+      Content-Type:
+      - application/json
+      X-Transmission-Session-Id:
+      - NQZGyjmLI9krJxK1Mch4KdvsPWGPuYNw2kEEnGfwXcL8C02t
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Transmission
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Mon, 17 Sep 2018 07:30:44 GMT
+      Content-Length:
+      - '137'
+    body:
+      encoding: ASCII-8BIT
+      string: '{"arguments":{"torrent-duplicate":{"hashString":"08ada5a7a6183aae1e09d831df6748d566095a10","id":149,"name":"Sintel"}},"result":"success"}
+
+'
+    http_version: 
+  recorded_at: Mon, 17 Sep 2018 07:30:44 GMT
+recorded_with: VCR 4.0.0

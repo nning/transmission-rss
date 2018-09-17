@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 MAGNET_LINK = 'magnet:?xt=urn:btih:a31bf5dacae5b6f7bbe42d916549c8c4f34489de&dn=archlinux-2016.12.01-dual.iso&tr=udp://tracker.archlinux.org:6969&tr=http://tracker.archlinux.org:6969/announce'
+HTTP_URL = 'https://nning.io/Sin Tel.torrent'
 MATCH_REQUESTS_ON = { match_requests_on: [:method, :uri, :headers, :body] }
 
 describe Client do
@@ -54,6 +55,18 @@ describe Client do
     it 'adds magnet link with seed ratio' do
       VCR.use_cassette('add_torrent_with_ratio', MATCH_REQUESTS_ON) do
         response = Client.new.add_torrent(MAGNET_LINK, :url, seed_ratio_limit: 1)
+        expect(response.result).to eq('success')
+      end
+    end
+
+    it 'adds http URL with special characters' do
+      VCR.use_cassette('add_torrent_via_http_with_special_chars', MATCH_REQUESTS_ON) do
+        response = Client.new.add_torrent(HTTP_URL, :url)
+        expect(response.result).to eq('success')
+      end
+
+      VCR.use_cassette('add_torrent_via_http_with_special_chars', MATCH_REQUESTS_ON) do
+        response = Client.new.add_torrent(URI.encode(HTTP_URL), :url)
         expect(response.result).to eq('success')
       end
     end

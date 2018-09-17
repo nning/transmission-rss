@@ -47,6 +47,7 @@ module TransmissionRSS
 
       case type
         when :url
+          file = URI.encode(file) if URI.decode(file) == file
           arguments.filename = file
         when :file
           arguments.metainfo = Base64.encode64(File.read(file))
