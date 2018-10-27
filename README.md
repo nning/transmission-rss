@@ -40,9 +40,9 @@ Installation
 
 ### Via Docker
 
-    docker run \
+    docker run -t \
       -v $(pwd)/transmission-rss.conf:/etc/transmission-rss.conf \
-      nning2/transmission-rss
+      nning2/transmission-rss:v1.0.0
 
 Configuration
 -------------
