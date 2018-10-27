@@ -52,6 +52,7 @@ module TransmissionRSS
         'server' => {
           'host' => 'localhost',
           'port' => 9091,
+          'tls'  => false,
           'rpc_path' => '/transmission/rpc'
         },
         'login' => nil,

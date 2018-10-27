@@ -17,6 +17,7 @@ module TransmissionRSS
 
       @host     = server.host || 'localhost'
       @port     = server.port || 9091
+      @tls      = !!server.tls
       @rpc_path = server.rpc_path || '/transmission/rpc'
       @login    = login
 
@@ -113,7 +114,7 @@ module TransmissionRSS
     end
 
     def http_request(data)
-      Net::HTTP.new(@host, @port).start do |http|
+      Net::HTTP.start(@host, @port, use_ssl: @tls) do |http|
         http.request(data)
       end
     end

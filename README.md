@@ -133,6 +133,7 @@ See `./transmission-rss.conf.example` for more documentation.
     server:
       host: localhost
       port: 9091
+      tls: false
       rpc_path: /transmission/rpc
 
     login:
