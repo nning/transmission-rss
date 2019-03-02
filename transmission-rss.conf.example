@@ -77,6 +77,10 @@ feeds:
 
 #fork: false
 
+# Single run mode?
+
+# single: false
+
 # Save PID.
 
 #pid_file: false

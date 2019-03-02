@@ -74,6 +74,11 @@ module TransmissionRSS
           end
         end
 
+        if interval == -1
+          @log.debug('single run mode, exiting')
+          break
+        end
+
         sleep(interval)
       end
     end
