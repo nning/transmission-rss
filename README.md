@@ -94,7 +94,7 @@ is true:
 ### All available options
 
 The following configuration file example contains every existing option
-(although `update_interval`, `add_paused`, `server`, `log`, `fork`, and
+(although `update_interval`, `add_paused`, `server`, `log`, `fork`, `single`, and
 `pid_file` are default values and could be omitted). The default `log.target` is
 STDERR. `privileges` is not defined by default, so the script runs as current
 user/group. `login` is also not defined by default. It has to be defined, if
@@ -153,12 +153,16 @@ See `./transmission-rss.conf.example` for more documentation.
 
     fork: false
 
+    single: false
+
     pid_file: false
 
     seen_file: ~/.config/transmission/seen
 
 Daemonized Startup
 ------------------
+
+### As a systemd service
 
 The following content can be saved into
 `/etc/systemd/system/transmission-rss.service` to create a systemd unit.
@@ -179,3 +183,9 @@ Remember checking the path in `ExecStart`.
 The unit files are reloaded by `systemctl daemon-reload`. You can then start
 transmission-rss by running `systemctl start transmission-rss`. Starting on
 boot, can be enabled `systemctl enable transmission-rss`.
+
+### As a cronjob
+
+`transmission-rss` can also be started in a single run mode, in which it runs a single loop and then exits. To do so, `transmission-rss` needs to be started with the `-s` flag. An example crontab line for running every 10 minutes can be:
+
+`*/10 * * * * /usr/local/bin/transmission-rss -s`
