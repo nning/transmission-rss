@@ -20,6 +20,9 @@ end
 # Do not fork by default.
 dofork = false
 
+# Do not run single time by default.
+dosingle = false
+
 # No PID file by default.
 pid_file = false
 
@@ -33,6 +36,7 @@ Adds torrents from rss feeds to transmission web frontend.
 
   -c <file>   Custom config file path. Default: #{config_file}
   -f          Fork into background after startup.
+  -s          Single run mode.
   -h          This help.
   -p <file>   Write PID to file.
   -r          Reset seenfile on startup.
@@ -46,6 +50,7 @@ end
 options = GetoptLong.new \
   ['-c', GetoptLong::REQUIRED_ARGUMENT],
   ['-f', GetoptLong::NO_ARGUMENT],
+  ['-s', GetoptLong::NO_ARGUMENT],
   ['-h', GetoptLong::NO_ARGUMENT],
   ['-p', GetoptLong::REQUIRED_ARGUMENT],
   ['-r', GetoptLong::NO_ARGUMENT],
@@ -59,6 +64,8 @@ options.each do |option, argument|
       custom_config = true
     when '-f'
       dofork = true
+    when '-s'
+      dosingle = true
     when '-h'
       usage_message(config_file)
     when '-p'
@@ -105,6 +112,9 @@ log.debug(config)
 
 # Fork value from command line.
 config.fork = dofork if dofork
+
+# Run a single time.
+config.single = dosingle if dosingle
 
 # PID file path from command line.
 config.pid_file = pid_file if pid_file
@@ -174,6 +184,8 @@ begin
       log.debug('wrote pid to ' + config.pid_file)
       File.write(config.pid_file, pid)
     end
+  elsif config.single
+    aggregator.run(-1)
   else
     log.debug('pid ' + Process.pid.to_s)
 

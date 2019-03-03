@@ -61,6 +61,7 @@ module TransmissionRSS
           'level' => :debug
         },
         'fork' => false,
+        'single' => false,
         'pid_file' => false,
         'privileges' => {},
         'seen_file' => nil
