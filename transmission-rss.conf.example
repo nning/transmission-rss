@@ -27,6 +27,7 @@ feeds:
     regexp:
       - matcher: match1
         download_path: /home/user/match1
+        exclude: dontmatch
       - matcher: match2
         download_path: /home/user/match2
   - url: http://example.com/feed8
