@@ -103,7 +103,7 @@ module TransmissionRSS
       # The link is not in +@seen+ Array.
       unless @seen.include?(link)
         # Skip if filter defined and not matching.
-        unless feed.matches_regexp?(item.title)
+        unless feed.matches_regexp?(item.title) && !(feed.exclude?(item.title))
           @seen.add(link)
           return
         end
