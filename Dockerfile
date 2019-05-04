@@ -13,10 +13,11 @@ RUN \
   adduser -u $UID -G ruby -D ruby && \
   apk --no-cache --update add build-base libffi-dev
 
-USER ruby
-
 WORKDIR home/ruby
 COPY . transmission-rss
+RUN chown -R ruby:ruby transmission-rss
+
+USER ruby
 
 WORKDIR transmission-rss
 RUN bundle
