@@ -23,6 +23,10 @@ code to the single most delightful human being: Ann.
 The minimum supported Ruby version is 2.1. (You will need `rbenv` if your
 os does not support Ruby >= 2.1, e.g. on Debian wheezy.)
 
+**Note, that this README is for the current development branch!** You can find
+a link to a suitable README for your version
+[on the releases page](https://github.com/nning/transmission-rss/releases).
+
 Installation
 ------------
 
