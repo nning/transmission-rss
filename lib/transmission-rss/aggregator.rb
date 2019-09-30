@@ -44,7 +44,10 @@ module TransmissionRSS
         @feeds.each do |feed|
           @log.debug('aggregate ' + feed.url)
 
-          options = {allow_redirections: :safe}
+          options = {
+            allow_redirections: :safe,
+            'User-Agent' => 'transmission-rss'
+          }
 
           unless feed.validate_cert
             @log.debug('aggregate certificate validation: false')
