@@ -32,21 +32,27 @@ Installation
 
 ### Latest stable version from rubygems.org
 
-    gem install transmission-rss
+```sh
+gem install transmission-rss
+```
 
 ### From source
 
-    git clone https://github.com/nning/transmission-rss
-    cd transmission-rss
-    bundle
-    gem build transmission-rss.gemspec
-    gem install transmission-rss-*.gem
+```sh
+git clone https://github.com/nning/transmission-rss
+cd transmission-rss
+bundle
+gem build transmission-rss.gemspec
+gem install transmission-rss-*.gem
+```
 
 ### Via Docker
 
-    docker run -t \
-      -v $(pwd)/transmission-rss.conf:/etc/transmission-rss.conf \
-      nning2/transmission-rss:v1.0.0
+```sh
+docker run -t \
+  -v $(pwd)/transmission-rss.conf:/etc/transmission-rss.conf \
+  nning2/transmission-rss:v1.0.0
+```
 
 Configuration
 -------------
@@ -64,36 +70,49 @@ have to explicitly specify the others like `log.level`. (True for categories
 
 It should at least contain a list of feeds:
 
-    feeds:
-      - url: http://example.com/feed1
-      - url: http://example.com/feed2
+```yaml
+feeds:
+  - url: http://example.com/feed1
+  - url: http://example.com/feed2
+```
 
 Feed item titles can be filtered by a regular expression:
 
-    feeds:
-      - url: http://example.com/feed1
-        regexp: foo
-      - url: http://example.com/feed2
-        regexp: (foo|bar)
+```yaml
+feeds:
+  - url: http://example.com/feed1
+    regexp: foo
+  - url: http://example.com/feed2
+    regexp: (foo|bar)
+```
 
 Feeds can also be configured to download files to specific directory:
 
-    feeds:
-      - url: http://example.com/feed1
-        download_path: /home/user/Downloads
+
+```yaml
+feeds:
+  - url: http://example.com/feed1
+    download_path: /home/user/Downloads
+```
 
 Setting the seed ratio limit is supported per feed:
 
-    feeds:
-      - url: http://example.com/feed1
-        seed_ratio_limit: 0
+
+```yaml
+feeds:
+  - url: http://example.com/feed1
+    seed_ratio_limit: 0
+```
 
 Configurable certificate validation, good for self-signed certificates. Default
 is true:
 
-    feeds:
-      - url: http://example.com/feed1
-        validate_cert: false
+
+```yaml
+feeds:
+  - url: http://example.com/feed1
+    validate_cert: false
+```
 
 ### All available options
 
@@ -106,62 +125,65 @@ transmission is configured for HTTP basic authentication.
 
 See `./transmission-rss.conf.example` for more documentation.
 
-    feeds:
-      - url: http://example.com/feed1
-      - url: http://example.com/feed2
-      - url: http://example.com/feed3
-        regexp: match1
-      - url: http://example.com/feed4
-        regexp: (match1|match2)
-      - url: http://example.com/feed5
-        download_path: /home/user/Downloads
-      - url: http://example.com/feed6
-        seed_ratio_limit: 1
-      - url: http://example.com/feed7
-        regexp:
-          - match1
-          - match2
-      - url: http://example.com/feed8
-        regexp:
-          - matcher: match1
-            download_path: /home/user/match1
-          - matcher: match2
-            download_path: /home/user/match2
-      - url: http://example.com/feed9
-        validate_cert: false
 
-    update_interval: 600
+```yaml
+feeds:
+  - url: http://example.com/feed1
+  - url: http://example.com/feed2
+  - url: http://example.com/feed3
+    regexp: match1
+  - url: http://example.com/feed4
+    regexp: (match1|match2)
+  - url: http://example.com/feed5
+    download_path: /home/user/Downloads
+  - url: http://example.com/feed6
+    seed_ratio_limit: 1
+  - url: http://example.com/feed7
+    regexp:
+      - match1
+      - match2
+  - url: http://example.com/feed8
+    regexp:
+      - matcher: match1
+        download_path: /home/user/match1
+      - matcher: match2
+        download_path: /home/user/match2
+  - url: http://example.com/feed9
+    validate_cert: false
 
-    add_paused: false
+update_interval: 600
 
-    server:
-      host: localhost
-      port: 9091
-      tls: false
-      rpc_path: /transmission/rpc
+add_paused: false
 
-    login:
-      username: transmission
-      password: transmission
+server:
+  host: localhost
+  port: 9091
+  tls: false
+  rpc_path: /transmission/rpc
 
-    log:
-      target: /var/log/transmissiond-rss.log
-      level: debug
+login:
+  username: transmission
+  password: transmission
 
-    privileges:
-      user: nobody
-      group: nobody
+log:
+  target: /var/log/transmissiond-rss.log
+  level: debug
 
-    client:
-      timeout: 5
+privileges:
+  user: nobody
+  group: nobody
 
-    fork: false
+client:
+  timeout: 5
 
-    single: false
+fork: false
 
-    pid_file: false
+single: false
 
-    seen_file: ~/.config/transmission/seen
+pid_file: false
+
+seen_file: ~/.config/transmission/seen
+```
 
 Daemonized Startup
 ------------------
@@ -172,17 +194,19 @@ The following content can be saved into
 `/etc/systemd/system/transmission-rss.service` to create a systemd unit.
 Remember checking the path in `ExecStart`.
 
-    [Unit]
-    Description=Transmission RSS daemon.
-    After=network.target transmission-daemon.service
+```ini
+[Unit]
+Description=Transmission RSS daemon.
+After=network.target transmission-daemon.service
 
-    [Service]
-    Type=forking
-    ExecStart=/usr/local/bin/transmission-rss -f
-    ExecReload=/bin/kill -s HUP $MAINPID
+[Service]
+Type=forking
+ExecStart=/usr/local/bin/transmission-rss -f
+ExecReload=/bin/kill -s HUP $MAINPID
 
-    [Install]
-    WantedBy=multi-user.target
+[Install]
+WantedBy=multi-user.target
+```
 
 The unit files are reloaded by `systemctl daemon-reload`. You can then start
 transmission-rss by running `systemctl start transmission-rss`. Starting on
