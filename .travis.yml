@@ -6,6 +6,7 @@ os:
 
 rvm:
   - ruby-head
+  - 2.7
   - 2.5
   - 2.1
 
