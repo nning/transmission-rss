@@ -22,4 +22,4 @@ USER ruby
 WORKDIR transmission-rss
 RUN bundle
 
-CMD ./bin/transmission-rss
+CMD bundle exec ./bin/transmission-rss
