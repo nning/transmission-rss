@@ -17,3 +17,5 @@ VCR.configure do |config|
   config.hook_into :webmock
   config.allow_http_connections_when_no_cassette = true
 end
+
+MATCH_REQUESTS_ON = { match_requests_on: [:method, :uri, :headers, :body] }

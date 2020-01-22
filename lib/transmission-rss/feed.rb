@@ -9,7 +9,7 @@ module TransmissionRSS
       when Hash
         @config = config
 
-        @url = URI.encode(config['url'] || config.keys.first)
+        @url = URI.escape(config['url'] || config.keys.first)
 
         @download_path = config['download_path']
         @validate_cert = config['validate_cert'].nil? || config['validate_cert']

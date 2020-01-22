@@ -1,7 +1,5 @@
 require 'spec_helper'
 
-MATCH_REQUESTS_ON = { match_requests_on: [:method, :uri, :headers, :body] }
-
 describe Aggregator do
   SEEN_FILE = tmp_path(:seen_file)
   FEEDS = [
