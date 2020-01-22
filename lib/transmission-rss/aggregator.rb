@@ -44,18 +44,8 @@ module TransmissionRSS
         @feeds.each do |feed|
           @log.debug('aggregate ' + feed.url)
 
-          options = {
-            allow_redirections: :safe,
-            'User-Agent' => 'transmission-rss'
-          }
-
-          unless feed.validate_cert
-            @log.debug('aggregate certificate validation: false')
-            options[:ssl_verify_mode] = OpenSSL::SSL::VERIFY_NONE
-          end
-
           begin
-            content = open(feed.url, options).read
+            content = fetch(feed)
           rescue StandardError => e
             @log.debug("retrieval error (#{e.class}: #{e.message})")
             next
@@ -65,7 +55,7 @@ module TransmissionRSS
           # Ruby 1.9.3.
           content = decompress(content) if RUBY_VERSION == '1.9.3'
           begin
-            items = RSS::Parser.parse(content, false).items
+            items = parse(content)
           rescue StandardError => e
             @log.debug("parse error (#{e.class}: #{e.message})")
             next
@@ -87,6 +77,25 @@ module TransmissionRSS
     end
 
     private
+
+    def fetch(feed)
+      options = {
+        allow_redirections: :safe,
+        'User-Agent' => 'transmission-rss'
+      }
+
+      unless feed.validate_cert
+        @log.debug('aggregate certificate validation: false')
+        options[:ssl_verify_mode] = OpenSSL::SSL::VERIFY_NONE
+      end
+
+      # open for URIs is obsolete, URI.open does not work in 2.4
+      URI.send(:open, feed.url, options).read
+    end
+
+    def parse(content)
+      RSS::Parser.parse(content, false).items
+    end
 
     def decompress(string)
       Zlib::GzipReader.new(StringIO.new(string)).read

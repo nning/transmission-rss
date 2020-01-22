@@ -1,0 +1,57 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://www.archlinux.org/feeds/releases/
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - transmission-rss
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx/1.16.1
+      Date:
+      - Wed, 22 Jan 2020 09:40:03 GMT
+      Content-Type:
+      - application/rss+xml; charset=utf-8
+      Content-Length:
+      - '1725'
+      Connection:
+      - keep-alive
+      Last-Modified:
+      - Wed, 01 Jan 2020 05:38:20 GMT
+      Expires:
+      - Wed, 22 Jan 2020 09:40:21 GMT
+      Cache-Control:
+      - max-age=317
+      Content-Security-Policy:
+      - img-src 'self' data:; frame-ancestors 'none'; script-src 'self'; default-src
+        'self'; base-uri 'none'; form-action 'self'
+      Etag:
+      - '"745d5b30f26f9fd8681800dc571a5d30"'
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Frame-Options:
+      - DENY
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="utf-8"?>
+        <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Arch Linux: Releases</title><link>https://www.archlinux.org/download/</link><description>Release ISOs</description><atom:link href="https://www.archlinux.org/feeds/releases/" rel="self"></atom:link><language>en-us</language><lastBuildDate>Wed, 01 Jan 2020 05:38:20 +0000</lastBuildDate><item><title>2020.01.01</title><link>https://www.archlinux.org/releng/releases/2020.01.01/</link><description></description><pubDate>Wed, 01 Jan 2020 00:00:00 +0000</pubDate><guid isPermaLink="false">tag:www.archlinux.org,2020-01-01:/releng/releases/2020.01.01/</guid><enclosure length="687865856" type="application/x-bittorrent" url="https://www.archlinux.org/iso/2020.01.01/archlinux-2020.01.01-x86_64.iso.torrent"></enclosure></item><item><title>2019.12.01</title><link>https://www.archlinux.org/releng/releases/2019.12.01/</link><description></description><pubDate>Sun, 01 Dec 2019 00:00:00 +0000</pubDate><guid isPermaLink="false">tag:www.archlinux.org,2019-12-01:/releng/releases/2019.12.01/</guid><enclosure length="670040064" type="application/x-bittorrent" url="https://www.archlinux.org/iso/2019.12.01/archlinux-2019.12.01-x86_64.iso.torrent"></enclosure></item><item><title>2019.11.01</title><link>https://www.archlinux.org/releng/releases/2019.11.01/</link><description></description><pubDate>Fri, 01 Nov 2019 00:00:00 +0000</pubDate><guid isPermaLink="false">tag:www.archlinux.org,2019-11-01:/releng/releases/2019.11.01/</guid><enclosure length="665845760" type="application/x-bittorrent" url="https://www.archlinux.org/iso/2019.11.01/archlinux-2019.11.01-x86_64.iso.torrent"></enclosure></item></channel></rss>
+    http_version: 
+  recorded_at: Wed, 22 Jan 2020 09:40:03 GMT
+recorded_with: VCR 5.0.0
