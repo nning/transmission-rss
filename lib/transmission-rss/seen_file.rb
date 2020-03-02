@@ -17,8 +17,8 @@ module TransmissionRSS
       @seen = Set.new(file_to_array(@path))
     end
 
-    def add(url)
-      hash = digest(url)
+    def add(feed, url)
+      hash = to_entry(feed, url)
 
       return if @seen.include?(hash)
 
@@ -34,8 +34,8 @@ module TransmissionRSS
       open(@path, 'w') {}
     end
 
-    def include?(url)
-      @seen.include?(digest(url))
+    def include?(feed, url)
+      @seen.include?(to_entry(feed, url))
     end
 
     private
@@ -48,6 +48,10 @@ module TransmissionRSS
       Digest::SHA256.hexdigest(s)
     end
 
+    def to_entry(feed, url)
+      digest(serialize(feed, url))
+    end
+
     def file_to_array(path)
       open(path, 'r').readlines.map(&:chomp)
     end
@@ -57,6 +61,11 @@ module TransmissionRSS
 
       FileUtils.mkdir_p(File.dirname(path))
       FileUtils.touch(path)
+    end
+
+    def serialize(feed, url)
+      o = { feed_url: feed.url, torrent_url: url }
+      YAML.dump(o)
     end
   end
 end

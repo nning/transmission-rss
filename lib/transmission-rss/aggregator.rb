@@ -113,10 +113,10 @@ module TransmissionRSS
       link = link.href if link.class != String
 
       # The link is not in +@seen+ Array.
-      unless @seen.include?(link)
+      unless @seen.include?(feed, link)
         # Skip if filter defined and not matching.
         unless feed.matches_regexp?(item.title)
-          @seen.add(link)
+          @seen.add(feed, link)
           return
         end
 
@@ -129,7 +129,7 @@ module TransmissionRSS
         rescue Client::Unauthorized, Errno::ECONNREFUSED, Timeout::Error
           @log.debug('not added to seen file ' + link)
         else
-          @seen.add(link)
+          @seen.add(feed, link)
         end
       end
 
