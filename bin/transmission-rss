@@ -133,7 +133,8 @@ unless config.privileges.empty?
     ':' +
     config.privileges.group
 else
-  log.debug('no privilege dropping')
+  user = Etc.getpwuid(Process.euid).name
+  log.debug('no privilege dropping, running as user ' + user)
 end
 
 # Warn if no feeds are given.
