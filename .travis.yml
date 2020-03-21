@@ -5,10 +5,10 @@ os:
   - osx
 
 rvm:
-  - ruby-head
-  - 2.7
-  - 2.5
-  - 2.1
+  - 2.7 # Current stable
+  - 2.6 # Alpine 3.11
+  - 2.5 # Debian stable (buster), Ubuntu
+  - 2.1 # Minimum supported version (Debian oldoldstable (jessie))
 
 matrix:
   fast_finish: true
