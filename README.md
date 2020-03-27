@@ -51,6 +51,7 @@ gem install transmission-rss-*.gem
 ```sh
 docker run -t \
   -v $(pwd)/transmission-rss.conf:/etc/transmission-rss.conf \
+  -v $(pwd)/transmission-rss:/home/transmission-rss/.config \
   nning2/transmission-rss:v1.0.0
 ```
 
