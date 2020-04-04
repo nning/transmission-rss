@@ -4,6 +4,7 @@ module TransmissionRSS
 
     def initialize(config = {})
       @download_paths = {}
+      @excludes = {}
 
       case config
       when Hash
@@ -20,7 +21,7 @@ module TransmissionRSS
 
         @regexp = build_regexp(matchers)
 
-        initialize_download_paths(config['regexp'])
+        initialize_download_paths_and_excludes(config['regexp'])
       else
         @config = {}
         @url = config.to_s
@@ -41,6 +42,13 @@ module TransmissionRSS
       @regexp.nil? || !(title =~ @regexp).nil?
     end
 
+    def exclude?(title)
+      @excludes.each do |regexp, exclude|
+        return title =~ to_regexp(exclude) if title =~ to_regexp(regexp)
+      end
+      return false
+    end
+
     private
 
     def build_regexp(matchers)
@@ -48,14 +56,16 @@ module TransmissionRSS
       matchers.empty? ? nil : Regexp.union(matchers)
     end
 
-    def initialize_download_paths(regexps)
+    def initialize_download_paths_and_excludes(regexps)
       return unless regexps.is_a?(Array)
 
       regexps.each do |regexp|
         matcher = regexp['matcher']
         path    = regexp['download_path']
+        exclude  = regexp['exclude']
 
         @download_paths[matcher] = path if matcher && path
+        @excludes[matcher] = exclude if matcher && exclude
       end
     end
 
