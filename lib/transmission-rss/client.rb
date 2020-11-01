@@ -64,10 +64,16 @@ module TransmissionRSS
       @log.debug(log_message)
 
       if id && options[:seed_ratio_limit]
-        set_torrent(id, {
-          'seedRatioLimit' => options[:seed_ratio_limit].to_f,
-          'seedRatioMode' => 1
-        })
+        if options[:seed_ratio_limit].to_f < 0
+          set_torrent(id, {
+            'seedRatioMode' => 2
+          })
+        else
+          set_torrent(id, {
+            'seedRatioLimit' => options[:seed_ratio_limit].to_f,
+            'seedRatioMode' => 1
+          })
+        end
       end
 
       response
