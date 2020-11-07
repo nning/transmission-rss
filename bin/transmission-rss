@@ -160,7 +160,9 @@ aggregator.on_new_item do |torrent_file, feed, download_path|
   client.add_torrent(torrent_file, :url,
     paused: config.add_paused,
     download_dir: download_path,
-    seed_ratio_limit: feed.config.seed_ratio_limit)
+    seed_ratio_limit: feed.config.seed_ratio_limit,
+    seed_idle_limit: feed.config.seed_idle_limit,
+    priority: feed.config.priority)
 end
 
 # Callback for changes to the config.

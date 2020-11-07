@@ -63,17 +63,38 @@ module TransmissionRSS
       log_message << ' (id ' + id.to_s + ')' if id
       @log.debug(log_message)
 
-      if id && options[:seed_ratio_limit]
-        if options[:seed_ratio_limit].to_f < 0
-          set_torrent(id, {
-            'seedRatioMode' => 2
-          })
-        else
-          set_torrent(id, {
-            'seedRatioLimit' => options[:seed_ratio_limit].to_f,
-            'seedRatioMode' => 1
-          })
+      if id
+
+        set_opts = {}
+
+        if options[:seed_ratio_limit]
+          if options[:seed_ratio_limit].to_f < 0
+            set_opts[:seedRatioMode] = 2
+          else
+            set_opts[:seedRatioMode] = 1
+            set_opts[:seedRatioLimit] = options[:seed_ratio_limit].to_f
+          end
         end
+
+        if options[:seed_idle_limit]
+          if options[:seed_idle_limit].to_i < 0
+            set_opts[:seedIdleMode] = 2
+          else
+            set_opts[:seedIdleMode] = 1
+            set_opts[:seedIdleLimit] = options[:seed_idle_limit].to_i
+          end
+        end
+
+        if options[:priority]
+          if options[:priority].eql?('low')
+            set_opts[:bandwidthPriority] = -1
+          elsif options[:priority].eql?('high')
+            set_opts[:bandwidthPriority] = 1
+          end
+        end
+
+        set_torrent(id, set_opts) unless set_opts.empty?
+
       end
 
       response
