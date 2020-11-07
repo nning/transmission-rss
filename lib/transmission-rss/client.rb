@@ -173,7 +173,7 @@ module TransmissionRSS
       arguments = {}
 
       OPTIONS.each do |key, value|
-        arguments[value] = options[key] unless options[key].nil?
+        arguments[value] = options[key] unless options[key].nil? || options[key].eql?('default')
       end
 
       arguments
