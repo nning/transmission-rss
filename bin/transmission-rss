@@ -137,7 +137,11 @@ else
 end
 
 # Feeds can override this on a per-feed or per-match basis
-default_feed_config = {:add_paused => config.add_paused, :download_path => config.download_path}
+default_feed_config = {
+  :add_paused => config.add_paused,
+  :download_path => config.download_path,
+  :priority => config.priority
+}
 
 # Warn if no feeds are given.
 log.warn('no feeds given') if config.feeds.empty?
