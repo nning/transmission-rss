@@ -7,7 +7,6 @@ require File.join(File.dirname(__FILE__), 'log')
 module TransmissionRSS
   # Class for communication with transmission utilizing the RPC web interface.
   class Client
-    OPTIONS = {:add_paused => :'paused', :download_path => :'download-dir'}
 
     class Unauthorized < StandardError
     end
@@ -82,16 +81,6 @@ module TransmissionRSS
           else
             set_opts[:seedIdleMode] = 1
             set_opts[:seedIdleLimit] = options[:seed_idle_limit].to_i
-          end
-        end
-
-        if options[:priority] && !options[:priority].eql?('default')
-          if options[:priority].eql?('low')
-            set_opts[:bandwidthPriority] = -1
-          elsif options[:priority].eql?('high')
-            set_opts[:bandwidthPriority] = 1
-          elsif options[:priority].eql?('normal')
-            set_opts[:bandwidthPriority] = 0
           end
         end
 
@@ -172,8 +161,22 @@ module TransmissionRSS
     def set_arguments_from_options(options)
       arguments = {}
 
-      OPTIONS.each do |key, value|
-        arguments[value] = options[key] unless options[key].nil? || options[key].eql?('default')
+      options.each do |key, value|
+        next if value.nil? || value.eql?('default')
+        case key
+        when :add_paused
+          arguments[:paused] = value
+        when :download_path
+          arguments[:'download-dir'] = value
+        when :priority
+          if value.eql?('low')
+            arguments[:bandwidthPriority] = -1
+          elsif value.eql?('high')
+            arguments[:bandwidthPriority] = 1
+          elsif value.eql?('normal')
+            arguments[:bandwidthPriority] = 0
+          end
+        end
       end
 
       arguments
