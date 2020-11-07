@@ -1,40 +1,40 @@
 module TransmissionRSS
   class Feed
-    attr_reader :url, :regexp, :config, :validate_cert
+    attr_reader :url, :regexp, :config, :validate_cert, :matcher_configs
 
     def initialize(config = {})
-      @download_paths = {}
+      @matcher_configs = {}
+
+      matchers = Array.new
 
       case config
       when Hash
         @config = config
-
         @url = URI.escape(config['url'] || config.keys.first)
-
-        @download_path = config['download_path']
         @validate_cert = config['validate_cert'].nil? || config['validate_cert']
-
         matchers = Array(config['regexp']).map do |e|
-          e.is_a?(String) ? e : e['matcher']
+          e.is_a?(String) ? {'matcher' => e} : e
         end
-
-        @regexp = build_regexp(matchers)
-
-        initialize_download_paths(config['regexp'])
       else
         @config = {}
         @url = config.to_s
       end
+
+      matchers.push({'matcher' => '(.*?)'}) if matchers.empty?
+
+      @regexp = build_regexp(matchers)
+
+      initialize_matcher_config(matchers)
     end
 
-    def download_path(title = nil)
-      return @download_path if title.nil?
+    def get_config(title = nil)
+      return config[:'(.*?)'] if title.nil?
 
-      @download_paths.each do |regexp, path|
-        return path if title =~ to_regexp(regexp)
+      matcher_configs.each do |regexp, config|
+        return config if title =~ to_regexp(regexp)
       end
 
-      @download_path
+      config['(.*?)']
     end
 
     def matches_regexp?(title)
@@ -44,18 +44,22 @@ module TransmissionRSS
     private
 
     def build_regexp(matchers)
-      matchers = Array(matchers).map { |m| to_regexp(m) }
+      matchers = Array(matchers).map { |m| to_regexp(m['matcher']) }
       matchers.empty? ? nil : Regexp.union(matchers)
     end
 
-    def initialize_download_paths(regexps)
+    def initialize_matcher_config(regexps)
       return unless regexps.is_a?(Array)
 
       regexps.each do |regexp|
         matcher = regexp['matcher']
-        path    = regexp['download_path']
-
-        @download_paths[matcher] = path if matcher && path
+        if matcher
+          matcher_configs[matcher] = config.merge(regexp)
+          matcher_configs[matcher].delete('url')
+          matcher_configs[matcher].delete('regexp')
+          matcher_configs[matcher].delete('matcher')
+          matcher_configs[matcher].transform_keys!(&:to_sym)
+        end
       end
     end
 

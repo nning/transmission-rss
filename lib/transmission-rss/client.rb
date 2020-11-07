@@ -7,7 +7,7 @@ require File.join(File.dirname(__FILE__), 'log')
 module TransmissionRSS
   # Class for communication with transmission utilizing the RPC web interface.
   class Client
-    OPTIONS = [:paused, :download_dir]
+    OPTIONS = {:add_paused => :'paused', :download_path => :'download-dir'}
 
     class Unauthorized < StandardError
     end
@@ -67,7 +67,7 @@ module TransmissionRSS
 
         set_opts = {}
 
-        if options[:seed_ratio_limit]
+        if options[:seed_ratio_limit] && !options[:seed_ratio_limit].eql?('default')
           if options[:seed_ratio_limit].to_f < 0
             set_opts[:seedRatioMode] = 2
           else
@@ -76,7 +76,7 @@ module TransmissionRSS
           end
         end
 
-        if options[:seed_idle_limit]
+        if options[:seed_idle_limit] && !options[:seed_idle_limit].eql?('default')
           if options[:seed_idle_limit].to_i < 0
             set_opts[:seedIdleMode] = 2
           else
@@ -85,11 +85,13 @@ module TransmissionRSS
           end
         end
 
-        if options[:priority]
+        if options[:priority] && !options[:priority].eql?('default')
           if options[:priority].eql?('low')
             set_opts[:bandwidthPriority] = -1
           elsif options[:priority].eql?('high')
             set_opts[:bandwidthPriority] = 1
+          elsif options[:priority].eql?('normal')
+            set_opts[:bandwidthPriority] = 0
           end
         end
 
@@ -170,10 +172,8 @@ module TransmissionRSS
     def set_arguments_from_options(options)
       arguments = {}
 
-      OPTIONS.each do |o|
-        unless options[o].nil?
-          arguments[o.to_s.sub('_', '-')] = options[o]
-        end
+      OPTIONS.each do |key, value|
+        arguments[value] = options[key] unless options[key].nil?
       end
 
       arguments
