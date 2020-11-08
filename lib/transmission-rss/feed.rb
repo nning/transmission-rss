@@ -28,13 +28,13 @@ module TransmissionRSS
     end
 
     def get_config(title = nil)
-      return config[:'(.*?)'] if title.nil?
+      return matcher_configs[:'(.*?)'] if title.nil?
 
       matcher_configs.each do |regexp, config|
         return config if title =~ to_regexp(regexp)
       end
 
-      config['(.*?)']
+      matcher_configs['(.*?)']
     end
 
     def matches_regexp?(title)
