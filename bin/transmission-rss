@@ -17,6 +17,14 @@ if bsd?
   config_file = '/usr/local' + config_file
 end
 
+# Options read from the general config section. Feeds can override this on a
+# per-feed or per-match basis. Add here any new option supported at the feed or
+# match level.
+overridable_options = [
+  :download_path, :add_paused, :peer_limit, :priority, :seed_ratio_limit,
+  :seed_idle_limit, :download_limit, :upload_limit, :honor_limits
+]
+
 # Do not fork by default.
 dofork = false
 
@@ -136,12 +144,10 @@ else
   log.debug('no privilege dropping')
 end
 
-# Feeds can override this on a per-feed or per-match basis
-default_feed_config = {
-  :add_paused => config.add_paused,
-  :download_path => config.download_path,
-  :priority => config.priority
-}
+default_feed_config = {}
+overridable_options.each do |o|
+  default_feed_config.merge!(o => config[o.to_s]) unless config[o.to_s].nil?
+end
 
 # Warn if no feeds are given.
 log.warn('no feeds given') if config.feeds.empty?

@@ -84,6 +84,20 @@ module TransmissionRSS
           end
         end
 
+        if options[:download_limit] && !options[:download_limit].eql?('default') && options[:download_limit].to_i >= 0
+          set_opts[:downloadLimit] = options[:download_limit].to_i
+          set_opts[:downloadLimited] = true
+        end
+
+        if options[:upload_limit] && !options[:upload_limit].eql?('default') && options[:upload_limit].to_i >= 0
+          set_opts[:uploadLimit] = options[:upload_limit].to_i
+          set_opts[:uploadLimited] = true
+        end
+
+        if !options[:honor_limits].nil? && !options[:honor_limits].eql?('default')
+          set_opts[:honorsSessionLimits] = !!options[:honor_limits]
+        end
+
         set_torrent(id, set_opts) unless set_opts.empty?
 
       end
@@ -162,12 +176,16 @@ module TransmissionRSS
       arguments = {}
 
       options.each do |key, value|
+
         next if value.nil? || value.eql?('default')
+
         case key
-        when :add_paused
-          arguments[:paused] = value
         when :download_path
           arguments[:'download-dir'] = value
+        when :add_paused
+          arguments[:paused] = value
+        when :peer_limit
+          arguments[:'peer-limit'] = value.to_i
         when :priority
           if value.eql?('low')
             arguments[:bandwidthPriority] = -1
@@ -177,6 +195,7 @@ module TransmissionRSS
             arguments[:bandwidthPriority] = 0
           end
         end
+
       end
 
       arguments
