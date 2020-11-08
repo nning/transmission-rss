@@ -122,10 +122,10 @@ module TransmissionRSS
 
         @log.debug('on_new_item event ' + link)
 
-        download_path = feed.download_path(item.title)
+        feed_config = feed.get_config(item.title)
 
         begin
-          on_new_item(link, feed, download_path)
+          on_new_item(link, feed, feed_config)
         rescue Client::Unauthorized, Errno::ECONNREFUSED, Timeout::Error
           @log.debug('not added to seen file ' + link)
         else
