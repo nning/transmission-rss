@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 2.1'
 
+  s.add_dependency 'rss', '~> 0.2', '>= 0.2.9'
   s.add_dependency 'open_uri_redirections', '~> 0.2', '>= 0.2.1'
   s.add_dependency 'rb-inotify', '~> 0.9', '>= 0.9.10'
 end
