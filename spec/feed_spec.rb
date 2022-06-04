@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Feed do
   before do
     @url = 'http://site.com/rss'
+    @encoded_url = { 'url' => 'http://site.com/rss?name=name%20with%20empty%20space' }
     @download_path = '~/files'
     @matcher = '.*\\.pdf'
     @regexp = /.*\.pdf/i
@@ -14,6 +15,11 @@ describe Feed do
     expect(feed.config).not_to be_nil
     expect(feed.download_path).to be_nil
     expect(feed.regexp).to be_nil
+  end
+
+  it 'should be able to parse encoded url' do
+    feed = Feed.new(@encoded_url)
+    expect(feed.url).to eq(@encoded_url['url'])
   end
 
   it 'should be able to parse old style hash with no options' do
