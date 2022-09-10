@@ -60,9 +60,11 @@ describe TransmissionRSS::Config do
     end
 
     describe 'yaml' do
+      let(:yaml) { @hash.to_yaml }
+
       before do
         @path = '/tmp/transmission-rss-config-test.yml'
-        File.write(@path, @hash.to_yaml)
+        File.write(@path, yaml)
         @config.load(@path, watch: false)
       end
 
@@ -72,6 +74,23 @@ describe TransmissionRSS::Config do
 
       after do
         File.delete(@path)
+      end
+
+      context 'with aliases' do
+        let(:yaml) do
+          %q(
+            feeds:
+            - url: http://example.com
+              regexp: &filters
+              - ^something
+            - url: http://other.com
+              regexp: *filters
+          )
+        end
+
+        it 'should load without error' do
+          expect{@config}.not_to raise_error(Psych::BadAlias)
+        end
       end
     end
   end
