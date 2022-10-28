@@ -31,6 +31,7 @@ feeds:
         download_path: /home/user/match2
   - url: http://example.com/feed8
     validate_cert: false
+    seen_by_guid: true
 
 # Feed probing interval in seconds. Default is 600.
 

@@ -114,6 +114,15 @@ feeds:
     validate_cert: false
 ```
 
+Using the GUID instead of the link for tracking seen torrents is also available,
+useful for changing URLs such as Prowlarr's proxy links. Default is false:
+
+```yaml
+feeds:
+  - url: http://example.com/feed1
+    seen_by_guid: true
+```
+
 ### All available options
 
 The following configuration file example contains every existing option
@@ -150,6 +159,7 @@ feeds:
         download_path: /home/user/match2
   - url: http://example.com/feed9
     validate_cert: false
+    seen_by_guid: true
 
 update_interval: 600
 

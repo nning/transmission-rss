@@ -1,6 +1,6 @@
 module TransmissionRSS
   class Feed
-    attr_reader :url, :regexp, :config, :validate_cert
+    attr_reader :url, :regexp, :config, :validate_cert, :seen_by_guid
 
     def initialize(config = {})
       @download_paths = {}
@@ -12,7 +12,8 @@ module TransmissionRSS
         @url = URI.escape(URI.unescape(config['url'] || config.keys.first))
 
         @download_path = config['download_path']
-        @validate_cert = config['validate_cert'].nil? || config['validate_cert']
+        @validate_cert = !!config['validate_cert']
+        @seen_by_guid = config['seen_by_guid'].nil? || config['seen_by_guid']
 
         matchers = Array(config['regexp']).map do |e|
           e.is_a?(String) ? e : e['matcher']
