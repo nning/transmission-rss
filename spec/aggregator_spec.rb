@@ -99,22 +99,71 @@ describe Aggregator do
     end
 
     it 'returns nil but adds to seen if unseen but no regexp match' do
-      VCR.use_cassette('feed_fetch', MATCH_REQUESTS_ON) do 
-        feed = Feed.new({
-          'url' => FEEDS.first.url,
-          'download_path' => FEEDS.first.download_path,
-          'regexp' => 'WILL_NOT_MATCH$'
-        }) 
-        item = subject.send(:parse, subject.send(:fetch, feed)).first
-        subject.seen.clear!
-        
-        content = subject.send(:process_link, feed, item)
-        
-        expect(content).to be_nil
+      feed = Feed.new({
+        'url' => FEEDS.first.url,
+        'download_path' => FEEDS.first.download_path,
+        'regexp' => 'WILL_NOT_MATCH$'
+      }) 
+      
+      content = subject.send(:process_link, feed, @item)
+      
+      expect(content).to be_nil
 
-        expect(subject.seen.size).to eq(1)
-        expect(subject.seen.include?(item.enclosure.url)).to be true
-      end
+      expect(subject.seen.size).to eq(1)
+      expect(subject.seen.include?(@item.enclosure.url)).to be true
+    end    
+
+    it 'returns enclosure link and adds guid to seen if seen_by_guid' do
+      feed = Feed.new({
+        'url' => FEEDS.first.url,
+        'download_path' => FEEDS.first.download_path,
+        'seen_by_guid' => true
+      })
+
+      content = subject.send(:process_link, feed, @item)
+
+      url = URI.parse(content)
+      expect(url.scheme).to eq('https')
+      expect(url.host).to eq('www.archlinux.org')
+      expect(File.basename(url.path)).to match(/\.iso\.torrent$/)
+      
+      expect(subject.seen.size).to eq(1)
+      expect(subject.seen.include?(@item.guid.content.to_s)).to be true
     end
+    
+    it 'returns link and adds guid to seen if seen_by_guid but no enclosure link' do
+      feed = Feed.new({
+        'url' => FEEDS.first.url,
+        'download_path' => FEEDS.first.download_path,
+        'seen_by_guid' => true
+      }) 
+      @item.enclosure = nil
+      
+      content = subject.send(:process_link, feed, @item)
+
+      url = URI.parse(content)
+      expect(url.scheme).to eq('https')
+      expect(url.host).to eq('www.archlinux.org')
+      expect(File.basename(url.path)).to match(/2020\.01\.01$/)
+      
+      expect(subject.seen.size).to eq(1)
+      expect(subject.seen.include?(@item.guid.content.to_s)).to be true
+    end
+    
+    it 'returns nil but adds to seen if seen_by_guid and unseen but no regexp match' do
+      feed = Feed.new({
+        'url' => FEEDS.first.url,
+        'download_path' => FEEDS.first.download_path,
+        'regexp' => 'WILL_NOT_MATCH$',
+        'seen_by_guid' => true
+      }) 
+      
+      content = subject.send(:process_link, feed, @item)
+      
+      expect(content).to be_nil
+
+      expect(subject.seen.size).to eq(1)
+      expect(subject.seen.include?(@item.guid.content)).to be true
+    end    
   end
 end
