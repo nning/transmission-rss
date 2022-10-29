@@ -113,7 +113,7 @@ module TransmissionRSS
       link = link.href if link.class != String
       
       # Determine whether to use guid or link as seen hash
-      seen_value = !!feed.seen_by_guid ? (item.guid.content rescue item.guid || link).to_s : link
+      seen_value = feed.seen_by_guid ? (item.guid.content rescue item.guid || link).to_s : link
       
       # The link is not in +@seen+ Array.
       unless @seen.include?(seen_value)

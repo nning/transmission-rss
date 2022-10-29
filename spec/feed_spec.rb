@@ -15,8 +15,8 @@ describe Feed do
     expect(feed.config).not_to be_nil
     expect(feed.download_path).to be_nil
     expect(feed.regexp).to be_nil
-    expect(feed.validate_cert).to be_nil
-    expect(feed.seen_by_guid).to be_nil
+    expect(feed.validate_cert).to eq(true)
+    expect(feed.seen_by_guid).to eq(false)
   end
 
   it 'should be able to parse encoded url' do
