@@ -111,12 +111,15 @@ module TransmissionRSS
 
       # Link is not a String directly.
       link = link.href if link.class != String
+      
+      # Determine whether to use guid or link as seen hash
+      seen_value = !!feed.seen_by_guid ? (item.guid.content || item.guid || link).to_s : link
 
       # The link is not in +@seen+ Array.
-      unless @seen.include?(link)
+      unless @seen.include?(seen_value)
         # Skip if filter defined and not matching.
         unless feed.matches_regexp?(item.title)
-          @seen.add(link)
+          @seen.add(seen_value)
           return
         end
 
@@ -129,7 +132,7 @@ module TransmissionRSS
         rescue Client::Unauthorized, Errno::ECONNREFUSED, Timeout::Error
           @log.debug('not added to seen file ' + link)
         else
-          @seen.add(link)
+          @seen.add(seen_value)
         end
       end
 
