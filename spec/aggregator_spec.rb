@@ -60,7 +60,7 @@ describe Aggregator do
       end
     end
 
-    it 'returns enclosure url and adds to seen' do
+    it 'returns enclosure url and adds url to seen' do
       content = subject.send(:process_link, FEEDS.first, @item)
 
       url = URI.parse(content)
@@ -73,7 +73,7 @@ describe Aggregator do
       expect(subject.seen.include?(@item.enclosure.url)).to be true
     end
 
-    it 'returns link and adds to seen if no enclosure url' do
+    it 'returns link and adds link to seen if no enclosure url' do
       @item.enclosure = nil
       
       content = subject.send(:process_link, FEEDS.first, @item)
@@ -98,10 +98,9 @@ describe Aggregator do
       expect(subject.seen.size).to eq(0)
     end
 
-    it 'returns nil but adds to seen if unseen but no regexp match' do
+    it 'returns nil but adds url to seen if unseen but no regexp match' do
       feed = Feed.new({
         'url' => FEEDS.first.url,
-        'download_path' => FEEDS.first.download_path,
         'regexp' => 'WILL_NOT_MATCH$'
       }) 
       
@@ -116,7 +115,6 @@ describe Aggregator do
     it 'returns enclosure url and adds guid to seen if seen_by_guid' do
       feed = Feed.new({
         'url' => FEEDS.first.url,
-        'download_path' => FEEDS.first.download_path,
         'seen_by_guid' => true
       })
 
@@ -134,7 +132,6 @@ describe Aggregator do
     it 'returns link and adds guid to seen if seen_by_guid but no enclosure url' do
       feed = Feed.new({
         'url' => FEEDS.first.url,
-        'download_path' => FEEDS.first.download_path,
         'seen_by_guid' => true
       }) 
       @item.enclosure = nil
@@ -153,7 +150,6 @@ describe Aggregator do
     it 'returns enclosure url and adds url to seen if seen_by_guid but no guid' do
       feed = Feed.new({
         'url' => FEEDS.first.url,
-        'download_path' => FEEDS.first.download_path,
         'seen_by_guid' => true
       })
       @item.guid = nil
@@ -169,7 +165,6 @@ describe Aggregator do
     it 'returns link and adds link to seen if seen_by_guid but no guid' do
       feed = Feed.new({
         'url' => FEEDS.first.url,
-        'download_path' => FEEDS.first.download_path,
         'seen_by_guid' => true
       })
       @item.enclosure = nil
@@ -186,7 +181,6 @@ describe Aggregator do
     it 'returns enclosure url and adds guid to seen if seen_by_guid but guid has no attributes' do
       feed = Feed.new({
         'url' => FEEDS.first.url,
-        'download_path' => FEEDS.first.download_path,
         'seen_by_guid' => true
       })
       @item.guid = @item.guid.content
@@ -202,7 +196,6 @@ describe Aggregator do
     it 'returns link and adds guid to seen if seen_by_guid but no enclosure link and guid has no attributes' do
       feed = Feed.new({
         'url' => FEEDS.first.url,
-        'download_path' => FEEDS.first.download_path,
         'seen_by_guid' => true
       })
       @item.enclosure = nil
@@ -219,7 +212,6 @@ describe Aggregator do
     it 'returns nil but adds to seen if seen_by_guid and unseen but no regexp match' do
       feed = Feed.new({
         'url' => FEEDS.first.url,
-        'download_path' => FEEDS.first.download_path,
         'regexp' => 'WILL_NOT_MATCH$',
         'seen_by_guid' => true
       }) 
@@ -230,6 +222,77 @@ describe Aggregator do
 
       expect(subject.seen.size).to eq(1)
       expect(subject.seen.include?(@item.guid.content)).to be true
-    end    
+    end
+
+    it 'calls on_new_item when returning link and adding to seen' do
+      on_new_item_args = nil
+      subject.on_new_item do | arg1, arg2, arg3 |
+        on_new_item_args = Hash[binding.local_variables.map{|x| [x, binding.local_variable_get(x)]}]
+      end
+
+      content = subject.send(:process_link, FEEDS.first, @item)
+
+      expect(on_new_item_args).not_to be_nil
+      expect(on_new_item_args[:arg1]).to eq(@item.enclosure.url)
+      expect(on_new_item_args[:arg2]).to be(FEEDS.first)
+      expect(on_new_item_args[:arg3]).to be_nil
+      
+      expect(subject.seen.size).to eq(1)
+      expect(subject.seen.include?(@item.enclosure.url)).to be true
+    end
+
+    it 'calls on_new_item with download_path when download_path set on feed' do
+      on_new_item_args = nil
+      subject.on_new_item do | arg1, arg2, arg3 |
+        on_new_item_args = Hash[binding.local_variables.map{|x| [x, binding.local_variable_get(x)]}]
+      end
+      feed = Feed.new({
+        'url' => FEEDS.first.url,
+        'download_path' => '/tmp'
+      })
+
+      content = subject.send(:process_link, feed, @item)
+
+      expect(on_new_item_args).not_to be_nil
+      expect(on_new_item_args[:arg1]).to eq(@item.enclosure.url)
+      expect(on_new_item_args[:arg2]).to be(feed)
+      expect(on_new_item_args[:arg3]).to eq('/tmp')
+      
+      expect(subject.seen.size).to eq(1)
+      expect(subject.seen.include?(@item.enclosure.url)).to be true
+    end
+    
+    it 'calls on_new_item with download_path from regexp when matching' do
+      on_new_item_args = nil
+      subject.on_new_item do | arg1, arg2, arg3 |
+        on_new_item_args = Hash[binding.local_variables.map{|x| [x, binding.local_variable_get(x)]}]
+      end
+      feed = Feed.new({
+        'url' => FEEDS.first.url,
+        'regexp' => [{'matcher' => '.+', 'download_path' => '/tmp/foo'}]
+      })
+
+      content = subject.send(:process_link, feed, @item)
+
+      expect(on_new_item_args).not_to be_nil
+      expect(on_new_item_args[:arg1]).to eq(@item.enclosure.url)
+      expect(on_new_item_args[:arg2]).to be(feed)
+      expect(on_new_item_args[:arg3]).to eq('/tmp/foo')
+      
+      expect(subject.seen.size).to eq(1)
+      expect(subject.seen.include?(@item.enclosure.url)).to be true
+    end
+
+    [Client::Unauthorized, Errno::ECONNREFUSED, Timeout::Error].each { | err |
+      it "does not add to seen when on_new_item throws #{err}" do
+        subject.on_new_item do
+          raise err.new "Test #{err}"
+        end
+  
+        content = subject.send(:process_link, FEEDS.first, @item)
+  
+        expect(subject.seen.size).to eq(0)
+      end
+    }
   end
 end
