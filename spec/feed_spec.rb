@@ -32,12 +32,12 @@ describe Feed do
   end
 
   it 'should be able to parse old style with all options' do
-    feed = Feed.new({@url => nil, 'download_path' => @download_path, 'regexp' => @matcher, 'validate_cert': true, 'seen_by_guid': false})
+    feed = Feed.new({@url => nil, 'download_path' => @download_path, 'regexp' => @matcher, 'validate_cert' => true, 'seen_by_guid' => false})
     expect(feed.url).to eq(@url)
     expect(feed.download_path).to eq(@download_path)
     expect(feed.regexp).to eq(@regexp)
-    expect(feed.validate_cert).to eq(false)
-    expect(feed.seen_by_guid).to eq(true)
+    expect(feed.validate_cert).to eq(true)
+    expect(feed.seen_by_guid).to eq(false)
   end
 
   it 'should be able to use new style config with no options' do
@@ -48,7 +48,7 @@ describe Feed do
   end
 
   it 'should be able to use new style config with all options' do
-    feed = Feed.new({'url' => @url, 'download_path' => @download_path, 'regexp' => @matcher, 'validate_cert': false, 'seen_by_guid': true})
+    feed = Feed.new({'url' => @url, 'download_path' => @download_path, 'regexp' => @matcher, 'validate_cert' => false, 'seen_by_guid' => true})
     expect(feed.url).to eq(@url)
     expect(feed.download_path).to eq(@download_path)
     expect(feed.regexp).to eq(@regexp)

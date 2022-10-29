@@ -19,3 +19,8 @@ VCR.configure do |config|
 end
 
 MATCH_REQUESTS_ON = { match_requests_on: [:method, :uri, :headers, :body] }
+
+RSpec.configure do |config|
+  config.filter_run focus: true
+  config.run_all_when_everything_filtered = true
+end
