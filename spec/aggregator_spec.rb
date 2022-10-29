@@ -51,4 +51,42 @@ describe Aggregator do
       end
     end
   end
+
+  describe '#process_link' do
+    before(:each) do    
+      VCR.use_cassette('feed_fetch', MATCH_REQUESTS_ON) do  
+        ITEM = subject.send(:parse, subject.send(:fetch, FEEDS.first)).first
+      end
+    end
+
+    it 'returns enclosure link' do
+      content = subject.send(:process_link, FEEDS.first, ITEM)
+
+      url = URI.parse(content)
+
+      expect(url.scheme).to eq('https')
+      expect(url.host).to eq('www.archlinux.org')
+      expect(File.basename(url.path)).to match(/\.iso\.torrent$/)
+    end
+
+    it 'returns link if no enclosure link' do
+      ITEM.enclosure = nil
+      
+      content = subject.send(:process_link, FEEDS.first, ITEM)
+
+      url = URI.parse(content)
+      expect(url.scheme).to eq('https')
+      expect(url.host).to eq('www.archlinux.org')
+      expect(File.basename(url.path)).to match(/2020\.01\.01$/)
+    end
+
+    it 'returns nil if no link or enclosure link' do
+      ITEM.enclosure = nil
+      ITEM.link = nil
+      
+      content = subject.send(:process_link, FEEDS.first, ITEM)
+
+      expect(content).to be_nil
+    end
+  end
 end
