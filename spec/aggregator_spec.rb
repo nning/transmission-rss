@@ -60,7 +60,7 @@ describe Aggregator do
       end
     end
 
-    it 'returns enclosure link and adds to seen' do
+    it 'returns enclosure url and adds to seen' do
       content = subject.send(:process_link, FEEDS.first, @item)
 
       url = URI.parse(content)
@@ -70,10 +70,10 @@ describe Aggregator do
       expect(File.basename(url.path)).to match(/\.iso\.torrent$/)
       
       expect(subject.seen.size).to eq(1)
-      expect(subject.seen.include?(content)).to be true
+      expect(subject.seen.include?(@item.enclosure.url)).to be true
     end
 
-    it 'returns link and adds to seen if no enclosure link' do
+    it 'returns link and adds to seen if no enclosure url' do
       @item.enclosure = nil
       
       content = subject.send(:process_link, FEEDS.first, @item)
@@ -84,10 +84,10 @@ describe Aggregator do
       expect(File.basename(url.path)).to match(/2020\.01\.01$/)
       
       expect(subject.seen.size).to eq(1)
-      expect(subject.seen.include?(content)).to be true
+      expect(subject.seen.include?(@item.link)).to be true
     end
 
-    it 'returns nil if no link or enclosure link' do
+    it 'returns nil if no link or enclosure url' do
       @item.enclosure = nil
       @item.link = nil
       
@@ -113,7 +113,7 @@ describe Aggregator do
       expect(subject.seen.include?(@item.enclosure.url)).to be true
     end    
 
-    it 'returns enclosure link and adds guid to seen if seen_by_guid' do
+    it 'returns enclosure url and adds guid to seen if seen_by_guid' do
       feed = Feed.new({
         'url' => FEEDS.first.url,
         'download_path' => FEEDS.first.download_path,
@@ -131,7 +131,7 @@ describe Aggregator do
       expect(subject.seen.include?(@item.guid.content.to_s)).to be true
     end
     
-    it 'returns link and adds guid to seen if seen_by_guid but no enclosure link' do
+    it 'returns link and adds guid to seen if seen_by_guid but no enclosure url' do
       feed = Feed.new({
         'url' => FEEDS.first.url,
         'download_path' => FEEDS.first.download_path,
@@ -148,6 +148,72 @@ describe Aggregator do
       
       expect(subject.seen.size).to eq(1)
       expect(subject.seen.include?(@item.guid.content.to_s)).to be true
+    end
+
+    it 'returns enclosure url and adds url to seen if seen_by_guid but no guid' do
+      feed = Feed.new({
+        'url' => FEEDS.first.url,
+        'download_path' => FEEDS.first.download_path,
+        'seen_by_guid' => true
+      })
+      @item.guid = nil
+
+      content = subject.send(:process_link, feed, @item)
+      
+      expect(content).not_to be_empty
+      
+      expect(subject.seen.size).to eq(1)
+      expect(subject.seen.include?(@item.enclosure.url)).to be true
+    end
+
+    it 'returns link and adds link to seen if seen_by_guid but no guid' do
+      feed = Feed.new({
+        'url' => FEEDS.first.url,
+        'download_path' => FEEDS.first.download_path,
+        'seen_by_guid' => true
+      })
+      @item.enclosure = nil
+      @item.guid = nil
+
+      content = subject.send(:process_link, feed, @item)
+      
+      expect(content).not_to be_empty
+      
+      expect(subject.seen.size).to eq(1)
+      expect(subject.seen.include?(@item.link)).to be true
+    end
+
+    it 'returns enclosure url and adds guid to seen if seen_by_guid but guid has no attributes' do
+      feed = Feed.new({
+        'url' => FEEDS.first.url,
+        'download_path' => FEEDS.first.download_path,
+        'seen_by_guid' => true
+      })
+      @item.guid = @item.guid.content
+
+      content = subject.send(:process_link, feed, @item)
+      
+      expect(content).not_to be_empty
+      
+      expect(subject.seen.size).to eq(1)
+      expect(subject.seen.include?(@item.guid)).to be true
+    end
+
+    it 'returns link and adds guid to seen if seen_by_guid but no enclosure link and guid has no attributes' do
+      feed = Feed.new({
+        'url' => FEEDS.first.url,
+        'download_path' => FEEDS.first.download_path,
+        'seen_by_guid' => true
+      })
+      @item.enclosure = nil
+      @item.guid = @item.guid.content
+
+      content = subject.send(:process_link, feed, @item)
+      
+      expect(content).not_to be_empty
+      
+      expect(subject.seen.size).to eq(1)
+      expect(subject.seen.include?(@item.guid)).to be true
     end
     
     it 'returns nil but adds to seen if seen_by_guid and unseen but no regexp match' do
