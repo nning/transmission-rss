@@ -56,8 +56,8 @@ describe Aggregator do
     before(:each) do    
       VCR.use_cassette('feed_fetch', MATCH_REQUESTS_ON) do  
         @item = subject.send(:parse, subject.send(:fetch, FEEDS.first)).first
+        subject.seen.clear!
       end
-      subject.seen.clear!
     end
 
     it 'returns enclosure link and adds to seen' do
@@ -96,6 +96,25 @@ describe Aggregator do
       expect(content).to be_nil
       
       expect(subject.seen.size).to eq(0)
+    end
+
+    it 'returns nil but adds to seen if unseen but no regexp match' do
+      VCR.use_cassette('feed_fetch', MATCH_REQUESTS_ON) do 
+        feed = Feed.new({
+          'url' => FEEDS.first.url,
+          'download_path' => FEEDS.first.download_path,
+          'regexp' => 'WILL_NOT_MATCH$'
+        }) 
+        item = subject.send(:parse, subject.send(:fetch, feed)).first
+        subject.seen.clear!
+        
+        content = subject.send(:process_link, feed, item)
+        
+        expect(content).to be_nil
+
+        expect(subject.seen.size).to eq(1)
+        expect(subject.seen.include?(item.enclosure.url)).to be true
+      end
     end
   end
 end
