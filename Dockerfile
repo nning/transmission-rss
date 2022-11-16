@@ -6,12 +6,10 @@ FROM alpine:3 as builder
 RUN apk add gcc libc-dev make ruby-dev
 COPY . /tmp
 WORKDIR /tmp
-RUN \
-  gem build transmission-rss.gemspec && \
-  gem install -N --build-root /build transmission-rss-*.gem
+RUN gem build transmission-rss.gemspec
+RUN gem install -N --build-root /build transmission-rss-*.gem
 
 FROM alpine:3
-MAINTAINER henning mueller <mail@nning.io>
 ARG UID=1000
 ARG GID=1000
 RUN \
