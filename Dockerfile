@@ -1,6 +1,10 @@
 # docker build -t transmission-rss .
 # docker build -t transmission-rss --build-arg UID=1337 --build-arg GID=1337 .
 # docker run -it -v $(pwd)/transmission-rss.conf:/etc/transmission-rss.conf transmission-rss
+#
+# docker build -t nning2/transmission-rss:v1.2.3 .
+# docker tag nning2/transmission-rss:v1.2.3 nning2/transmission-rss:latest
+# docker push nning2/transmission-rss:v1.2.3
 
 FROM alpine:3 as builder
 RUN apk add gcc libc-dev make ruby-dev

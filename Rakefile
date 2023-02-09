@@ -25,4 +25,15 @@ namespace :docker do
         transmission-rss
     '
   end
+
+  desc 'Publish docker image'
+  task :publish do
+    sh "
+      set -e
+      docker build -t nning2/transmission-rss:#{TransmissionRSS::VERSION} .
+      docker tag nning2/transmission-rss:#{TransmissionRSS::VERSION} nning2/transmission-rss:latest
+      docker push nning2/transmission-rss:#{TransmissionRSS::VERSION}
+      docker push nning2/transmission-rss:latest
+    "
+  end
 end
