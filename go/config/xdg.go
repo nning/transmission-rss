@@ -1,7 +1,6 @@
-package utils
+package config
 
 import (
-	"fmt"
 	"os"
 	"os/user"
 	"path"
@@ -12,10 +11,7 @@ func getXDGDir(name string) string {
 	dir, isXDG := os.LookupEnv("XDG_" + strings.ToUpper(name) + "_HOME")
 	if !isXDG {
 		u, _ := user.Current()
-		dir = path.Join(u.HomeDir, "."+name, "transmission-rss")
-
-		binName := path.Base(os.Args[0])
-		fmt.Println(binName)
+		dir = path.Join(u.HomeDir, "."+name, path.Base(os.Args[0]))
 	}
 
 	return dir

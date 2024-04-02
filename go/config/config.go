@@ -36,6 +36,8 @@ type Config struct {
 	UpdateInterval int `yaml:"update_interval"`
 
 	Paused bool `yaml:"add_paused"`
+
+	SeenFile *SeenFile
 }
 
 func New(configPath string) *Config {
@@ -58,6 +60,8 @@ func New(configPath string) *Config {
 	config.Server.RpcPath = DefaultString(config.Server.RpcPath, "/transmission/rpc")
 	config.Server.Port = DefaultInt(config.Server.Port, 9091)
 
+	config.SeenFile = NewSeenFile()
+
 	return &config
 }
 
@@ -67,7 +71,7 @@ func getPath() string {
 	configDirs := []string{
 		workDir,
 		path.Dir(os.Args[0]),
-		utils.GetConfigDir(),
+		GetConfigDir(),
 	}
 
 	fileNames := []string{
@@ -86,7 +90,7 @@ func getPath() string {
 			for _, e := range extensions {
 				p := path.Join(d, f+e)
 				if _, err := os.Stat(p); err == nil {
-					fmt.Println("Using config file: ", p)
+					fmt.Println("Using config file:", p)
 					return p
 				}
 			}

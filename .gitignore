@@ -9,4 +9,4 @@ transmission-rss.yml
 
 pkg
 
-transmission-rss
+cmd/transmission-rss/transmission-rss
