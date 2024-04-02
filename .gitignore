@@ -1,9 +1,12 @@
-/coverage
-/log
-/*.gem
-/Gemfile.lock
+coverage
+log
+*.gem
+Gemfile.lock
 
-/transmission-rss.conf
-/.seen
+transmission-rss.conf
+transmission-rss.yml
+.seen
 
-/pkg
+pkg
+
+transmission-rss
