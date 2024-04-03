@@ -37,7 +37,8 @@ type Config struct {
 
 	Paused bool `yaml:"add_paused"`
 
-	SeenFile *SeenFile
+	SeenFile   *SeenFile
+	ConfigPath string
 }
 
 func New(configPath string) *Config {
@@ -53,6 +54,8 @@ func New(configPath string) *Config {
 
 		err = yaml.Unmarshal(yamlData, &config)
 		utils.ExitOnError(err)
+
+		config.ConfigPath = configPath
 	}
 
 	config.UpdateInterval = DefaultInt(config.UpdateInterval, 600)
@@ -90,7 +93,6 @@ func getPath() string {
 			for _, e := range extensions {
 				p := path.Join(d, f+e)
 				if _, err := os.Stat(p); err == nil {
-					fmt.Println("Using config file:", p)
 					return p
 				}
 			}

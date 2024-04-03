@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"crypto/sha256"
 	"fmt"
+	"log"
 	"os"
 	"path"
 	"strconv"
@@ -38,7 +39,7 @@ func NewSeenFile(params ...string) *SeenFile {
 		items = append(items, scanner.Text())
 	}
 
-	fmt.Println("SEEN " + strconv.Itoa(len(items)) + " items")
+	log.Default().Println("SEEN " + strconv.Itoa(len(items)) + " items")
 
 	s := SeenFile{
 		Path:  seenPath,

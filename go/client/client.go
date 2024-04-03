@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strconv"
 	"time"
@@ -63,18 +63,15 @@ func getSessionId(config *config.Config) string {
 	response, err := client.Do(request)
 	utils.ExitOnError(err)
 
-	_, err = ioutil.ReadAll(response.Body)
+	_, err = io.ReadAll(response.Body)
 	utils.ExitOnError(err)
 
 	if response.StatusCode != 409 {
 		status := strconv.Itoa(response.StatusCode)
-		// logger.Error("SESSION_ID ERROR", status)
-		panic("Could not obtain session ID, got HTTP response code " + status + ".")
+		utils.ExitOnError(nil, "SESSION_ID ERROR", status)
 	}
 
 	sessionId := response.Header["X-Transmission-Session-Id"][0]
-
-	// logger.Info("SESSION", sessionId)
 
 	return sessionId
 }

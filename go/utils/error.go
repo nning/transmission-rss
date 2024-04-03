@@ -1,18 +1,16 @@
 package utils
 
 import (
-	"fmt"
-	"os"
+	"log"
+	"strings"
 )
 
 func ExitOnError(e error, a ...string) {
 	if e != nil {
-		fmt.Fprintln(os.Stderr, e)
-		os.Exit(1)
+		log.Default().Fatalln(e)
 	}
 
 	if len(a) > 0 {
-		fmt.Fprintln(os.Stderr, a[0])
-		os.Exit(1)
+		log.Default().Fatalln(strings.Join(a, " "))
 	}
 }

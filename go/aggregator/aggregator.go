@@ -2,6 +2,7 @@ package aggregator
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"regexp"
 
@@ -51,47 +52,46 @@ func (a *Aggregator) processItem(feedConfig *config.Feed, item *gofeed.Item) {
 		link = item.Enclosures[0].URL
 	}
 
-	// fmt.Println(link, feedConfig.DownloadPath)
-
 	seenFile := a.Config.SeenFile
 
-	if !seenFile.IsPresent(link) {
-		if !match(item.Title, feedConfig.RegExp) {
-			seenFile.Add(link)
-			return
-		}
+	if seenFile.IsPresent(link) {
+		return
+	}
 
-		fmt.Println("ADD", item.Title)
-		id, err := a.Client.AddTorrent(link, feedConfig.DownloadPath)
-		if err != nil {
-			// logger.Error(err)
-			return
-		}
-
+	if !match(item.Title, feedConfig.RegExp) {
 		seenFile.Add(link)
+		return
+	}
 
-		if feedConfig.SeedRatioLimit > 0 {
-			arguments := make(map[string]interface{})
+	log.Default().Printf("ADD \"%s\"\n", item.Title)
+	id, err := a.Client.AddTorrent(link, feedConfig.DownloadPath)
+	if err != nil {
+		log.Default().Println("ERROR", err)
+		return
+	}
 
-			arguments["ids"] = []int{id}
-			arguments["seedRatioLimit"] = feedConfig.SeedRatioLimit
-			arguments["seedRatioMode"] = 1
+	seenFile.Add(link)
 
-			a.Client.SetTorrent(arguments)
-		}
+	if feedConfig.SeedRatioLimit > 0 {
+		arguments := make(map[string]interface{})
+
+		arguments["ids"] = []int{id}
+		arguments["seedRatioLimit"] = feedConfig.SeedRatioLimit
+		arguments["seedRatioMode"] = 1
+
+		a.Client.SetTorrent(arguments)
 	}
 }
 
 func (a *Aggregator) processFeed(feedConfig *config.Feed) {
-	// logger.Info("Fetching", feedConfig.Url)
+	log.Default().Println("FETCH", feedConfig.Url)
+
 	feed, err := a.Parser.ParseURL(feedConfig.Url)
 
 	if err != nil {
-		// logger.Error("Fetching", err.Error())
+		log.Fatal(err)
 		return
 	}
-
-	// logger.Info("Found", len(feed.Items), "items")
 
 	for _, item := range feed.Items {
 		a.processItem(feedConfig, item)

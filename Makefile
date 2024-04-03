@@ -9,6 +9,9 @@ BIN_DIR = cmd/transmission-rss
 BIN_FILE = transmission-rss
 BIN = $(BIN_DIR)/$(BIN_FILE)
 
+VERSION = $(shell ./go/version.sh)
+BUILDTIME = $(shell date -u +"%Y%m%d%H%M%S")
+
 GOLDFLAGS += -X main.Version=$(VERSION)
 GOLDFLAGS += -X main.Buildtime=$(BUILDTIME)
 GOFLAGS += -ldflags "$(GOLDFLAGS)"
