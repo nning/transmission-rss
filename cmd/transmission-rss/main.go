@@ -8,30 +8,42 @@ import (
 
 	"github.com/nning/transmission-rss/go/aggregator"
 	"github.com/nning/transmission-rss/go/config"
+	"github.com/nning/transmission-rss/go/utils"
 )
 
 func main() {
-	if len(os.Args) > 1 && os.Args[1] != "-r" {
-		fmt.Printf("Usage: transmission-rss [-r]\n\n")
-		fmt.Printf("    -r: reset seen file\n\n")
+	options := utils.ParseOptions(os.Args)
+
+	if options.IsSet('h') {
+		fmt.Printf("Usage: transmission-rss [options]\n\n")
+		fmt.Printf("Options:\n")
+		fmt.Printf("    -c: config file\n")
+		fmt.Printf("    -h: show this help\n")
+		fmt.Printf("    -r: reset seen file\n")
+		fmt.Printf("    -s: single run\n\n")
 		os.Exit(0)
 	}
 
-	c := config.New("")
+	c := config.New(options.Get('c'))
 
 	if c.ConfigPath != "" {
-		log.Default().Println("CONFIG", c.ConfigPath)
+		log.Println("CONFIG", c.ConfigPath)
 	}
-	log.Default().Printf("HOST %s:%d\n", c.Server.Host, c.Server.Port)
-	log.Default().Println("FEEDS", len(c.Feeds))
+	log.Printf("HOST %s:%d\n", c.Server.Host, c.Server.Port)
+	log.Println("FEEDS", len(c.Feeds))
 
-	if len(os.Args) > 1 && os.Args[1] == "-r" {
+	if options.IsSet('r') {
 		c.SeenFile.Clear()
 	}
 
 	a := aggregator.New(c)
-	for {
+
+	if options.IsSet('s') {
 		a.Run()
-		time.Sleep(time.Duration(c.UpdateInterval) * time.Second)
+	} else {
+		for {
+			a.Run()
+			time.Sleep(time.Duration(c.UpdateInterval) * time.Second)
+		}
 	}
 }

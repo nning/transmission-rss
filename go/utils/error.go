@@ -7,10 +7,10 @@ import (
 
 func ExitOnError(e error, a ...string) {
 	if e != nil {
-		log.Default().Fatalln(e)
+		log.Fatalln(e)
 	}
 
 	if len(a) > 0 {
-		log.Default().Fatalln(strings.Join(a, " "))
+		log.Fatalln(strings.Join(a, " "))
 	}
 }

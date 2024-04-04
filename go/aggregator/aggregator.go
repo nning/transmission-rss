@@ -29,13 +29,13 @@ func New(config *config.Config) *Aggregator {
 		},
 	}
 
-	self := Aggregator{
+	a := Aggregator{
 		Client: client,
 		Config: config,
 		Parser: parser,
 	}
 
-	return &self
+	return &a
 }
 
 func match(title string, expr string) bool {
@@ -63,10 +63,10 @@ func (a *Aggregator) processItem(feedConfig *config.Feed, item *gofeed.Item) {
 		return
 	}
 
-	log.Default().Printf("ADD \"%s\"\n", item.Title)
+	log.Printf("ADD \"%s\"\n", item.Title)
 	id, err := a.Client.AddTorrent(link, feedConfig.DownloadDir)
 	if err != nil {
-		log.Default().Println("ERROR", err)
+		log.Println("ERROR", err)
 		return
 	}
 
@@ -84,12 +84,12 @@ func (a *Aggregator) processItem(feedConfig *config.Feed, item *gofeed.Item) {
 }
 
 func (a *Aggregator) processFeed(feedConfig *config.Feed) {
-	log.Default().Println("FETCH", feedConfig.Url)
+	log.Println("FETCH", feedConfig.Url)
 
 	feed, err := a.Parser.ParseURL(feedConfig.Url)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println("ERROR", err)
 		return
 	}
 

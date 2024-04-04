@@ -39,7 +39,7 @@ func NewSeenFile(params ...string) *SeenFile {
 		items = append(items, scanner.Text())
 	}
 
-	log.Default().Println("SEEN " + strconv.Itoa(len(items)) + " items")
+	log.Println("SEEN " + strconv.Itoa(len(items)) + " items")
 
 	s := SeenFile{
 		Path:  seenPath,
