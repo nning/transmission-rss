@@ -41,8 +41,7 @@ type Client struct {
 
 func New(config *config.Config) *Client {
 	client := Client{
-		Config:    config,
-		SessionId: getSessionId(config),
+		Config: config,
 		httpClient: http.Client{
 			Timeout: 30 * time.Second,
 		},
@@ -80,7 +79,7 @@ func (c *Client) UpdateSessionId() {
 	c.SessionId = getSessionId(c.Config)
 }
 
-func (c *Client) rpc(requestBody RequestBody) http.Response {
+func (c *Client) rpc(requestBody RequestBody) *http.Response {
 	url := c.Config.ServerURL()
 
 	jsonData, err := json.Marshal(requestBody)
@@ -89,7 +88,7 @@ func (c *Client) rpc(requestBody RequestBody) http.Response {
 	request, err := http.NewRequest("POST", url, bytes.NewReader(jsonData))
 	if err != nil {
 		// logger.Error("RPC request error", err)
-		return http.Response{
+		return &http.Response{
 			StatusCode: 504,
 		}
 	}
@@ -103,20 +102,23 @@ func (c *Client) rpc(requestBody RequestBody) http.Response {
 	response, err := c.httpClient.Do(request)
 	utils.ExitOnError(err)
 
-	// TODO Catch 409, update SessionId, retry
-	//      https://github.com/transmission/transmission/blob/master/extras/rpc-spec.txt#L56
+	if response.StatusCode == 409 {
+		c.UpdateSessionId()
+		response = c.rpc(requestBody)
+	}
 
-	return *response
+	return response
 }
 
-func (c *Client) AddTorrent(link string, downloadPath string) (id int, err error) {
+func (c *Client) AddTorrent(link string, downloadDir string) (id int, err error) {
 	var requestBody RequestBody
 
 	requestBody.Method = "torrent-add"
 	requestBody.Arguments = make(map[string]interface{})
 	requestBody.Arguments["filename"] = link
-	if len(downloadPath) > 0 {
-		requestBody.Arguments["download-path"] = downloadPath
+
+	if len(downloadDir) > 0 {
+		requestBody.Arguments["download-dir"] = downloadDir
 	}
 
 	if c.Config.Paused {

@@ -9,13 +9,9 @@ BIN_DIR = cmd/transmission-rss
 BIN_FILE = transmission-rss
 BIN = $(BIN_DIR)/$(BIN_FILE)
 
-VERSION = $(shell ./go/version.sh)
-BUILDTIME = $(shell date -u +"%Y%m%d%H%M%S")
-
-GOLDFLAGS += -X main.Version=$(VERSION)
-GOLDFLAGS += -X main.Buildtime=$(BUILDTIME)
+GOLDFLAGS =
 GOFLAGS += -ldflags "$(GOLDFLAGS)"
-CGO_ENABLED = 1
+CGO_ENABLED = 0
 
 build: $(BIN)
 all: build
@@ -38,14 +34,15 @@ coverage: test
 lint:
 	golint ./...
 
-build_pie: GOLDFLAGS += -s -w -linkmode external -extldflags \"$(LDFLAGS)\"
-build_pie: GOFLAGS += -trimpath -buildmode=pie -mod=readonly -modcacherw
-build_pie: build
+build_release: GOLDFLAGS += -s -w
+build_release: GOFLAGS += -trimpath -mod=readonly -modcacherw
+build_release: build
 
-release: build_pie
+upx:
 	upx -qq --best $(BIN)
-	ls -lh $(BIN)
 
-install: build_pie completion man
+release: build_release upx
+
+install: release
 	mkdir -p $(PREFIX)
 	cp $(BIN) $(PREFIX)

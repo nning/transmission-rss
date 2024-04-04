@@ -1,0 +1,50 @@
+#
+# Indent consistently with spaces!
+# Format documentation on http://www.yaml.org/.
+#
+# There are some inconsistencies between the Ruby and the Go version of the
+# configuration file:
+#
+# - Make sure, you use `download_dir` (instead of `download_path`) for feed
+#   configurations. This was the same in Ruby but was inconsistently documented.
+# - Advanced `regexp` configuration structures are not supported (list of
+#   different expressions, `matcher` options like `download_dir` and `exclude`).
+# - Additional options per feed are not supported: `validate_cert`,
+#   `seen_by_guid`.
+# - Top-level configuration options to control the daemon behaviour are also not
+#   supported: `log`, `privileges`, `client`, `fork`, `single`, `pid_file`.
+#
+
+# List of feeds to watch:
+
+feeds:
+  - url: http://example.com/feed1
+  - url: http://example.com/feed2
+  - url: http://example.com/feed3
+    regexp: match1
+  - url: http://example.com/feed4
+    regexp: (match1|match2)
+  - url: http://example.com/feed5
+    download_dir: /home/user/Downloads
+
+# Feed probing interval in seconds (default is 600):
+
+#update_interval: 600
+
+# Whether to add torrents paused (default is `false`):
+
+#add_paused: false
+
+# The Transmission server to connect to (default is `localhost:9091`):
+
+#server:
+#  host: localhost
+#  port: 9091
+#  tls: true
+#  rpc_path: /transmission/rpc
+
+# Login details for if the Transmission server requires login:
+
+#login:
+#  username: transmission
+#  password: transmission

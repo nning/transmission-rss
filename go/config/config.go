@@ -15,7 +15,7 @@ type Feed struct {
 	Url            string  `yaml:"url"`
 	RegExp         string  `yaml:"regexp"`
 	SeedRatioLimit float32 `yaml:"seed_ratio_limit"`
-	DownloadPath   string  `yaml:"download_path"`
+	DownloadDir    string  `yaml:"download_dir"`
 }
 
 type Config struct {

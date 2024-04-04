@@ -9,12 +9,17 @@ import (
 
 func getXDGDir(name string) string {
 	dir, isXDG := os.LookupEnv("XDG_" + strings.ToUpper(name) + "_HOME")
-	if !isXDG {
-		u, _ := user.Current()
-		dir = path.Join(u.HomeDir, "."+name, path.Base(os.Args[0]))
+
+	if isXDG {
+		return dir
 	}
 
-	return dir
+	u, err := user.Current()
+	if err != nil {
+		return "/"
+	}
+
+	return path.Join(u.HomeDir, "."+name, path.Base(os.Args[0]))
 }
 
 // GetConfigDir returns XDG config dir
