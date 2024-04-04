@@ -9,6 +9,8 @@ BIN_DIR = cmd/transmission-rss
 BIN_FILE = transmission-rss
 BIN = $(BIN_DIR)/$(BIN_FILE)
 
+GOOS = linux
+GOARCH = amd64
 GOLDFLAGS =
 GOFLAGS += -ldflags "$(GOLDFLAGS)"
 CGO_ENABLED = 0
@@ -17,7 +19,7 @@ build: $(BIN)
 all: build
 
 $(BIN): $(SOURCES)
-	cd $(BIN_DIR); CGO_ENABLED=$(CGO_ENABLED) go build $(GOFLAGS)
+	cd $(BIN_DIR); CGO_ENABLED=$(CGO_ENABLED) GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(GOFLAGS)
 
 clean:
 	rm -f $(BIN)

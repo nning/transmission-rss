@@ -20,6 +20,10 @@ Requirements: `golang`, `git`, `make`
 The `transmission-rss` binary will end up in
 `./cmd/transmission-rss/transmission-rss`.
 
+To cross-compile for ARM macOS machines, for example, run:
+
+    make GOOS=darwin GOARCH=arm64
+
 ## Configuration
 
 A YAML configuration file is expected in one of the following locations:
