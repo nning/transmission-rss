@@ -52,14 +52,19 @@ func (a *Aggregator) processItem(feedConfig *config.Feed, item *gofeed.Item) {
 		link = item.Enclosures[0].URL
 	}
 
+	seenKey := link
+	if feedConfig.SeenByGuid {
+		seenKey = item.GUID
+	}
+
 	seenFile := a.Config.SeenFile
 
-	if seenFile.IsPresent(link) {
+	if seenFile.IsPresent(seenKey) {
 		return
 	}
 
 	if !match(item.Title, feedConfig.RegExp) {
-		seenFile.Add(link)
+		seenFile.Add(seenKey)
 		return
 	}
 
@@ -70,7 +75,7 @@ func (a *Aggregator) processItem(feedConfig *config.Feed, item *gofeed.Item) {
 		return
 	}
 
-	seenFile.Add(link)
+	seenFile.Add(seenKey)
 
 	if feedConfig.SeedRatioLimit > 0 {
 		arguments := make(map[string]interface{})

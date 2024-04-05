@@ -9,42 +9,47 @@
 #   configurations. This was the same in Ruby but was inconsistently documented.
 # - Advanced `regexp` configuration structures are not supported (list of
 #   different expressions, `matcher` options like `download_dir` and `exclude`).
-# - Additional options per feed are not supported: `validate_cert`,
-#   `seen_by_guid`.
+# - The `validate_cert` feed option is not supported.
 # - Top-level configuration options to control the daemon behaviour are also not
 #   supported: `log`, `privileges`, `client`, `fork`, `single`, `pid_file`.
 #
 
-# List of feeds to watch:
-
+# List of feeds to watch
 feeds:
+  # No special config, add all torrents from feed
   - url: http://example.com/feed1
+
+  # Filter titles with regular expression
   - url: http://example.com/feed2
-  - url: http://example.com/feed3
     regexp: match1
-  - url: http://example.com/feed4
+
+  # Example for regular expression that filters for "match1" or "match2"
+  - url: http://example.com/feed3
     regexp: (match1|match2)
-  - url: http://example.com/feed5
+
+  # Torrents from this feed will be downloaded to `download_dir`
+  - url: http://example.com/feed4
     download_dir: /home/user/Downloads
 
-# Feed probing interval in seconds (default is 600):
+  # Remember seen torrents not by link but by GUID
+  # Can be helpful if feed includes dynamically generated links
+  - url: http://example.com/feed5
+    seen_by_guid: true
 
+# Feed probing interval in seconds (default is 600)
 #update_interval: 600
 
-# Whether to add torrents paused (default is `false`):
-
+# Whether to add torrents paused (default is `false`)
 #add_paused: false
 
-# The Transmission server to connect to (default is `localhost:9091`):
-
+# The Transmission server to connect to (default is `localhost:9091`)
 #server:
 #  host: localhost
 #  port: 9091
-#  tls: true
+#  tls: false
 #  rpc_path: /transmission/rpc
 
-# Login details for if the Transmission server requires login:
-
+# Login details for if the Transmission server requires login
 #login:
 #  username: transmission
 #  password: transmission

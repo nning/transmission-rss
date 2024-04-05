@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path"
 	"time"
 
 	"github.com/nning/transmission-rss/go/aggregator"
@@ -15,12 +16,13 @@ func main() {
 	options := utils.ParseOptions(os.Args)
 
 	if options.IsSet('h') {
-		fmt.Printf("Usage: transmission-rss [options]\n\n")
+		fmt.Printf("Usage: %s [options]\n\n", path.Base(os.Args[0]))
+		fmt.Printf("Adds torrents from RSS feeds to Transmission web frontend\n\n")
 		fmt.Printf("Options:\n")
-		fmt.Printf("    -c: config file\n")
-		fmt.Printf("    -h: show this help\n")
-		fmt.Printf("    -r: reset seen file\n")
-		fmt.Printf("    -s: single run\n\n")
+		fmt.Printf("    -c <path>    path to config file\n")
+		fmt.Printf("    -h           show this help\n")
+		fmt.Printf("    -r           reset seen file\n")
+		fmt.Printf("    -s           single run\n\n")
 		os.Exit(0)
 	}
 

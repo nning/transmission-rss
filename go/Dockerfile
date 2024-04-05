@@ -1,5 +1,5 @@
 # docker build . -f go/Dockerfile -t transmission-rss --no-cache
-# touch config.yml seen && docker run -v ./config.yml:/config.yml -v ./seen:/seen transmission-rss
+# touch config.yml seen && docker run -v ./config.yml:/config.yml:ro -v ./seen:/seen:z transmission-rss
 
 FROM golang:alpine as build
 RUN apk add --no-cache git make build-base upx
