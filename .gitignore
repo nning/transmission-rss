@@ -5,8 +5,10 @@ Gemfile.lock
 
 transmission-rss.conf
 transmission-rss.yml
+config.yml
 .seen
 
 pkg
 
 cmd/transmission-rss/transmission-rss
+cmd/transmission-add/transmission-add
