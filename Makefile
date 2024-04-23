@@ -13,8 +13,8 @@ ADD_BIN_DIR = cmd/transmission-add
 ADD_BIN_FILE = transmission-add
 ADD_BIN = $(ADD_BIN_DIR)/$(ADD_BIN_FILE)
 
-GOOS = linux
-GOARCH = amd64
+GOOS =
+GOARCH =
 GOLDFLAGS =
 GOFLAGS += -ldflags "$(GOLDFLAGS)"
 CGO_ENABLED = 0
