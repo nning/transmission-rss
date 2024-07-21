@@ -12,3 +12,4 @@ pkg
 
 cmd/transmission-rss/transmission-rss
 cmd/transmission-add/transmission-add
+.coverage

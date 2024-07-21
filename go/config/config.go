@@ -59,23 +59,28 @@ func New(configPath string) *Config {
 		config.ConfigPath = configPath
 	}
 
-	config.UpdateInterval = DefaultInt(config.UpdateInterval, 600)
-	config.Server.Host = DefaultString(config.Server.Host, "localhost")
-	config.Server.RpcPath = DefaultString(config.Server.RpcPath, "/transmission/rpc")
-	config.Server.Port = DefaultInt(config.Server.Port, 9091)
+	config.UpdateInterval = defaultInt(config.UpdateInterval, 600)
+	config.Server.Host = defaultString(config.Server.Host, "localhost")
+	config.Server.RpcPath = defaultString(config.Server.RpcPath, "/transmission/rpc")
+	config.Server.Port = defaultInt(config.Server.Port, 9091)
 
 	config.SeenFile = NewSeenFile()
 
 	return &config
 }
 
-func getPath() string {
+func getPath(args ...string) string {
+	root := "/"
+	if len(args) > 0 {
+		root = args[0]
+	}
+
 	workDir, _ := os.Getwd()
 
 	configDirs := []string{
-		workDir,
-		path.Dir(os.Args[0]),
-		GetConfigDir(),
+		path.Join(root, workDir),
+		path.Join(root, path.Dir(os.Args[0])),
+		path.Join(root, GetConfigDir()),
 	}
 
 	fileNames := []string{
@@ -116,4 +121,20 @@ func (config *Config) ServerURL() string {
 	}
 
 	return uri.String()
+}
+
+func defaultString(val string, defaultValue string) string {
+	if len(val) == 0 {
+		return defaultValue
+	}
+
+	return val
+}
+
+func defaultInt(val int, defaultValue int) int {
+	if val == 0 {
+		return defaultValue
+	}
+
+	return val
 }

@@ -23,9 +23,9 @@ func ParseOptions(args []string) *Options {
 				options[c] = Option{true, ""}
 			}
 			rest = rest.DeleteValue(a)
-		} else if len(args) > 1 {
+		} else if len(args) > 1 && i > 0 {
 			prev := args[i-1]
-			if i-1 >= 0 && prev[0] == '-' && len(prev) > 1 {
+			if prev[0] == '-' && len(prev) > 1 {
 				options[rune(prev[len(prev)-1])] = Option{true, a}
 				rest = rest.DeleteValue(a)
 			}
