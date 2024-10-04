@@ -45,7 +45,7 @@ func GetTorrents(imdbID string) ([]Torrent, error) {
 
 func getTorrents(imdbID string, page int) (*Response, error) {
 	p := strconv.Itoa(page)
-	url := "https://eztvx.to/api/get-torrents?imdb_id=" + imdbID + "&page=" + p
+	url := "https://eztvx.to/api/get-torrents?imdb_id=" + imdbID + "&page=" + p + "&limit=1000"
 
 	resp, err := http.Get(url)
 	if err != nil {
