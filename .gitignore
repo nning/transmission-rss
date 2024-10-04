@@ -12,4 +12,5 @@ pkg
 
 cmd/transmission-rss/transmission-rss
 cmd/transmission-add/transmission-add
+cmd/transmission-eztv/transmission-eztv
 .coverage
