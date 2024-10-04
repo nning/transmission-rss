@@ -24,6 +24,7 @@ func main() {
 		fmt.Printf("    -i <imdbID>       IMDb ID [required]\n")
 		fmt.Printf("    -f <filter,...>   filters for eztv results\n")
 		fmt.Printf("    -d <downloadDir>  download directory\n")
+		fmt.Printf("    -n                do not actually add, dry mode\n")
 		fmt.Printf("    -h                show this help\n\n")
 		os.Exit(0)
 	}
@@ -32,6 +33,7 @@ func main() {
 	filter := options.Get('f')
 	filters := strings.Split(filter, ",")
 	downloadDir := options.Get('d')
+	dryMode := options.IsSet('n')
 
 	cfg := config.New(options.Get('c'))
 
@@ -61,7 +63,9 @@ func main() {
 	for _, torrent := range filteredTorrents {
 		fmt.Println(torrent.Title)
 
-		c.AddTorrent(torrent.MagnetURL, downloadDir)
+		if !dryMode {
+			c.AddTorrent(torrent.MagnetURL, downloadDir)
+		}
 	}
 }
 
