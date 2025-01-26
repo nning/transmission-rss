@@ -1,6 +1,6 @@
 module TransmissionRSS
   class Feed
-    attr_reader :url, :regexp, :config, :validate_cert, :seen_by_guid
+    attr_reader :url, :regexp, :config, :validate_cert, :seen_by_guid, :delay_time
 
     def initialize(config = {})
       @download_paths = {}
@@ -28,6 +28,10 @@ module TransmissionRSS
 
       @validate_cert = @config['validate_cert'].nil? || !!@config['validate_cert']
       @seen_by_guid = !!@config['seen_by_guid']
+      @delay_time = 0
+      if !@config['delay_time'].nil?
+        @delay_time = @config['delay_time']
+      end
     end
 
     def download_path(title = nil)

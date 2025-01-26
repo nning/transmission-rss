@@ -128,8 +128,12 @@ module TransmissionRSS
         download_path = feed.download_path(item.title)
 
         begin
+          if feed.delay_time > 0
+            @log.debug("sleeping for #{feed.delay_time} seconds...")
+            sleep(feed.delay_time)
+          end
           on_new_item(link, feed, download_path)
-        rescue Client::Unauthorized, Errno::ECONNREFUSED, Timeout::Error
+        rescue Client::Unauthorized, Client::E429, Errno::ECONNREFUSED, Timeout::Error
           @log.debug('not added to seen file ' + link)
         else
           @seen.add(seen_value)

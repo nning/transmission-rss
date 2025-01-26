@@ -12,6 +12,9 @@ module TransmissionRSS
     class Unauthorized < StandardError
     end
 
+    class E429 < StandardError
+    end
+
     def initialize(server = {}, login = nil, options = {})
       options ||= {}
 
@@ -62,6 +65,9 @@ module TransmissionRSS
       log_message = 'torrent-add result: ' + response.result
       log_message << ' (id ' + id.to_s + ')' if id
       @log.debug(log_message)
+      if log_message.include? "(429)"
+        raise E429
+      end
 
       if id && options[:seed_ratio_limit]
         if options[:seed_ratio_limit].to_f < 0
