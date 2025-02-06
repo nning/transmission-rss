@@ -56,6 +56,10 @@ module TransmissionRSS
           raise ArgumentError.new('type has to be :url or :file.')
       end
 
+      if options[:labels]
+        arguments.labels = options[:labels]
+      end
+
       response = rpc('torrent-add', arguments)
       id = get_id_from_response(response)
 

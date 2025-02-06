@@ -19,6 +19,7 @@ feeds:
     regexp: (match1|match2)
   - url: http://example.com/feed5
     download_path: /home/user/Downloads
+    labels: ["movies", "comedy"] # Array of labels to apply to torrents added
   - url: http://example.com/feed6
     regexp:
       - match1
