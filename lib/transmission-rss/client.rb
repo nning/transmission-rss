@@ -57,7 +57,11 @@ module TransmissionRSS
       end
 
       if options[:labels]
-        arguments.labels = options[:labels]
+        if options[:labels].kind_of?(Array)
+          arguments.labels = options[:labels]
+        else
+          raise ArgumentError.new(':labels has to be an array.')
+        end
       end
 
       response = rpc('torrent-add', arguments)
