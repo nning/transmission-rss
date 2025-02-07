@@ -133,7 +133,9 @@ module TransmissionRSS
             sleep(feed.delay_time)
           end
           on_new_item(link, feed, download_path)
-        rescue Client::Unauthorized, Client::E429, Errno::ECONNREFUSED, Timeout::Error
+        rescue Client::TooManyRequests
+          @log.debug('TooManyRequests: Consider adding delay_time to this feed.')
+        rescue Client::Unauthorized, Errno::ECONNREFUSED, Timeout::Error
           @log.debug('not added to seen file ' + link)
         else
           @seen.add(seen_value)

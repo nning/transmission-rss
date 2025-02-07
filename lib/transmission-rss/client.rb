@@ -12,7 +12,7 @@ module TransmissionRSS
     class Unauthorized < StandardError
     end
 
-    class E429 < StandardError
+    class TooManyRequests < StandardError
     end
 
     def initialize(server = {}, login = nil, options = {})
@@ -42,7 +42,13 @@ module TransmissionRSS
       add_basic_auth(post)
       post.body = {method: method, arguments: arguments}.to_json
 
-      JSON.parse(request(post).body)
+      response = JSON.parse(request(post).body)
+
+      if response.result.include? "(429)"
+        raise TooManyRequests
+      end
+
+      response
     end
 
     # POST json packed torrent add command.
@@ -65,9 +71,6 @@ module TransmissionRSS
       log_message = 'torrent-add result: ' + response.result
       log_message << ' (id ' + id.to_s + ')' if id
       @log.debug(log_message)
-      if log_message.include? "(429)"
-        raise E429
-      end
 
       if id && options[:seed_ratio_limit]
         if options[:seed_ratio_limit].to_f < 0
