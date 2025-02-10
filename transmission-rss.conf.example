@@ -18,7 +18,7 @@ feeds:
   - url: http://example.com/feed4
     regexp: (match1|match2)
   - url: http://example.com/feed5
-    download_path: /home/user/Downloads
+    download_dir: /home/user/Downloads
   - url: http://example.com/feed6
     regexp:
       - match1
@@ -26,10 +26,10 @@ feeds:
   - url: http://example.com/feed7
     regexp:
       - matcher: match1
-        download_path: /home/user/match1
+        download_dir: /home/user/match1
         exclude: dontmatch
       - matcher: match2
-        download_path: /home/user/match2
+        download_dir: /home/user/match2
   - url: http://example.com/feed8
     validate_cert: false
     seen_by_guid: true
@@ -47,6 +47,7 @@ feeds:
 #server:
 #  host: localhost
 #  port: 9091
+#  tls: false
 #  rpc_path: /transmission/rpc
 
 # Uncomment if transmission server requires login.

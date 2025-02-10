@@ -1,9 +1,17 @@
-/coverage
-/log
-/*.gem
-/Gemfile.lock
+coverage
+log
+*.gem
+Gemfile.lock
 
-/transmission-rss.conf
-/.seen
+transmission-rss.conf
+transmission-rss.yml
+config.yml
+.seen
 
-/pkg
+pkg
+
+cmd/transmission-rss/transmission-rss
+cmd/transmission-add/transmission-add
+cmd/transmission-eztv/transmission-eztv
+.coverage
+*.upx
