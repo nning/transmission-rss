@@ -12,6 +12,9 @@ module TransmissionRSS
     class Unauthorized < StandardError
     end
 
+    class TooManyRequests < StandardError
+    end
+
     def initialize(server = {}, login = nil, options = {})
       options ||= {}
 
@@ -39,7 +42,13 @@ module TransmissionRSS
       add_basic_auth(post)
       post.body = {method: method, arguments: arguments}.to_json
 
-      JSON.parse(request(post).body)
+      response = JSON.parse(request(post).body)
+
+      if response.result.include? "(429)"
+        raise TooManyRequests
+      end
+
+      response
     end
 
     # POST json packed torrent add command.

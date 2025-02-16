@@ -69,6 +69,12 @@ describe Client do
         expect(response.result).to eq('success')
       end
     end
+
+    it 'should raise TooManyRequests' do
+      VCR.use_cassette('add_torrent_too_many_requests', MATCH_REQUESTS_ON) do
+        expect { Client.new.add_torrent(magnet_link) }.to raise_exception(Client::TooManyRequests)
+      end
+    end
   end
 
   describe '#set_torrent' do
