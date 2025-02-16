@@ -146,6 +146,7 @@ feeds:
   - url: http://example.com/feed5
     download_path: /home/user/Downloads
     delay_time: 2
+    labels: ["movies", "comedy"]
   - url: http://example.com/feed6
     seed_ratio_limit: 1
   - url: http://example.com/feed7
