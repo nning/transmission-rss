@@ -64,7 +64,9 @@ func main() {
 		fmt.Println(torrent.Title)
 
 		if !dryMode {
-			c.AddTorrent(torrent.MagnetURL, downloadDir)
+			if _, err := c.AddTorrent(torrent.MagnetURL, downloadDir); err != nil {
+				log.Println("ERROR", err)
+			}
 		}
 	}
 }

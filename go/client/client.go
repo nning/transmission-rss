@@ -131,11 +131,15 @@ func (c *Client) AddTorrent(link string, downloadDir string) (id int, err error)
 	}
 
 	buf := new(bytes.Buffer)
-	buf.ReadFrom(response.Body)
+	if _, err = buf.ReadFrom(response.Body); err != nil {
+		return 0, fmt.Errorf("reading response body: %w", err)
+	}
 	jsonBody := buf.Bytes()
 
 	var jsonResult ResponseBody
-	json.Unmarshal(jsonBody, &jsonResult)
+	if err = json.Unmarshal(jsonBody, &jsonResult); err != nil {
+		return 0, fmt.Errorf("parsing response: %w", err)
+	}
 	if jsonResult.Result != "success" {
 		return 0, errors.New(jsonResult.Result)
 	}

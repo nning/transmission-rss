@@ -22,7 +22,7 @@ func NewSeenFile(params ...string) *SeenFile {
 
 	if len(params) == 0 {
 		seenPath = path.Join(GetConfigDir(), "seen")
-		os.MkdirAll(path.Dir(seenPath), 0700)
+		utils.ExitOnError(os.MkdirAll(path.Dir(seenPath), 0700))
 	} else {
 		seenPath = params[0]
 	}
@@ -30,7 +30,7 @@ func NewSeenFile(params ...string) *SeenFile {
 	file, err := os.OpenFile(seenPath, os.O_RDONLY|os.O_CREATE, 0600)
 	utils.ExitOnError(err)
 
-	defer file.Close()
+	defer func() { _ = file.Close() }()
 
 	var items []string
 
@@ -60,12 +60,10 @@ func (s *SeenFile) Add(link string) {
 
 	file, err := os.OpenFile(s.Path, os.O_APPEND|os.O_WRONLY, 0600)
 	utils.ExitOnError(err)
-	defer file.Close()
+	defer func() { _ = file.Close() }()
 
 	_, err = file.Write([]byte(hash + "\n"))
 	utils.ExitOnError(err)
-
-	file.Close()
 }
 
 func (s *SeenFile) IsPresent(link string) bool {

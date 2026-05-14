@@ -47,8 +47,12 @@ test:
 coverage: test
 	go tool cover -html .coverage
 
+vet:
+	go vet ./...
+
 lint:
-	golint ./...
+	go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest
+	golangci-lint run ./...
 
 build_release: GOLDFLAGS += -s -w
 build_release: GOFLAGS += -trimpath -mod=readonly -modcacherw

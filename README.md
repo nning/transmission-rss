@@ -54,6 +54,21 @@ docker run -t \
   nning2/transmission-rss:v1.2.1
 ```
 
+### Go Version
+
+There is a preview version of transmission-rss written in Go in the ["go"
+subfolder](./go). It has a [separate README](./go/README.md) and supports a
+[similar configuration format with some caveats](./go/config.yml.example) but
+does not implement nearly as many features as the Ruby version (on purpose). It
+comes with CLI utilities for adding torrents by file or magnet link, and to add
+torrents from eztv by imdb ID.
+
+Install from the repository:
+
+```sh
+make install
+```
+
 Configuration
 -------------
 

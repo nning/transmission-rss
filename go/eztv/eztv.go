@@ -46,21 +46,26 @@ func GetTorrents(imdbID string) ([]Torrent, error) {
 	return torrents, nil
 }
 
+var apiBaseURL = "https://eztvx.to/api"
+
 func getTorrents(imdbID string, page int) (*Response, error) {
 	p := strconv.Itoa(page)
-	url := "https://eztvx.to/api/get-torrents?imdb_id=" + imdbID + "&page=" + p + "&limit=1000"
+	url := apiBaseURL + "/get-torrents?imdb_id=" + imdbID + "&page=" + p + "&limit=1000"
 
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
 	}
 
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
+
 	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
 
 	var response Response
-	err = json.Unmarshal(body, &response)
-	if err != nil {
+	if err = json.Unmarshal(body, &response); err != nil {
 		return nil, err
 	}
 

@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func Test_getXDGDir(t *testing.T) {
@@ -20,7 +21,7 @@ func Test_getXDGDir(t *testing.T) {
 	dir = GetCacheDir()
 	assert.Equal(t, path.Join(home, ".cache", "config.test"), dir)
 
-	os.Setenv("XDG_CONFIG_HOME", "/tmp")
+	require.NoError(t, os.Setenv("XDG_CONFIG_HOME", "/tmp"))
 	dir = getXDGDir("config")
 	assert.Equal(t, "/tmp", dir)
 }
