@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 type Torrent struct {
@@ -22,6 +23,8 @@ type Response struct {
 
 func GetTorrents(imdbID string) ([]Torrent, error) {
 	var torrents []Torrent
+
+	imdbID = strings.TrimPrefix(imdbID, "tt")
 
 	response, err := getTorrents(imdbID, 1)
 	if err != nil {
