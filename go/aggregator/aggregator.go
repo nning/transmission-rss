@@ -1,0 +1,110 @@
+package aggregator
+
+import (
+	"fmt"
+	"log"
+	"net/http"
+	"regexp"
+
+	"github.com/mmcdole/gofeed"
+
+	"github.com/nning/transmission-rss/go/client"
+	"github.com/nning/transmission-rss/go/config"
+	"github.com/nning/transmission-rss/go/utils"
+)
+
+type Aggregator struct {
+	Client *client.Client
+	Config *config.Config
+	Parser *gofeed.Parser
+}
+
+func New(config *config.Config) *Aggregator {
+	client := client.New(config)
+
+	parser := gofeed.NewParser()
+	parser.Client = &http.Client{
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			return fmt.Errorf("302")
+		},
+	}
+
+	a := Aggregator{
+		Client: client,
+		Config: config,
+		Parser: parser,
+	}
+
+	return &a
+}
+
+func match(title string, expr string) bool {
+	re, err := regexp.Compile(expr)
+	utils.ExitOnError(err)
+
+	return re.Match([]byte(title))
+}
+
+func (a *Aggregator) processItem(feedConfig *config.Feed, item *gofeed.Item) {
+	link := item.Link
+
+	if len(item.Enclosures) > 0 {
+		link = item.Enclosures[0].URL
+	}
+
+	seenKey := link
+	if feedConfig.SeenByGuid {
+		seenKey = item.GUID
+	}
+
+	seenFile := a.Config.SeenFile
+
+	if seenFile.IsPresent(seenKey) {
+		return
+	}
+
+	if !match(item.Title, feedConfig.RegExp) {
+		seenFile.Add(seenKey)
+		return
+	}
+
+	log.Printf("ADD \"%s\"\n", item.Title)
+	id, err := a.Client.AddTorrent(link, feedConfig.DownloadDir)
+	if err != nil {
+		log.Println("ERROR", err)
+		return
+	}
+
+	seenFile.Add(seenKey)
+
+	if feedConfig.SeedRatioLimit > 0 {
+		arguments := make(map[string]interface{})
+
+		arguments["ids"] = []int{id}
+		arguments["seedRatioLimit"] = feedConfig.SeedRatioLimit
+		arguments["seedRatioMode"] = 1
+
+		a.Client.SetTorrent(arguments)
+	}
+}
+
+func (a *Aggregator) processFeed(feedConfig *config.Feed) {
+	log.Println("FETCH", feedConfig.Url)
+
+	feed, err := a.Parser.ParseURL(feedConfig.Url)
+
+	if err != nil {
+		log.Println("ERROR", err)
+		return
+	}
+
+	for _, item := range feed.Items {
+		a.processItem(feedConfig, item)
+	}
+}
+
+func (a *Aggregator) Run() {
+	for _, feedConfig := range a.Config.Feeds {
+		a.processFeed(&feedConfig)
+	}
+}
