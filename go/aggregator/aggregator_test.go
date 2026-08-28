@@ -17,7 +17,7 @@ import (
 func newTestConfig(t *testing.T, serverURL string) *config.Config {
 	t.Helper()
 
-	seenFile := config.NewSeenFile(t.TempDir() + "/seen")
+	seenFile := config.NewSeenFile(0, t.TempDir()+"/seen")
 
 	u, err := url.Parse(serverURL)
 	if err != nil {

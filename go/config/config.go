@@ -36,6 +36,8 @@ type Config struct {
 
 	UpdateInterval int `yaml:"update_interval"`
 
+	SeenLimit int `yaml:"seen_limit"`
+
 	Paused bool `yaml:"add_paused"`
 
 	SeenFile   *SeenFile
@@ -60,11 +62,12 @@ func New(configPath string) *Config {
 	}
 
 	config.UpdateInterval = defaultInt(config.UpdateInterval, 600)
+	config.SeenLimit = defaultInt(config.SeenLimit, DefaultSeenLimit)
 	config.Server.Host = defaultString(config.Server.Host, "localhost")
 	config.Server.RpcPath = defaultString(config.Server.RpcPath, "/transmission/rpc")
 	config.Server.Port = defaultInt(config.Server.Port, 9091)
 
-	config.SeenFile = NewSeenFile()
+	config.SeenFile = NewSeenFile(config.SeenLimit)
 
 	return &config
 }

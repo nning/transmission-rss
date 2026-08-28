@@ -12,12 +12,24 @@ import (
 	"github.com/nning/transmission-rss/go/utils"
 )
 
+const DefaultSeenLimit = 10000
+
+func compactionSlack(limit int) int {
+	if slack := limit / 100; slack > 1 {
+		return slack
+	}
+
+	return 1
+}
+
 type SeenFile struct {
 	Path  string
 	Items []string
+	Limit int
+	lines int
 }
 
-func NewSeenFile(params ...string) *SeenFile {
+func NewSeenFile(limit int, params ...string) *SeenFile {
 	var seenPath string
 
 	if len(params) == 0 {
@@ -44,6 +56,18 @@ func NewSeenFile(params ...string) *SeenFile {
 	s := SeenFile{
 		Path:  seenPath,
 		Items: items,
+		Limit: limit,
+		lines: len(items),
+	}
+
+	if dropped := s.trim(); dropped > 0 {
+		log.Println("SEEN dropping " + strconv.Itoa(dropped) +
+			" items over limit of " + strconv.Itoa(limit))
+	}
+
+	if s.lines > len(s.Items) {
+		utils.ExitOnError(s.rewrite())
+		s.lines = len(s.Items)
 	}
 
 	return &s
@@ -57,13 +81,10 @@ func (s *SeenFile) Add(link string) {
 	}
 
 	s.Items = append(s.Items, hash)
+	s.appendItem(hash)
 
-	file, err := os.OpenFile(s.Path, os.O_APPEND|os.O_WRONLY, 0600)
-	utils.ExitOnError(err)
-	defer func() { _ = file.Close() }()
-
-	_, err = file.Write([]byte(hash + "\n"))
-	utils.ExitOnError(err)
+	s.trim()
+	s.compact()
 }
 
 func (s *SeenFile) IsPresent(link string) bool {
@@ -82,9 +103,81 @@ func (s *SeenFile) Count() int {
 
 func (s *SeenFile) Clear() {
 	s.Items = []string{}
+	s.lines = 0
 
 	err := os.Truncate(s.Path, 0)
 	utils.ExitOnError(err)
+}
+
+func (s *SeenFile) appendItem(hash string) {
+	file, err := os.OpenFile(s.Path, os.O_APPEND|os.O_WRONLY, 0600)
+	utils.ExitOnError(err)
+	defer func() { _ = file.Close() }()
+
+	_, err = file.Write([]byte(hash + "\n"))
+	utils.ExitOnError(err)
+
+	s.lines++
+}
+
+func (s *SeenFile) trim() int {
+	if s.Limit < 1 || len(s.Items) <= s.Limit {
+		return 0
+	}
+
+	dropped := len(s.Items) - s.Limit
+	s.Items = append([]string{}, s.Items[dropped:]...)
+
+	return dropped
+}
+
+func (s *SeenFile) compact() {
+	if s.Limit < 1 || s.lines <= s.Limit+compactionSlack(s.Limit) {
+		return
+	}
+
+	utils.ExitOnError(s.rewrite())
+	s.lines = len(s.Items)
+}
+
+func (s *SeenFile) rewrite() error {
+	file, err := os.CreateTemp(path.Dir(s.Path), path.Base(s.Path)+".*")
+	if err != nil {
+		return err
+	}
+
+	tmpPath := file.Name()
+
+	discard := func(err error) error {
+		_ = file.Close()
+		_ = os.Remove(tmpPath)
+
+		return err
+	}
+
+	writer := bufio.NewWriter(file)
+
+	for _, item := range s.Items {
+		if _, err := writer.WriteString(item + "\n"); err != nil {
+			return discard(err)
+		}
+	}
+
+	if err := writer.Flush(); err != nil {
+		return discard(err)
+	}
+
+	if err := file.Close(); err != nil {
+		_ = os.Remove(tmpPath)
+		return err
+	}
+
+	if err := os.Rename(tmpPath, s.Path); err != nil {
+		_ = os.Remove(tmpPath)
+		return err
+	}
+
+	return nil
 }
 
 func sha256sum(input string) string {

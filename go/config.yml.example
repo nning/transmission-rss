@@ -39,6 +39,9 @@ feeds:
 # Feed probing interval in seconds (default is 600)
 #update_interval: 600
 
+# Max items kept in the seen file, oldest dropped first (default is 10000, -1 keeps all)
+#seen_limit: 10000
+
 # Whether to add torrents paused (default is `false`)
 #add_paused: false
 

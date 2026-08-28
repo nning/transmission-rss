@@ -141,8 +141,8 @@ feeds:
 ### All available options
 
 The following configuration file example contains every existing option
-(although `update_interval`, `add_paused`, `server`, `log`, `fork`, `single`, and
-`pid_file` are default values and could be omitted). The default `log.target` is
+(although `update_interval`, `seen_limit`, `add_paused`, `server`, `log`, `fork`,
+`single`, and `pid_file` are default values and could be omitted). The default `log.target` is
 STDERR. `privileges` is not defined by default, so the script runs as current
 user/group. `login` is also not defined by default. It has to be defined, if
 transmission is configured for HTTP basic authentication.
@@ -178,6 +178,8 @@ feeds:
     seen_by_guid: true
 
 update_interval: 600
+
+seen_limit: 10000
 
 add_paused: false
 
