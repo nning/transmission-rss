@@ -24,14 +24,14 @@ module TransmissionRSS
 
       @seen << hash
 
-      open(@path, 'a') do |f|
+      File.open(@path, 'a') do |f|
         f.write(hash + "\n")
       end
     end
 
     def clear!
       @seen.clear
-      open(@path, 'w') {}
+      File.open(@path, 'w') {}
     end
 
     def include?(url)
@@ -49,7 +49,7 @@ module TransmissionRSS
     end
 
     def file_to_array(path)
-      open(path, 'r').readlines.map(&:chomp)
+      File.open(path, 'r') { |f| f.readlines.map(&:chomp) }
     end
 
     def initialize_path!(path)

@@ -5,27 +5,19 @@ os:
   - osx
 
 rvm:
-  - 2.7 # Current stable
-  - 2.6 # Alpine 3.11
-  - 2.5 # Debian stable (buster), Ubuntu
-  - 2.1 # Minimum supported version (Debian oldoldstable (jessie))
+  - 3.4 # Latest stable version
+  - 3.2 # LTS
+  - 3.0 # Minimum supported version
 
 matrix:
   fast_finish: true
   allow_failures:
     - os: osx
-    - rvm: ruby-head
-  exclude:
-    - os: osx
-      rvm: ruby-head
-    - os: osx
-      rvm: 2.1
 
 notifications:
   email: false
 
 install:
-  - gem install bundler -v '< 2'
   - bundle install --jobs=3 --retry=3
 
 script:

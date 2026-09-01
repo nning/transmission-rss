@@ -65,9 +65,21 @@ describe Client do
       end
 
       VCR.use_cassette('add_torrent_via_http_with_special_chars', MATCH_REQUESTS_ON) do
-        response = Client.new.add_torrent(URI.escape(http_url), :url)
+        response = Client.new.add_torrent(URI::DEFAULT_PARSER.escape(http_url), :url)
         expect(response.result).to eq('success')
       end
+    end
+
+    it 'normalizes partially encoded url' do
+      mixed_url = 'https://nning.io/already%20encoded and raw.torrent'
+      expected  = 'https://nning.io/already%20encoded%20and%20raw.torrent'
+      expect(Client.new.send(:normalize_url, mixed_url)).to eq(expected)
+    end
+
+    it 'encodes raw # in url path' do
+      url_with_hash = 'https://nning.io/file#1.torrent'
+      expected      = 'https://nning.io/file%231.torrent'
+      expect(Client.new.send(:normalize_url, url_with_hash)).to eq(expected)
     end
 
     it 'should raise TooManyRequests' do

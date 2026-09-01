@@ -51,9 +51,6 @@ module TransmissionRSS
             next
           end
 
-          # gzip HTTP Content-Encoding is not automatically decompressed in
-          # Ruby 1.9.3.
-          content = decompress(content) if RUBY_VERSION == '1.9.3'
           begin
             items = parse(content)
           rescue StandardError => e
@@ -89,18 +86,12 @@ module TransmissionRSS
         options[:ssl_verify_mode] = OpenSSL::SSL::VERIFY_NONE
       end
 
-      # open for URIs is obsolete, URI.open does not work in 2.4
-      URI.send(:open, feed.url, options).read
+      # Use URI.open for Ruby 3.x compatibility
+      URI.open(feed.url, options).read
     end
 
     def parse(content)
       RSS::Parser.parse(content, false).items
-    end
-
-    def decompress(string)
-      Zlib::GzipReader.new(StringIO.new(string)).read
-    rescue Zlib::GzipFile::Error, Zlib::Error
-      string
     end
 
     def process_link(feed, item)

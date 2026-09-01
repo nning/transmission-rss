@@ -1,5 +1,6 @@
 module TransmissionRSS
   class Feed
+    include URIHelper
     attr_reader :url, :regexp, :config, :validate_cert, :seen_by_guid, :delay_time
 
     def initialize(config = {})
@@ -10,7 +11,8 @@ module TransmissionRSS
       when Hash
         @config = config
 
-        @url = URI.escape(URI.unescape(config['url'] || config.keys.first))
+        raw_url = config['url'] || config.keys.first
+        @url = normalize_url(raw_url)
 
         @download_path = config['download_path']
 

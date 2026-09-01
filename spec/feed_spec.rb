@@ -24,6 +24,18 @@ describe Feed do
     expect(feed.url).to eq(@encoded_url['url'])
   end
 
+  it 'should escape unencoded url' do
+    raw_url = { 'url' => 'http://site.com/rss?name=name with space' }
+    feed = Feed.new(raw_url)
+    expect(feed.url).to eq('http://site.com/rss?name=name%20with%20space')
+  end
+
+  it 'should handle partially encoded url' do
+    mixed_url = { 'url' => 'http://site.com/rss?x=already%20encoded&title=raw space' }
+    feed = Feed.new(mixed_url)
+    expect(feed.url).to eq('http://site.com/rss?x=already%20encoded&title=raw%20space')
+  end
+
   it 'should be able to parse old style hash with no options' do
     feed = Feed.new({@url => nil})
     expect(feed.url).to eq(@url)

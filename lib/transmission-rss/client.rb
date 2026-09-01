@@ -1,12 +1,14 @@
 require 'net/http'
 require 'json'
 require 'base64'
+require 'timeout'
 
 require File.join(File.dirname(__FILE__), 'log')
 
 module TransmissionRSS
   # Class for communication with transmission utilizing the RPC web interface.
   class Client
+    include URIHelper
     OPTIONS = [:paused, :download_dir]
 
     class Unauthorized < StandardError
@@ -57,8 +59,7 @@ module TransmissionRSS
 
       case type
         when :url
-          file = URI.escape(file) if URI.unescape(file) == file
-          arguments.filename = file
+          arguments.filename = normalize_url(file)
         when :file
           arguments.metainfo = Base64.encode64(File.read(file))
         else

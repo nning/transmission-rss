@@ -5,7 +5,7 @@ end
 
 require 'transmission-rss/core_ext/Array'
 require 'transmission-rss/core_ext/Object'
-require 'transmission-rss/core_ext/URI'
+require 'transmission-rss/uri_helper'
 
 Dir.glob($:.first + '/**/*.rb').each do |lib|
 	require lib

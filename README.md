@@ -20,8 +20,7 @@ torrent files.
 As it's done with poems, I devote this very artful and romantic piece of
 code to the single most delightful human being: Ann.
 
-The minimum supported Ruby version is 2.1. (You will need `rbenv` if your
-os does not support Ruby >= 2.1, e.g. on Debian wheezy.)
+The minimum supported Ruby version is 3.0.
 
 **Note, that this README is for the current development branch!** You can find
 a link to a suitable README for your version
