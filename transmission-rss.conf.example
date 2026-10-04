@@ -20,6 +20,7 @@ feeds:
   - url: http://example.com/feed5
     download_path: /home/user/Downloads
     delay_time: 2 # Delay between adding each torrent in seconds
+    labels: ["movies", "comedy"] # Array of labels to apply to torrents added
   - url: http://example.com/feed6
     regexp:
       - match1
